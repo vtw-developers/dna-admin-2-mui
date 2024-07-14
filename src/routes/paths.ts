@@ -4,6 +4,7 @@ const ROOTS = {
   AUTH: '/auth',
   DASHBOARD: '/dashboard',
   MANAGE: '/manage',
+  API_INFO: '/manage/api',
 };
 
 // ----------------------------------------------------------------------
@@ -11,8 +12,9 @@ const ROOTS = {
 export const paths = {
   manage: {
     api: {
-      root: `${ROOTS.MANAGE}/api`,
-      new: `${ROOTS.MANAGE}/api/new`,
+      root: `${ROOTS.API_INFO}`,
+      new: `${ROOTS.API_INFO}/new`,
+      details: (id: string) => `${ROOTS.API_INFO}/${id}`,
     },
   },
 

@@ -17,13 +17,13 @@ import { Form, Field } from 'src/components/hook-form';
 
 import { createApiInfo } from '../../actions/api-info';
 
-import type { ApiInfoItem } from '../../types/api-info';
+import type { ApiInfo } from '../../types/api-info';
 
 // ----------------------------------------------------------------------
 
-export type NewProductSchemaType = zod.infer<typeof NewProductSchema>;
+export type SchemaType = zod.infer<typeof Schema>;
 
-export const NewProductSchema = zod.object({
+export const Schema = zod.object({
   name: zod.string().min(1, { message: 'Name is required!' }),
   // description: schemaHelper.editor({ message: { required_error: 'Description is required!' } }),
   // images: schemaHelper.files({ message: { required_error: 'Images is required!' } }),
@@ -47,38 +47,22 @@ export const NewProductSchema = zod.object({
 // ----------------------------------------------------------------------
 
 type Props = {
-  currentProduct?: ApiInfoItem;
+  editMode: string;
+  entity?: ApiInfo;
 };
 
-export function ApiInfoNewEditForm({ currentProduct }: Props) {
+export function ApiInfoEditForm({ editMode, entity }: Props) {
   const router = useRouter();
 
   const defaultValues = useMemo(
     () => ({
-      name: currentProduct?.name || '',
-      // description: currentProduct?.description || '',
-      // subDescription: currentProduct?.subDescription || '',
-      // images: currentProduct?.images || [],
-      // //
-      // code: currentProduct?.code || '',
-      // sku: currentProduct?.sku || '',
-      // price: currentProduct?.price || 0,
-      // quantity: currentProduct?.quantity || 0,
-      // priceSale: currentProduct?.priceSale || 0,
-      // tags: currentProduct?.tags || [],
-      // taxes: currentProduct?.taxes || 0,
-      // gender: currentProduct?.gender || [],
-      // category: currentProduct?.category || PRODUCT_CATEGORY_GROUP_OPTIONS[0].classify[1],
-      // colors: currentProduct?.colors || [],
-      // sizes: currentProduct?.sizes || [],
-      // newLabel: currentProduct?.newLabel || { enabled: false, content: '' },
-      // saleLabel: currentProduct?.saleLabel || { enabled: false, content: '' },
+      name: entity?.name || '',
     }),
-    [currentProduct]
+    [entity]
   );
 
-  const methods = useForm<NewProductSchemaType>({
-    resolver: zodResolver(NewProductSchema),
+  const methods = useForm<SchemaType>({
+    resolver: zodResolver(Schema),
     defaultValues,
   });
 
@@ -93,10 +77,10 @@ export function ApiInfoNewEditForm({ currentProduct }: Props) {
   const values = watch();
 
   useEffect(() => {
-    if (currentProduct) {
+    if (entity) {
       reset(defaultValues);
     }
-  }, [currentProduct, defaultValues, reset]);
+  }, [entity, defaultValues, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -108,7 +92,7 @@ export function ApiInfoNewEditForm({ currentProduct }: Props) {
       });
 
       reset();
-      toast.success(currentProduct ? 'Update success!' : 'Create success!');
+      toast.success(entity ? 'Update success!' : 'Create success!');
       router.push(paths.manage.api.root);
       console.info('DATA', data);
     } catch (error) {
@@ -123,7 +107,7 @@ export function ApiInfoNewEditForm({ currentProduct }: Props) {
       <Divider />
 
       <Stack spacing={3} sx={{ p: 3 }}>
-        <Field.Text name="name" label="API명" />
+        <Field.Text name="name" label="API명" inputProps={{ readOnly: editMode === 'details' }} />
         <Field.Text name="name" label="API명" />
         <Field.Text name="name" label="API명" />
       </Stack>
@@ -133,7 +117,7 @@ export function ApiInfoNewEditForm({ currentProduct }: Props) {
   const renderActions = (
     <Stack spacing={3} direction="row" alignItems="center" flexWrap="wrap">
       <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-        {!currentProduct ? '등록' : '저장'}
+        {!entity ? '등록' : '저장'}
       </LoadingButton>
     </Stack>
   );

@@ -4,6 +4,6 @@ export type ApiInfoFilters = {
   name: string;
 };
 
-export type ApiInfoItem = {
+export type ApiInfo = {
   name: string;
 };

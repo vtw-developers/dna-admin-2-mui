@@ -6,6 +6,10 @@ import { ApiInfoEditView } from '../../../../../sections/api-info/view/api-info-
 
 export const metadata = { title: `Create a new product | Dashboard - ${CONFIG.site.name}` };
 
+type Props = {
+  params: { id: string };
+};
+
 export default function Page() {
-  return <ApiInfoEditView editMode="create" />;
+  return <ApiInfoEditView editMode="details" />;
 }

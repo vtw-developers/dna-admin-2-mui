@@ -1,4 +1,4 @@
-import type { ApiInfoItem, ApiInfoFilters } from 'src/types/api-info';
+import type { ApiInfo, ApiInfoFilters } from 'src/types/api-info';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
 import useSWR from 'swr';
@@ -18,7 +18,7 @@ const swrOptions = {
 
 type ApiInfosData = {
   totalCount: number;
-  data: ApiInfoItem[];
+  data: ApiInfo[];
 };
 
 const PATH_PREFIX = '/apiInfo';

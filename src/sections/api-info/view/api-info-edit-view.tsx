@@ -4,11 +4,15 @@ import { DashboardContent } from 'src/layouts/dashboard';
 
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { ApiInfoNewEditForm } from '../api-info-new-edit-form';
+import { ApiInfoEditForm } from '../api-info-edit-form';
 
 // ----------------------------------------------------------------------
 
-export function ApiInfoCreateView() {
+type Props = {
+  editMode: string;
+};
+
+export function ApiInfoEditView({ editMode }: Props): JSX.Element {
   return (
     <DashboardContent>
       <CustomBreadcrumbs
@@ -21,7 +25,7 @@ export function ApiInfoCreateView() {
         sx={{ mb: { xs: 3, md: 5 } }}
       />
 
-      <ApiInfoNewEditForm />
+      <ApiInfoEditForm editMode={editMode} />
     </DashboardContent>
   );
 }
