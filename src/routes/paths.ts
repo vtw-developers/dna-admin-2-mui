@@ -3,11 +3,20 @@
 const ROOTS = {
   AUTH: '/auth',
   DASHBOARD: '/dashboard',
+
+  MANAGE: '/manage',
 };
 
 // ----------------------------------------------------------------------
 
 export const paths = {
+  manage: {
+    api: {
+      root: `${ROOTS.MANAGE}/api`,
+      new: `${ROOTS.MANAGE}/new`,
+    },
+  },
+
   faqs: '/faqs',
   minimalStore: 'https://mui.com/store/items/minimal-dashboard/',
   // AUTH
