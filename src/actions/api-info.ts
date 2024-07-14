@@ -4,7 +4,7 @@ import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPagination
 import useSWR from 'swr';
 import { useMemo } from 'react';
 
-import { fetcher, endpoints } from 'src/utils/axios';
+import axiosInstance, { fetcher } from 'src/utils/axios';
 
 // ----------------------------------------------------------------------
 
@@ -21,14 +21,21 @@ type ApiInfosData = {
   data: ApiInfoItem[];
 };
 
+const PATH_PREFIX = '/apiInfo';
+
 export function useGetApiInfos(pagination: GridPaginationModel, filters: ApiInfoFilters) {
-  console.log('useGetApiInfos');
-  const url = endpoints.apiInfo.list;
-  console.log(
-    `${url}?page=${pagination?.page}&size=${pagination?.pageSize}&name=${filters.name || ''}`
-  );
+  const url = `${PATH_PREFIX}/list`;
   const { data, isLoading, error, isValidating } = useSWR<ApiInfosData>(
-    `${url}?page=${pagination?.page}&size=${pagination?.pageSize}&name=${filters.name || ''}`,
+    [
+      `${url}`,
+      {
+        params: {
+          page: pagination?.page,
+          size: pagination?.pageSize,
+          name: filters.name || '',
+        },
+      },
+    ],
     fetcher,
     swrOptions
   );
@@ -47,3 +54,6 @@ export function useGetApiInfos(pagination: GridPaginationModel, filters: ApiInfo
 
   return memoizedValue;
 }
+
+export const createApiInfo = async (params) =>
+  (await axiosInstance.post(`${PATH_PREFIX}/create`, params)).data;
