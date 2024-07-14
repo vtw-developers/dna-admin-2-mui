@@ -6,7 +6,7 @@ import { CONFIG } from 'src/config-global';
 
 // ----------------------------------------------------------------------
 
-const axiosInstance = axios.create(/* { baseURL: CONFIG.site.serverUrl } */);
+const axiosInstance = axios.create({ baseURL: CONFIG.site.serverUrl });
 
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -33,27 +33,13 @@ export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
 // ----------------------------------------------------------------------
 
 export const endpoints = {
-  chat: '/api/chat',
-  kanban: '/api/kanban',
-  calendar: '/api/calendar',
   auth: {
-    me: 'http://localhost:8076/auth/me',
-    signIn: 'http://localhost:8076/auth/signIn',
-    signUp: `${CONFIG.site.serverUrl}/api/auth/sign-up`,
+    me: '/auth/me',
+    signIn: '/auth/signIn',
+    signUp: '/auth/signUp',
   },
-  mail: {
-    list: '/api/mail/list',
-    details: '/api/mail/details',
-    labels: '/api/mail/labels',
-  },
-  post: {
-    list: '/api/post/list',
-    details: '/api/post/details',
-    latest: '/api/post/latest',
-    search: '/api/post/search',
-  },
-  product: {
-    list: /* '/api/product/list' */ 'http://localhost:8076/apiInfo/list',
+  apiInfo: {
+    list: '/apiInfo/list',
     details: '/api/product/details',
     search: '/api/product/search',
   },

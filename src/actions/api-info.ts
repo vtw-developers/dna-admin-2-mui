@@ -1,10 +1,10 @@
-import type { ApiInfoFilters, ApiInfoItem } from 'src/types/api-info';
+import type { ApiInfoItem, ApiInfoFilters } from 'src/types/api-info';
+import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
 import useSWR from 'swr';
 import { useMemo } from 'react';
 
-import { endpoints, fetcher } from 'src/utils/axios';
-import { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
+import { fetcher, endpoints } from 'src/utils/axios';
 
 // ----------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ type ApiInfosData = {
 
 export function useGetApiInfos(pagination: GridPaginationModel, filters: ApiInfoFilters) {
   console.log('useGetApiInfos');
-  const url = endpoints.product.list;
+  const url = endpoints.apiInfo.list;
   console.log(
     `${url}?page=${pagination?.page}&size=${pagination?.pageSize}&name=${filters.name || ''}`
   );
