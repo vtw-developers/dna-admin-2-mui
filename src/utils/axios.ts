@@ -6,7 +6,7 @@ import { CONFIG } from 'src/config-global';
 
 // ----------------------------------------------------------------------
 
-const axiosInstance = axios.create(/*{ baseURL: CONFIG.site.serverUrl }*/);
+const axiosInstance = axios.create(/* { baseURL: CONFIG.site.serverUrl } */);
 
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -37,9 +37,9 @@ export const endpoints = {
   kanban: '/api/kanban',
   calendar: '/api/calendar',
   auth: {
-    me: CONFIG.site.serverUrl + '/api/auth/me',
-    signIn: CONFIG.site.serverUrl + '/api/auth/sign-in',
-    signUp: CONFIG.site.serverUrl + '/api/auth/sign-up',
+    me: 'http://localhost:8076/auth/me',
+    signIn: 'http://localhost:8076/auth/signIn',
+    signUp: `${CONFIG.site.serverUrl}/api/auth/sign-up`,
   },
   mail: {
     list: '/api/mail/list',
@@ -53,7 +53,7 @@ export const endpoints = {
     search: '/api/post/search',
   },
   product: {
-    list: /*'/api/product/list'*/ 'http://localhost:8076/apiInfo/list',
+    list: /* '/api/product/list' */ 'http://localhost:8076/apiInfo/list',
     details: '/api/product/details',
     search: '/api/product/search',
   },
