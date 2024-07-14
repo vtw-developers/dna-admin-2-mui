@@ -55,5 +55,18 @@ export function useGetApiInfos(pagination: GridPaginationModel, filters: ApiInfo
   return memoizedValue;
 }
 
-export const createApiInfo = async (params) =>
+export const getApiInfo = async (id: string | number) =>
+  (
+    await axiosInstance.get(`${PATH_PREFIX}/find`, {
+      params: { id },
+    })
+  ).data;
+
+export const createApiInfo = async (params: ApiInfo) =>
   (await axiosInstance.post(`${PATH_PREFIX}/create`, params)).data;
+
+export const updateApiInfo = async (params: ApiInfo) =>
+  (await axiosInstance.post(`${PATH_PREFIX}/update`, params)).data;
+
+export const deleteApiInfo = async (params: ApiInfo) =>
+  (await axiosInstance.post(`${PATH_PREFIX}/delete`, params)).data;

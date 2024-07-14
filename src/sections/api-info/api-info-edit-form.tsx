@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import CardHeader from '@mui/material/CardHeader';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -15,7 +16,7 @@ import { useRouter } from 'src/routes/hooks';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
-import { createApiInfo } from '../../actions/api-info';
+import { createApiInfo, updateApiInfo } from '../../actions/api-info';
 
 import type { ApiInfo } from '../../types/api-info';
 
@@ -24,6 +25,7 @@ import type { ApiInfo } from '../../types/api-info';
 export type SchemaType = zod.infer<typeof Schema>;
 
 export const Schema = zod.object({
+  id: zod.number(),
   name: zod.string().min(1, { message: 'Name is required!' }),
   // description: schemaHelper.editor({ message: { required_error: 'Description is required!' } }),
   // images: schemaHelper.files({ message: { required_error: 'Images is required!' } }),
@@ -52,10 +54,13 @@ type Props = {
 };
 
 export function ApiInfoEditForm({ editMode, entity }: Props) {
-  const router = useRouter();
+  console.log(entity);
 
+  const editing = editMode !== 'details';
+  const router = useRouter();
   const defaultValues = useMemo(
     () => ({
+      id: entity?.id,
       name: entity?.name || '',
     }),
     [entity]
@@ -84,12 +89,13 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log('aaa');
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log(data);
 
-      createApiInfo(data).then((e) => {
-        console.log(e);
-      });
+      if (editMode === 'create') {
+        await createApiInfo(data);
+      } else if (editMode === 'update') {
+        await updateApiInfo(data);
+      }
 
       reset();
       toast.success(entity ? 'Update success!' : 'Create success!');
@@ -116,9 +122,16 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
 
   const renderActions = (
     <Stack spacing={3} direction="row" alignItems="center" flexWrap="wrap">
-      <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-        {!entity ? '등록' : '저장'}
-      </LoadingButton>
+      {!editing && (
+        <Button variant="contained" size="large" href={paths.manage.api.edit(entity?.id)}>
+          변경
+        </Button>
+      )}
+      {editing && (
+        <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
+          저장
+        </LoadingButton>
+      )}
     </Stack>
   );
 

@@ -5,5 +5,6 @@ export type ApiInfoFilters = {
 };
 
 export type ApiInfo = {
+  id?: number;
   name: string;
 };

@@ -6,17 +6,34 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
 import { ApiInfoEditForm } from '../api-info-edit-form';
 
+import type { EditModes } from '../../../types/edit';
+import type { ApiInfo } from '../../../types/api-info';
+
 // ----------------------------------------------------------------------
 
 type Props = {
-  editMode: string;
+  editMode: EditModes;
+  entity?: ApiInfo;
 };
 
-export function ApiInfoEditView({ editMode }: Props): JSX.Element {
+export function ApiInfoEditView({ editMode, entity }: Props): JSX.Element {
+  const title = () => {
+    switch (editMode) {
+      case 'create':
+        return 'API 정보 등록';
+      case 'update':
+        return 'API 정보 수정';
+      case 'details':
+        return 'API 정보 상세';
+      default:
+        return 'API 정보';
+    }
+  };
+
   return (
     <DashboardContent>
       <CustomBreadcrumbs
-        heading="Create a new product"
+        heading={title()}
         links={[
           { name: 'Dashboard', href: 'test' },
           { name: 'Product', href: 'test' },
@@ -25,7 +42,7 @@ export function ApiInfoEditView({ editMode }: Props): JSX.Element {
         sx={{ mb: { xs: 3, md: 5 } }}
       />
 
-      <ApiInfoEditForm editMode={editMode} />
+      <ApiInfoEditForm editMode={editMode} entity={entity} />
     </DashboardContent>
   );
 }

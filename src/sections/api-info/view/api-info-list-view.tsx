@@ -37,6 +37,7 @@ export function ApiInfoListView() {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
 
   useEffect(() => {
+    console.log(data);
     setTableData(data);
   }, [data, sortModel, pagination, filters]);
 

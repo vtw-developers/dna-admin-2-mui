@@ -1,7 +1,7 @@
 import { CONFIG } from 'src/config-global';
 
-import { getApiInfo } from '../../../../../actions/api-info';
-import { ApiInfoEditView } from '../../../../../sections/api-info/view/api-info-edit-view';
+import { getApiInfo } from '../../../../../../actions/api-info';
+import { ApiInfoEditView } from '../../../../../../sections/api-info/view/api-info-edit-view';
 
 // ----------------------------------------------------------------------
 
@@ -16,5 +16,5 @@ export default async function Page({ params }: Props) {
 
   const entity = await getApiInfo(id);
 
-  return <ApiInfoEditView editMode="details" entity={entity} />;
+  return <ApiInfoEditView editMode="update" entity={entity} />;
 }
