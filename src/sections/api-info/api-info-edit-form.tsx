@@ -16,7 +16,7 @@ import { useRouter } from 'src/routes/hooks';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
-import { createApiInfo, updateApiInfo } from '../../actions/api-info';
+import { createApiInfo, deleteApiInfo, updateApiInfo } from '../../actions/api-info';
 
 import type { ApiInfo } from '../../types/api-info';
 
@@ -106,6 +106,13 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
     }
   });
 
+  const confirmDelete = handleSubmit(async (data) => {
+    // TODO: 삭제 확인 팝업
+    console.log(data);
+    await deleteApiInfo(data);
+    router.push(paths.manage.api.root);
+  });
+
   const renderDetails = (
     <Card>
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
@@ -124,9 +131,15 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
     <Stack spacing={3} direction="row" alignItems="center" flexWrap="wrap">
       {!editing && (
         <Button variant="contained" size="large" href={paths.manage.api.edit(entity?.id)}>
-          변경
+          수정
         </Button>
       )}
+      {!editing && (
+        <Button variant="contained" size="large" onClick={confirmDelete}>
+          삭제
+        </Button>
+      )}
+
       {editing && (
         <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
           저장
