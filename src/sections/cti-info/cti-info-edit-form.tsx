@@ -43,6 +43,11 @@ type Props = {
 export function CtiInfoEditForm({ editMode, entity }: Props) {
   const editing = editMode !== 'details';
   const router = useRouter();
+
+  const listPath = paths.manage.cti.root;
+  const editPath = paths.manage.cti.edit(entity?.id);
+  const detailsPath = paths.manage.cti.details(entity?.id);
+
   const defaultValues = useMemo(
     () => ({
       id: entity?.id,
@@ -127,7 +132,7 @@ export function CtiInfoEditForm({ editMode, entity }: Props) {
   const renderActions = (
     <Stack spacing={3} direction="row" alignItems="center" flexWrap="wrap">
       {!editing && (
-        <Button variant="contained" size="large" href={paths.manage.cti.edit(entity?.id)}>
+        <Button variant="contained" size="large" href={editPath}>
           수정
         </Button>
       )}
@@ -141,8 +146,7 @@ export function CtiInfoEditForm({ editMode, entity }: Props) {
           저장
         </LoadingButton>
       )}
-
-      <Button variant="contained" size="large" href={paths.manage.cti.root}>
+      <Button variant="contained" size="large" href={listPath}>
         목록
       </Button>
     </Stack>

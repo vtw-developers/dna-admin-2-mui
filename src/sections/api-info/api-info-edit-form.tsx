@@ -43,6 +43,11 @@ type Props = {
 export function ApiInfoEditForm({ editMode, entity }: Props) {
   const editing = editMode !== 'details';
   const router = useRouter();
+
+  const listPath = paths.manage.api.root;
+  const editPath = paths.manage.api.edit(entity?.id);
+  const detailsPath = paths.manage.api.details(entity?.id);
+
   const defaultValues = useMemo(
     () => ({
       id: entity?.id,
@@ -129,7 +134,7 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
   const renderActions = (
     <Stack spacing={3} direction="row" alignItems="center" flexWrap="wrap">
       {!editing && (
-        <Button variant="contained" size="large" href={paths.manage.api.edit(entity?.id)}>
+        <Button variant="contained" size="large" href={editPath}>
           수정
         </Button>
       )}
@@ -144,7 +149,7 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
         </LoadingButton>
       )}
 
-      <Button variant="contained" size="large" href={paths.manage.api.root}>
+      <Button variant="contained" size="large" href={listPath}>
         목록
       </Button>
     </Stack>
