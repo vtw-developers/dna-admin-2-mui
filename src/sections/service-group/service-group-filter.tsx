@@ -2,10 +2,11 @@ import type { ChangeEvent } from 'react';
 
 import { useState, useCallback } from 'react';
 
-import Stack from '@mui/material/Stack';
+import { Grid } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
+import { Iconify } from '../../components/iconify';
 import { defaultServiceGroupFilters } from '../../types/service-group';
 
 import type { ServiceGroupFilters } from '../../types/service-group';
@@ -27,19 +28,32 @@ export function ServiceGroupFilter({ onSearch }: Props) {
   );
 
   return (
-    <Stack
-      spacing={2}
-      alignItems={{ xs: 'flex-end', md: 'center' }}
-      direction={{ xs: 'column', md: 'row' }}
-      sx={{ p: 2.5, pr: { xs: 2.5, md: 1 } }}
-    >
-      <TextField
-        label="서비스그룹명"
-        fullWidth
-        value={filters.name}
-        onChange={handleFilterName('name')}
-      />
-      <Button onClick={(e) => onSearch(filters)}>검색</Button>
-    </Stack>
+    <Grid container spacing={2}>
+      <Grid item xs={12} md={6}>
+        <TextField
+          label="서비스그룹명"
+          fullWidth
+          value={filters.name}
+          onChange={handleFilterName('name')}
+        />
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <TextField
+          label="서비스그룹명"
+          fullWidth
+          value={filters.name}
+          onChange={handleFilterName('name')}
+        />
+      </Grid>
+      <Grid item xs={12} md={12} textAlign="center">
+        <Button
+          onClick={(e) => onSearch(filters)}
+          variant="outlined"
+          startIcon={<Iconify icon="mingcute:search-line" />}
+        >
+          검색
+        </Button>
+      </Grid>
+    </Grid>
   );
 }
