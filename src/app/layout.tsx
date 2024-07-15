@@ -1,7 +1,6 @@
-import 'src/global.css';
+import 'src/styles/global.css';
 
 // ----------------------------------------------------------------------
-
 import type { Viewport } from 'next';
 
 import { CONFIG } from 'src/config-global';
@@ -26,6 +25,12 @@ export const viewport: Viewport = {
 
 type Props = {
   children: React.ReactNode;
+};
+
+export const metadata = {
+  icons: {
+    icon: '/dna-symbol.v2.svg',
+  },
 };
 
 export default async function RootLayout({ children }: Props) {
