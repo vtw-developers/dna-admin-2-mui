@@ -53,10 +53,12 @@ export function ServiceGroupListView() {
     {
       field: 'serviceGroupName',
       headerName: '서비스그룹',
+      width: 400,
     },
     {
       field: 'name',
       headerName: '서비스그룹명',
+      width: 800,
       renderCell: (params) => (
         <Link
           noWrap
@@ -72,11 +74,12 @@ export function ServiceGroupListView() {
     {
       field: 'enabled',
       headerName: '사용여부',
+      width: 400,
     },
   ];
 
   return (
-    <DashboardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+    <DashboardContent className="dna-common-list">
       <CustomBreadcrumbs
         heading="서비스그룹 목록"
         links={[
@@ -96,14 +99,17 @@ export function ServiceGroupListView() {
         }
         sx={{ mb: { xs: 3, md: 5 } }}
       />
-
-      <ServiceGroupFilter onSearch={(f) => setFilters(f)} />
+      <Card className="list-filter" sx={{ mb: { xs: 3, md: 5 } }}>
+        <ServiceGroupFilter onSearch={(f) => setFilters(f)} />
+      </Card>
       <Card
+        className="list-grid"
         sx={{
           flexGrow: { md: 1 },
           display: { md: 'flex' },
           height: { xs: 800, md: 2 },
           flexDirection: { md: 'column' },
+          borderRadius: '5px',
         }}
       >
         <DataGrid
@@ -111,7 +117,6 @@ export function ServiceGroupListView() {
           rows={tableData}
           columns={columns}
           loading={loading}
-          getRowHeight={() => 'auto'}
           pageSizeOptions={[5, 10, 25]}
           sortingMode="server"
           paginationMode="server"

@@ -54,10 +54,12 @@ export function CtiInfoListView() {
     {
       field: 'serviceGroupName',
       headerName: '서비스그룹',
+      width: 400,
     },
     {
       field: 'name',
       headerName: 'CTI명',
+      width: 800,
       renderCell: (params) => (
         <Link
           noWrap
@@ -73,11 +75,12 @@ export function CtiInfoListView() {
     {
       field: 'enabled',
       headerName: '사용여부',
+      width: 400,
     },
   ];
 
   return (
-    <DashboardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+    <DashboardContent className="dna-common-list">
       <CustomBreadcrumbs
         heading="CTI 목록"
         links={[
@@ -97,14 +100,17 @@ export function CtiInfoListView() {
         }
         sx={{ mb: { xs: 3, md: 5 } }}
       />
-
-      <CtiInfoFilter onSearch={(f) => setFilters(f)} />
+      <Card className="list-filter" sx={{ mb: { xs: 3, md: 5 } }}>
+        <CtiInfoFilter onSearch={(f) => setFilters(f)} />
+      </Card>
       <Card
+        className="list-grid"
         sx={{
           flexGrow: { md: 1 },
           display: { md: 'flex' },
           height: { xs: 800, md: 2 },
           flexDirection: { md: 'column' },
+          borderRadius: '5px',
         }}
       >
         <DataGrid
@@ -112,7 +118,6 @@ export function CtiInfoListView() {
           rows={tableData}
           columns={columns}
           loading={loading}
-          getRowHeight={() => 'auto'}
           pageSizeOptions={[5, 10, 25]}
           sortingMode="server"
           paginationMode="server"
