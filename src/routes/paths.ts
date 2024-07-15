@@ -5,6 +5,7 @@ const ROOTS = {
   DASHBOARD: '/dashboard',
   MANAGE: '/manage',
   API_INFO: '/manage/api',
+  CTI_INFO: '/manage/cti',
 };
 
 // ----------------------------------------------------------------------
@@ -16,6 +17,12 @@ export const paths = {
       new: `${ROOTS.API_INFO}/new`,
       details: (id: string | number | undefined) => `${ROOTS.API_INFO}/${id}`,
       edit: (id: string | number | undefined) => `${ROOTS.API_INFO}/${id}/edit`,
+    },
+    cti: {
+      root: `${ROOTS.CTI_INFO}`,
+      new: `${ROOTS.CTI_INFO}/new`,
+      details: (id: string | number | undefined) => `${ROOTS.CTI_INFO}/${id}`,
+      edit: (id: string | number | undefined) => `${ROOTS.CTI_INFO}/${id}/edit`,
     },
   },
 

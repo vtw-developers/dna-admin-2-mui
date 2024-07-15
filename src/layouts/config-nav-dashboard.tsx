@@ -76,7 +76,7 @@ export const navData = [
     subheader: '연계관리',
     items: [
       { title: 'API 관리', path: paths.manage.api.root, icon: ICONS.dashboard },
-      { title: 'CTI 관리', path: 'test', icon: ICONS.ecommerce },
+      { title: 'CTI 관리', path: paths.manage.cti.root, icon: ICONS.ecommerce },
       { title: '서비스그룹 관리', path: 'test', icon: ICONS.analytics },
     ],
   },
