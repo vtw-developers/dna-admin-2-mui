@@ -6,14 +6,14 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
 import { CtiInfoEditForm } from '../cti-info-edit-form';
 
+import type { CtiInfo } from '../../../types/cti-info';
 import type { EditModes } from '../../../types/edit';
-import type { ApiInfo } from '../../../types/api-info';
 
 // ----------------------------------------------------------------------
 
 type Props = {
   editMode: EditModes;
-  entity?: ApiInfo;
+  entity?: CtiInfo;
 };
 
 export function CtiInfoEditView({ editMode, entity }: Props): JSX.Element {

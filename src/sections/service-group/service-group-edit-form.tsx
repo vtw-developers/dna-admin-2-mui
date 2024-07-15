@@ -16,9 +16,13 @@ import { useRouter } from 'src/routes/hooks';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
-import { createApiInfo, deleteApiInfo, updateApiInfo } from '../../actions/api-info';
+import {
+  createServiceGroup,
+  deleteServiceGroup,
+  updateServiceGroup,
+} from '../../actions/service-group';
 
-import type { ApiInfo } from '../../types/api-info';
+import type { ServiceGroup } from '../../types/service-group';
 
 // ----------------------------------------------------------------------
 
@@ -27,8 +31,8 @@ export type SchemaType = zod.infer<typeof Schema>;
 export const Schema = zod.object({
   id: zod.number().optional(),
   name: zod.string().min(1, { message: 'Name is required!' }),
-  httpMethod: zod.string(),
-  url: zod.string(),
+  // httpMethod: zod.string(),
+  // url: zod.string(),
   // serviceGroupId: zod.number(),
   // enabled: zod.boolean(),
 });
@@ -37,23 +41,21 @@ export const Schema = zod.object({
 
 type Props = {
   editMode: string;
-  entity?: ApiInfo;
+  entity?: ServiceGroup;
 };
 
-export function ApiInfoEditForm({ editMode, entity }: Props) {
+export function ServiceGroupEditForm({ editMode, entity }: Props) {
   const editing = editMode !== 'details';
   const router = useRouter();
 
-  const listPath = paths.manage.api.root;
-  const editPath = paths.manage.api.edit(entity?.id);
-  const detailsPath = paths.manage.api.details(entity?.id);
+  const listPath = paths.manage.serviceGroup.root;
+  const editPath = paths.manage.serviceGroup.edit(entity?.id);
+  const detailsPath = paths.manage.serviceGroup.details(entity?.id);
 
   const defaultValues = useMemo(
     () => ({
       id: entity?.id,
       name: entity?.name || '',
-      httpMethod: entity?.httpMethod || 'GET',
-      url: entity?.url || '',
     }),
     [entity]
   );
@@ -84,9 +86,9 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
       console.log(data);
 
       if (editMode === 'create') {
-        await createApiInfo(data);
+        await createServiceGroup(data);
       } else if (editMode === 'update') {
-        await updateApiInfo(data);
+        await updateServiceGroup(data);
       }
 
       // reset();
@@ -99,7 +101,7 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
 
   const confirmDelete = handleSubmit(async (data) => {
     // TODO: 삭제 확인 팝업
-    await deleteApiInfo(data);
+    await deleteServiceGroup(data);
     router.push(listPath);
   });
 
@@ -110,13 +112,13 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
       <Divider />
 
       <Stack spacing={3} sx={{ p: 3 }}>
-        <Field.Text name="name" label="API명" inputProps={{ readOnly: editMode === 'details' }} />
-        <Field.Text
+        <Field.Text name="name" label="그룹명" inputProps={{ readOnly: editMode === 'details' }} />
+        {/*        <Field.Text
           name="httpMethod"
           label="HTTP Method"
           inputProps={{ readOnly: editMode === 'details' }}
         />
-        <Field.Text name="url" label="URL" inputProps={{ readOnly: editMode === 'details' }} />
+        <Field.Text name="url" label="URL" inputProps={{ readOnly: editMode === 'details' }} /> */}
         {/*        <Field.Text
           name="serviceGroupId"
           label="서비스 그룹"
@@ -148,7 +150,6 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
           저장
         </LoadingButton>
       )}
-
       <Button variant="contained" size="large" href={listPath}>
         목록
       </Button>

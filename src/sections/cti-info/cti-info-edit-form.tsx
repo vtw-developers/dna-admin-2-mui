@@ -89,7 +89,7 @@ export function CtiInfoEditForm({ editMode, entity }: Props) {
 
       // reset();
       toast.success(entity ? 'Update success!' : 'Create success!');
-      router.push(paths.manage.cti.root);
+      router.push(listPath);
     } catch (error) {
       console.error(error);
     }
@@ -98,7 +98,7 @@ export function CtiInfoEditForm({ editMode, entity }: Props) {
   const confirmDelete = handleSubmit(async (data) => {
     // TODO: 삭제 확인 팝업
     await deleteCtiInfo(data);
-    router.push(paths.manage.cti.root);
+    router.push(listPath);
   });
 
   const renderDetails = (

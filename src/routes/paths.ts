@@ -6,6 +6,7 @@ const ROOTS = {
   MANAGE: '/manage',
   API_INFO: '/manage/api',
   CTI_INFO: '/manage/cti',
+  SERVICE_GROUP: '/manage/service-group',
 };
 
 // ----------------------------------------------------------------------
@@ -23,6 +24,12 @@ export const paths = {
       new: `${ROOTS.CTI_INFO}/new`,
       details: (id: string | number | undefined) => `${ROOTS.CTI_INFO}/${id}`,
       edit: (id: string | number | undefined) => `${ROOTS.CTI_INFO}/${id}/edit`,
+    },
+    serviceGroup: {
+      root: `${ROOTS.SERVICE_GROUP}`,
+      new: `${ROOTS.SERVICE_GROUP}/new`,
+      details: (id: string | number | undefined) => `${ROOTS.SERVICE_GROUP}/${id}`,
+      edit: (id: string | number | undefined) => `${ROOTS.SERVICE_GROUP}/${id}/edit`,
     },
   },
 
