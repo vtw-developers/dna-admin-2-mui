@@ -14,8 +14,8 @@ export const paths = {
     api: {
       root: `${ROOTS.API_INFO}`,
       new: `${ROOTS.API_INFO}/new`,
-      details: (id: string) => `${ROOTS.API_INFO}/${id}`,
-      edit: (id: string) => `${ROOTS.API_INFO}/${id}/edit`,
+      details: (id: string | number | undefined) => `${ROOTS.API_INFO}/${id}`,
+      edit: (id: string | number | undefined) => `${ROOTS.API_INFO}/${id}/edit`,
     },
   },
 

@@ -1,4 +1,5 @@
 import type { ApiInfo, ApiInfoFilters } from 'src/types/api-info';
+import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
 import useSWR from 'swr';
@@ -23,16 +24,28 @@ type ApiInfosData = {
 
 const PATH_PREFIX = '/apiInfo';
 
-export function useGetApiInfos(pagination: GridPaginationModel, filters: ApiInfoFilters) {
+export function useGetApiInfos(
+  pagination: GridPaginationModel,
+  sortModel: GridSortModel,
+  filters: ApiInfoFilters
+) {
   const url = `${PATH_PREFIX}/list`;
+  const sort = () => {
+    if (sortModel.length > 0) {
+      return `${sortModel[0].field},${sortModel[0].sort}`;
+    }
+    return '';
+  };
+
   const { data, isLoading, error, isValidating } = useSWR<ApiInfosData>(
     [
       `${url}`,
       {
         params: {
+          ...filters,
           page: pagination?.page,
           size: pagination?.pageSize,
-          name: filters.name || '',
+          sort: sort(),
         },
       },
     ],
@@ -44,9 +57,9 @@ export function useGetApiInfos(pagination: GridPaginationModel, filters: ApiInfo
     () => ({
       data: data?.data || [],
       loading: isLoading,
-      productsError: error,
-      productsValidating: isValidating,
-      productsEmpty: !isLoading && !data?.data.length,
+      error,
+      isValidating,
+      empty: !isLoading && !data?.data.length,
       totalCount: data?.totalCount || 0,
     }),
     [data?.data, error, isLoading, isValidating, pagination, filters]

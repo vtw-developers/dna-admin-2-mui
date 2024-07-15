@@ -25,25 +25,12 @@ import type { ApiInfo } from '../../types/api-info';
 export type SchemaType = zod.infer<typeof Schema>;
 
 export const Schema = zod.object({
-  id: zod.number(),
+  id: zod.number().optional(),
   name: zod.string().min(1, { message: 'Name is required!' }),
-  // description: schemaHelper.editor({ message: { required_error: 'Description is required!' } }),
-  // images: schemaHelper.files({ message: { required_error: 'Images is required!' } }),
-  // code: zod.string().min(1, { message: 'Product code is required!' }),
-  // sku: zod.string().min(1, { message: 'Product sku is required!' }),
-  // quantity: zod.number().min(1, { message: 'Quantity is required!' }),
-  // colors: zod.string().array().nonempty({ message: 'Choose at least one option!' }),
-  // sizes: zod.string().array().nonempty({ message: 'Choose at least one option!' }),
-  // tags: zod.string().array().min(2, { message: 'Must have at least 2 items!' }),
-  // gender: zod.string().array().nonempty({ message: 'Choose at least one option!' }),
-  // price: zod.number().min(1, { message: 'Price should not be $0.00' }),
-  // // Not required
-  // category: zod.string(),
-  // priceSale: zod.number(),
-  // subDescription: zod.string(),
-  // taxes: zod.number(),
-  // saleLabel: zod.object({ enabled: zod.boolean(), content: zod.string() }),
-  // newLabel: zod.object({ enabled: zod.boolean(), content: zod.string() }),
+  httpMethod: zod.string(),
+  url: zod.string(),
+  // serviceGroupId: zod.number(),
+  // enabled: zod.boolean(),
 });
 
 // ----------------------------------------------------------------------
@@ -54,14 +41,14 @@ type Props = {
 };
 
 export function ApiInfoEditForm({ editMode, entity }: Props) {
-  console.log(entity);
-
   const editing = editMode !== 'details';
   const router = useRouter();
   const defaultValues = useMemo(
     () => ({
       id: entity?.id,
       name: entity?.name || '',
+      httpMethod: entity?.httpMethod || 'GET',
+      url: entity?.url || '',
     }),
     [entity]
   );
@@ -97,10 +84,9 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
         await updateApiInfo(data);
       }
 
-      reset();
+      // reset();
       toast.success(entity ? 'Update success!' : 'Create success!');
       router.push(paths.manage.api.root);
-      console.info('DATA', data);
     } catch (error) {
       console.error(error);
     }
@@ -108,7 +94,6 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
 
   const confirmDelete = handleSubmit(async (data) => {
     // TODO: 삭제 확인 팝업
-    console.log(data);
     await deleteApiInfo(data);
     router.push(paths.manage.api.root);
   });
@@ -121,8 +106,22 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
 
       <Stack spacing={3} sx={{ p: 3 }}>
         <Field.Text name="name" label="API명" inputProps={{ readOnly: editMode === 'details' }} />
-        <Field.Text name="name" label="API명" />
-        <Field.Text name="name" label="API명" />
+        <Field.Text
+          name="httpMethod"
+          label="HTTP Method"
+          inputProps={{ readOnly: editMode === 'details' }}
+        />
+        <Field.Text name="url" label="URL" inputProps={{ readOnly: editMode === 'details' }} />
+        {/*        <Field.Text
+          name="serviceGroupId"
+          label="서비스 그룹"
+          inputProps={{ readOnly: editMode === 'details' }}
+        /> */}
+        {/*        <Field.Text
+          name="enabled"
+          label="사용여부"
+          inputProps={{ readOnly: editMode === 'details' }}
+        /> */}
       </Stack>
     </Card>
   );
@@ -139,12 +138,15 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
           삭제
         </Button>
       )}
-
       {editing && (
         <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
           저장
         </LoadingButton>
       )}
+
+      <Button variant="contained" size="large" href={paths.manage.api.root}>
+        목록
+      </Button>
     </Stack>
   );
 
@@ -152,7 +154,6 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
     <Form methods={methods} onSubmit={onSubmit}>
       <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto', maxWidth: { xs: 720, xl: 880 } }}>
         {renderDetails}
-
         {renderActions}
       </Stack>
     </Form>

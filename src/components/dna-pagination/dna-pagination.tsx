@@ -1,7 +1,8 @@
-import { Pagination } from '@mui/material';
+import type { Dispatch, ChangeEvent, SetStateAction } from 'react';
+import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
+
 import Stack from '@mui/material/Stack';
-import { ChangeEvent, Dispatch, SetStateAction } from 'react';
-import { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
+import { Pagination } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -20,7 +21,7 @@ export function DnaPagination({ totalCount, pagination, setPagination }: DnaPagi
     <Stack alignItems="center" width="100%">
       <Pagination
         sx={{ margin: 2 }}
-        count={Math.trunc(totalCount / pagination.pageSize + 1)}
+        count={Math.ceil(totalCount / pagination.pageSize)}
         color="primary"
         size="large"
         showFirstButton

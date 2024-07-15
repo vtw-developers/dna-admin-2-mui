@@ -32,15 +32,11 @@ export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
 
 // ----------------------------------------------------------------------
 
+// 사용 안 할 예정
 export const endpoints = {
   auth: {
     me: '/auth/me',
     signIn: '/auth/signIn',
     signUp: '/auth/signUp',
-  },
-  apiInfo: {
-    list: '/apiInfo/list',
-    details: '/api/product/details',
-    search: '/api/product/search',
   },
 };

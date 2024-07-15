@@ -1,7 +1,7 @@
 'use client';
 
+import type { GridColDef } from '@mui/x-data-grid';
 import type { ApiInfo, ApiInfoFilters } from 'src/types/api-info';
-import type { GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
@@ -31,13 +31,11 @@ export function ApiInfoListView() {
 
   const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const [pagination, setPagination] = useState<GridPaginationModel>({ page: 0, pageSize: 10 });
-  const [filters, setFilters] = useState<ApiInfoFilters>({ name: '' });
-  const { data, loading, totalCount } = useGetApiInfos(pagination, filters);
+  const [filters, setFilters] = useState<ApiInfoFilters>({ name: '', httpMethod: '' });
+  const { data, loading, totalCount } = useGetApiInfos(pagination, sortModel, filters);
   const [tableData, setTableData] = useState<ApiInfo[]>([]);
-  const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
 
   useEffect(() => {
-    console.log(data);
     setTableData(data);
   }, [data, sortModel, pagination, filters]);
 
@@ -82,10 +80,6 @@ export function ApiInfoListView() {
     },
   ];
 
-  const onRowDoubleClick = (e) => {
-    console.log(e);
-  };
-
   return (
     <DashboardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
       <CustomBreadcrumbs
@@ -124,7 +118,6 @@ export function ApiInfoListView() {
           loading={loading}
           getRowHeight={() => 'auto'}
           pageSizeOptions={[5, 10, 25]}
-          onRowSelectionModelChange={(newSelectionModel) => setSelectedRowIds(newSelectionModel)}
           sortingMode="server"
           paginationMode="server"
           sortModel={sortModel}
