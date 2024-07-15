@@ -92,8 +92,14 @@ export function DashboardLayout({ sx, children, data }: DashboardLayoutProps) {
             }}
             slotsDisplay={{
               signIn: false,
-              purchase: false,
               helpLink: false,
+              purchase: false,
+              contacts: false,
+              searchbar: false,
+              workspaces: false,
+              menuButton: false,
+              localization: false,
+              notifications: false,
             }}
             slots={{
               topArea: (
