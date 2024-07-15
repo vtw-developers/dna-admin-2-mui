@@ -1,0 +1,11 @@
+// 컴포넌트 공통 css 작성 (list 내부 속성 관련)
+// xs, md 등 반응형 속성은 sx 사용한다
+.dna-common-list {
+  flex-grow: 1;
+  display: flex !important;
+  flex-direction: column;
+
+  .list-filter {
+    padding: 20px 50px
+  }
+}

@@ -7,8 +7,8 @@ import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPagination
 
 import { useState, useEffect, useCallback } from 'react';
 
-import Card from '@mui/material/Card';
 import Link from '@mui/material/Link';
+import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 
@@ -53,10 +53,12 @@ export function ApiInfoListView() {
     {
       field: 'serviceGroupName',
       headerName: '서비스그룹',
+      width: 400,
     },
     {
       field: 'name',
       headerName: 'API명',
+      width: 800,
       renderCell: (params) => (
         <Link
           noWrap
@@ -72,10 +74,12 @@ export function ApiInfoListView() {
     {
       field: 'httpMethod',
       headerName: 'Method',
+      width: 200,
     },
     {
       field: 'url',
       headerName: 'URL',
+      width: 400,
     },
     {
       field: 'enabled',
@@ -84,7 +88,7 @@ export function ApiInfoListView() {
   ];
 
   return (
-    <DashboardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+    <DashboardContent className="dna-common-list">
       <CustomBreadcrumbs
         heading="API 목록"
         links={[
@@ -104,14 +108,17 @@ export function ApiInfoListView() {
         }
         sx={{ mb: { xs: 3, md: 5 } }}
       />
-
-      <ApiInfoFilter onSearch={(f) => setFilters(f)} />
+      <Card className="list-filter" sx={{ mb: { xs: 3, md: 5 } }}>
+        <ApiInfoFilter onSearch={(f) => setFilters(f)} />
+      </Card>
       <Card
+        className="list-grid"
         sx={{
           flexGrow: { md: 1 },
           display: { md: 'flex' },
           height: { xs: 800, md: 2 },
           flexDirection: { md: 'column' },
+          borderRadius: '5px',
         }}
       >
         <DataGrid
@@ -119,7 +126,6 @@ export function ApiInfoListView() {
           rows={tableData}
           columns={columns}
           loading={loading}
-          getRowHeight={() => 'auto'}
           pageSizeOptions={[5, 10, 25]}
           sortingMode="server"
           paginationMode="server"

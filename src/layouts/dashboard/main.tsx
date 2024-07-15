@@ -47,6 +47,7 @@ type DashboardContentProps = ContainerProps & {
 
 export function DashboardContent({
   sx,
+  className,
   children,
   disablePadding,
   maxWidth = 'lg',
@@ -60,14 +61,9 @@ export function DashboardContent({
 
   return (
     <Container
-      className={layoutClasses.content}
+      className={`${layoutClasses.content} ${className}`}
       maxWidth={settings.compactLayout ? maxWidth : false}
       sx={{
-        display: 'flex',
-        flex: '1 1 auto',
-        flexDirection: 'column',
-        pt: 'var(--layout-dashboard-content-pt)',
-        pb: 'var(--layout-dashboard-content-pb)',
         [theme.breakpoints.up(layoutQuery)]: {
           px: 'var(--layout-dashboard-content-px)',
         },

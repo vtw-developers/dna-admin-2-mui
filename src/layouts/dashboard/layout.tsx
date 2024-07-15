@@ -191,7 +191,7 @@ export function DashboardLayout({ sx, children, data }: DashboardLayoutProps) {
           '--layout-nav-horizontal-height': '64px',
           '--layout-dashboard-content-pt': theme.spacing(1),
           '--layout-dashboard-content-pb': theme.spacing(8),
-          '--layout-dashboard-content-px': theme.spacing(5),
+          '--layout-dashboard-content-px': theme.spacing(10),
         }}
         sx={{
           [`& .${layoutClasses.hasSidebar}`]: {

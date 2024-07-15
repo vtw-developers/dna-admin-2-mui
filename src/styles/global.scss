@@ -47,6 +47,7 @@ html {
   height: 100%;
   -webkit-overflow-scrolling: touch;
 }
+
 body,
 #root,
 #root__layout {
@@ -55,24 +56,40 @@ body,
   min-height: 100%;
   flex-direction: column;
 }
+
 img {
   max-width: 100%;
   vertical-align: middle;
 }
+
 ul {
   margin: 0;
   padding: 0;
   list-style-type: none;
 }
+
 input[type='number'] {
   -moz-appearance: textfield;
   appearance: none;
 }
+
 input[type='number']::-webkit-outer-spin-button {
   margin: 0;
   -webkit-appearance: none;
 }
+
 input[type='number']::-webkit-inner-spin-button {
   margin: 0;
   -webkit-appearance: none;
 }
+
+// 홈페이지 공통 layout 과 관련된 css global 에 작성
+
+.layout__main__content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  padding-top: var(--layout-dashboard-content-pt);
+  padding-bottom: var(--layout-dashboard-content-pb);
+}
+
