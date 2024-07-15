@@ -85,7 +85,7 @@ export function SettingsDrawer({
       }}
     />
   );
-
+  /*
   const renderContrast = (
     <BaseOption
       label="Contrast"
@@ -116,7 +116,7 @@ export function SettingsDrawer({
       selected={settings.compactLayout}
       onClick={() => settings.onUpdateField('compactLayout', !settings.compactLayout)}
     />
-  );
+  ); */
 
   const renderPresets = (
     <PresetsOptions
@@ -183,13 +183,17 @@ export function SettingsDrawer({
         <Stack spacing={6} sx={{ px: 2.5, pb: 5 }}>
           <Box gap={2} display="grid" gridTemplateColumns="repeat(2, 1fr)">
             {!hideColorScheme && renderMode}
+            {/*
             {!hideContrast && renderContrast}
             {!hideDirection && renderRTL}
             {!hideCompact && renderCompact}
+            */}
           </Box>
+          {/*
           {!(hideNavLayout && hideNavColor) && renderNav}
           {!hidePresets && renderPresets}
           {!hideFont && renderFont}
+          */}
         </Stack>
       </Scrollbar>
     </Drawer>
