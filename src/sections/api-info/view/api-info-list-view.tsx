@@ -21,17 +21,20 @@ import { Iconify } from 'src/components/iconify';
 import { EmptyContent } from 'src/components/empty-content';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
+import { defaultApiInfoFilters } from 'src/types/api-info';
+
 import { paths } from '../../../routes/paths';
 import { useRouter } from '../../../routes/hooks';
 import { ApiInfoFilter } from '../api-info-filter';
+import { defaultPagination } from '../../../utils/pagination';
 import { DnaPagination } from '../../../components/dna-pagination';
 
 export function ApiInfoListView() {
   const router = useRouter();
 
   const [sortModel, setSortModel] = useState<GridSortModel>([]);
-  const [pagination, setPagination] = useState<GridPaginationModel>({ page: 0, pageSize: 10 });
-  const [filters, setFilters] = useState<ApiInfoFilters>({ name: '', httpMethod: '' });
+  const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
+  const [filters, setFilters] = useState<ApiInfoFilters>(defaultApiInfoFilters);
   const { data, loading, totalCount } = useGetApiInfos(pagination, sortModel, filters);
   const [tableData, setTableData] = useState<ApiInfo[]>([]);
 

@@ -6,6 +6,8 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
+import { defaultApiInfoFilters } from '../../types/api-info';
+
 import type { ApiInfoFilters } from '../../types/api-info';
 
 // ----------------------------------------------------------------------
@@ -15,7 +17,7 @@ type Props = {
 };
 
 export function ApiInfoFilter({ onSearch }: Props) {
-  const [filters, setFilters] = useState<ApiInfoFilters>({ name: '', httpMethod: '' });
+  const [filters, setFilters] = useState<ApiInfoFilters>(defaultApiInfoFilters);
 
   const handleFilterName = useCallback(
     (field: string) => (event: ChangeEvent<HTMLInputElement>) => {

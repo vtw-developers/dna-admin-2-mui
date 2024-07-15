@@ -13,3 +13,5 @@ export type ApiInfo = {
   // serviceGroupId: number;
   // enabled: boolean;
 };
+
+export const defaultApiInfoFilters: ApiInfoFilters = { name: '', httpMethod: '' };
