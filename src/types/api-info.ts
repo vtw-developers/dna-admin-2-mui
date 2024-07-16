@@ -3,6 +3,9 @@
 export type ApiInfoFilters = {
   name: string;
   httpMethod: string;
+  enabled: undefined | boolean;
+  startModifiedTime: undefined | string;
+  endModifiedTime: undefined | string;
 };
 
 export type ApiInfo = {
@@ -11,7 +14,13 @@ export type ApiInfo = {
   httpMethod: string;
   url: string;
   // serviceGroupId: number;
-  // enabled: boolean;
+  enabled: boolean;
 };
 
-export const defaultApiInfoFilters: ApiInfoFilters = { name: '', httpMethod: '' };
+export const defaultApiInfoFilters: ApiInfoFilters = {
+  name: '',
+  httpMethod: '',
+  enabled: undefined,
+  startModifiedTime: undefined,
+  endModifiedTime: undefined,
+};

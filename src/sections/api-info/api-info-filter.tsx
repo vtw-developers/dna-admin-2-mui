@@ -6,8 +6,11 @@ import { Grid } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
+import { fDate } from '../../utils/format-time';
 import { Iconify } from '../../components/iconify';
 import { defaultApiInfoFilters } from '../../types/api-info';
+import { DnaSelectBox } from '../../components/form/dna-select-box';
+import { DnaDateRangeBox } from '../../components/form/dna-date-range-box';
 
 import type { ApiInfoFilters } from '../../types/api-info';
 
@@ -16,6 +19,18 @@ import type { ApiInfoFilters } from '../../types/api-info';
 type Props = {
   onSearch: (filters: ApiInfoFilters) => void;
 };
+
+const selectMethod = [
+  { id: undefined, text: '[ 전체 ]' },
+  { id: 'get', text: 'GET' },
+  { id: 'post', text: 'POST' },
+];
+
+const selectEnabled = [
+  { id: undefined, text: '[ 전체 ]' },
+  { id: true, text: '사용' },
+  { id: false, text: '미사용' },
+];
 
 export function ApiInfoFilter({ onSearch }: Props) {
   const [filters, setFilters] = useState<ApiInfoFilters>(defaultApiInfoFilters);
@@ -26,10 +41,19 @@ export function ApiInfoFilter({ onSearch }: Props) {
     },
     [filters]
   );
+  const handleFilterDate = useCallback(
+    (field: string) => (e: any) => {
+      console.log(field);
+      console.log(fDate(e, 'YYYY-MM-DD HH:mm:ss'));
+      setFilters({ ...filters, [field]: e });
+      console.log(filters);
+    },
+    [filters]
+  );
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={4}>
         <TextField
           label="API명"
           fullWidth
@@ -37,28 +61,36 @@ export function ApiInfoFilter({ onSearch }: Props) {
           onChange={handleFilterName('name')}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
-        <TextField
+      <Grid item xs={12} md={4}>
+        <DnaSelectBox
           label="HTTP Method"
-          fullWidth
+          items={selectMethod}
           value={filters.httpMethod}
-          onChange={handleFilterName('httpMethod')}
+          onValueChange={handleFilterName('httpMethod')}
+          valueField="id"
+          textField="text"
+        />
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <DnaSelectBox
+          label="Enabled"
+          items={selectEnabled}
+          value={filters.enabled}
+          onValueChange={handleFilterName('enabled')}
+          valueField="id"
+          textField="text"
         />
       </Grid>
       <Grid item xs={12} md={6}>
-        <TextField
-          label="HTTP Method"
-          fullWidth
-          value={filters.httpMethod}
-          onChange={handleFilterName('httpMethod')}
-        />
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <TextField
-          label="HTTP Method"
-          fullWidth
-          value={filters.httpMethod}
-          onChange={handleFilterName('httpMethod')}
+        <DnaDateRangeBox
+          startValue={filters.startModifiedTime}
+          endValue={filters.endModifiedTime}
+          onValueChange={handleFilterDate}
+          startLabel="start"
+          endLabel="end"
+          startFieldName="startModifiedTime"
+          endFieldName="endModifiedTime"
+          format="YYYY-MM-DD HH:mm:ss"
         />
       </Grid>
       <Grid item xs={12} md={12} textAlign="center">
