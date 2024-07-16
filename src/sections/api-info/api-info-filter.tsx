@@ -53,7 +53,7 @@ export function ApiInfoFilter({ onSearch }: Props) {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={6}>
         <TextField
           label="API명"
           fullWidth
@@ -61,7 +61,7 @@ export function ApiInfoFilter({ onSearch }: Props) {
           onChange={handleFilterName('name')}
         />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={3}>
         <DnaSelectBox
           label="HTTP Method"
           items={selectMethod}
@@ -71,7 +71,7 @@ export function ApiInfoFilter({ onSearch }: Props) {
           textField="text"
         />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={3}>
         <DnaSelectBox
           label="Enabled"
           items={selectEnabled}
@@ -86,11 +86,27 @@ export function ApiInfoFilter({ onSearch }: Props) {
           startValue={filters.startModifiedTime}
           endValue={filters.endModifiedTime}
           onValueChange={handleFilterDate}
-          startLabel="start"
-          endLabel="end"
+          startLabel="시작일시"
+          endLabel="종료일시"
           startFieldName="startModifiedTime"
           endFieldName="endModifiedTime"
           format="YYYY-MM-DD HH:mm:ss"
+        />
+      </Grid>
+      <Grid item xs={12} md={3}>
+        <TextField
+          label="작성자"
+          fullWidth
+          value={filters.author}
+          onChange={handleFilterName('author')}
+        />
+      </Grid>
+      <Grid item xs={12} md={3}>
+        <TextField
+          label="서비스 그룹"
+          fullWidth
+          value={filters.name}
+          onChange={handleFilterName('name')}
         />
       </Grid>
       <Grid item xs={12} md={12} textAlign="center">

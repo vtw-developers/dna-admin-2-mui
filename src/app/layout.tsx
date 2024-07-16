@@ -1,4 +1,5 @@
 import 'src/styles/list.scss';
+import 'src/styles/form.scss';
 import 'src/styles/global.scss';
 
 // ----------------------------------------------------------------------

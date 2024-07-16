@@ -1,6 +1,5 @@
 import type { PropsWithChildren } from 'react';
 
-import { FormControl } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
 
 type DateRangeBoxProps = {
@@ -26,8 +25,9 @@ export const DnaDateRangeBox = ({
   format,
   readonly = false,
 }: PropsWithChildren<DateRangeBoxProps>) => (
-  <FormControl fullWidth>
+  <div className="dna-datetime-range-box">
     <DateTimePicker
+      className="datetimebox"
       label={startLabel}
       value={startValue}
       onChange={onValueChange(startFieldName)}
@@ -35,10 +35,11 @@ export const DnaDateRangeBox = ({
     />
     ~
     <DateTimePicker
+      className="datetimebox"
       label={endLabel}
       value={endValue}
       onChange={onValueChange(endFieldName)}
       format={format}
     />
-  </FormControl>
+  </div>
 );

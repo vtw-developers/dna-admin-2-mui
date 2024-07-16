@@ -1,0 +1,8 @@
+.dna-datetime-range-box{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  .datetimebox {
+    flex: 1;
+  }
+}
