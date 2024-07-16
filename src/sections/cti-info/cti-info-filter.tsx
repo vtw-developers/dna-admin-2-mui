@@ -7,7 +7,9 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
 import { Iconify } from '../../components/iconify';
+import { selectEnabled } from '../api-info/api-info-filter';
 import { defaultCtiInfoFilters } from '../../types/cti-info';
+import { DnaSelectBox } from '../../components/form/dna-select-box';
 
 import type { CtiInfoFilters } from '../../types/cti-info';
 
@@ -16,6 +18,13 @@ import type { CtiInfoFilters } from '../../types/cti-info';
 type Props = {
   onSearch: (filters: CtiInfoFilters) => void;
 };
+
+const selectMethod = [
+  { id: undefined, text: '[ 전체 ]' },
+  { id: '1', text: '전체 삭제 후 적재' },
+  { id: '2', text: 'DB트리거 변경적재' },
+  { id: '3', text: '수정일시기준 변경적재' },
+];
 
 export function CtiInfoFilter({ onSearch }: Props) {
   const [filters, setFilters] = useState<CtiInfoFilters>(defaultCtiInfoFilters);
@@ -29,7 +38,7 @@ export function CtiInfoFilter({ onSearch }: Props) {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={3}>
         <TextField
           label="CTI명"
           fullWidth
@@ -37,9 +46,29 @@ export function CtiInfoFilter({ onSearch }: Props) {
           onChange={handleFilterName('name')}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={3}>
+        <DnaSelectBox
+          label="사용여부"
+          items={selectEnabled}
+          value={filters.enabled}
+          onValueChange={handleFilterName('enabled')}
+          valueField="id"
+          textField="text"
+        />
+      </Grid>
+      <Grid item xs={12} md={3}>
+        <DnaSelectBox
+          label="처리방식"
+          items={selectMethod}
+          value={filters.httpMethod}
+          onValueChange={handleFilterName('httpMethod')}
+          valueField="id"
+          textField="text"
+        />
+      </Grid>
+      <Grid item xs={12} md={3}>
         <TextField
-          label="CTI명"
+          label="서비스 그룹"
           fullWidth
           value={filters.name}
           onChange={handleFilterName('name')}

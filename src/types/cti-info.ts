@@ -2,6 +2,12 @@
 
 export type CtiInfoFilters = {
   name: string;
+  httpMethod: undefined | 'GET' | 'POST';
+  author: string;
+  startModifiedTime: undefined | string;
+  endModifiedTime: undefined | string;
+  enabled: undefined | boolean;
+  serviceGroupId: undefined | number;
 };
 
 export type CtiInfo = {
@@ -11,4 +17,12 @@ export type CtiInfo = {
   // enabled: boolean;
 };
 
-export const defaultCtiInfoFilters: CtiInfoFilters = { name: '' };
+export const defaultCtiInfoFilters: CtiInfoFilters = {
+  name: '',
+  httpMethod: undefined,
+  author: '',
+  startModifiedTime: undefined,
+  endModifiedTime: undefined,
+  enabled: true,
+  serviceGroupId: undefined,
+};

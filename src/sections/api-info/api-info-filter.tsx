@@ -22,11 +22,11 @@ type Props = {
 
 const selectMethod = [
   { id: undefined, text: '[ 전체 ]' },
-  { id: 'get', text: 'GET' },
-  { id: 'post', text: 'POST' },
+  { id: 'GET', text: 'GET' },
+  { id: 'POST', text: 'POST' },
 ];
 
-const selectEnabled = [
+export const selectEnabled = [
   { id: undefined, text: '[ 전체 ]' },
   { id: true, text: '사용' },
   { id: false, text: '미사용' },
@@ -73,7 +73,7 @@ export function ApiInfoFilter({ onSearch }: Props) {
       </Grid>
       <Grid item xs={12} md={3}>
         <DnaSelectBox
-          label="Enabled"
+          label="사용여부"
           items={selectEnabled}
           value={filters.enabled}
           onValueChange={handleFilterName('enabled')}

@@ -29,15 +29,7 @@ export function ServiceGroupFilter({ onSearch }: Props) {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={6}>
-        <TextField
-          label="서비스그룹명"
-          fullWidth
-          value={filters.name}
-          onChange={handleFilterName('name')}
-        />
-      </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={12}>
         <TextField
           label="서비스그룹명"
           fullWidth
