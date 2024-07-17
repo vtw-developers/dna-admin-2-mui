@@ -44,7 +44,7 @@ export function ServiceGroupListView() {
 
   const handleViewRow = useCallback(
     (id: string) => {
-      router.push(paths.manage.api.details(id));
+      router.push(paths.manage.serviceGroup.details(id));
     },
     [router]
   );
@@ -71,17 +71,12 @@ export function ServiceGroupListView() {
         </Link>
       ),
     },
-    {
-      field: 'enabled',
-      headerName: '사용여부',
-      width: 400,
-    },
   ];
 
   return (
     <DashboardContent className="dna-common-list">
       <CustomBreadcrumbs
-        heading="서비스그룹 목록"
+        heading="서비스그룹 관리"
         links={[
           { name: '관리', href: 'test' },
           { name: '서비스그룹', href: 'test' },
@@ -92,6 +87,7 @@ export function ServiceGroupListView() {
             component={RouterLink}
             href={paths.manage.serviceGroup.new}
             variant="contained"
+            color="primary"
             startIcon={<Iconify icon="mingcute:add-line" />}
           >
             서비스그룹 등록

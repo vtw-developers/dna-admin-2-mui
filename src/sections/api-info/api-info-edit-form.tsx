@@ -10,7 +10,6 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import CardHeader from '@mui/material/CardHeader';
-import LoadingButton from '@mui/lab/LoadingButton';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -18,10 +17,10 @@ import { useRouter } from 'src/routes/hooks';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
-import { Iconify } from '../../components/iconify';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
 import { createApiInfo, deleteApiInfo, updateApiInfo } from '../../actions/api-info';
+import { DnaBottomButtons } from '../../components/dna-form-buttons/dna-bottom-buttons';
 
 import type { ApiInfo } from '../../types/api-info';
 
@@ -160,72 +159,19 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
     </Card>
   );
 
-  const renderActions = (
-    <Stack spacing={3} direction="row" alignItems="center" flexWrap="wrap" justifyContent="center">
-      {!editing && (
-        <Button
-          variant="outlined"
-          size="medium"
-          color="primary"
-          href={editPath}
-          startIcon={<Iconify icon="mingcute:edit-line" />}
-        >
-          수정
-        </Button>
-      )}
-      {!editing && (
-        <Button
-          variant="outlined"
-          size="medium"
-          color="error"
-          onClick={confirm.onTrue}
-          startIcon={<Iconify icon="mingcute:delete-2-line" />}
-        >
-          삭제
-        </Button>
-      )}
-      {editing && (
-        <LoadingButton
-          type="submit"
-          variant="outlined"
-          size="medium"
-          color="primary"
-          loading={isSubmitting}
-          startIcon={<Iconify icon="mingcute:save-2-line" />}
-        >
-          저장
-        </LoadingButton>
-      )}
-      {editing && (
-        <LoadingButton
-          onClick={cancelEdit}
-          variant="outlined"
-          size="medium"
-          color="error"
-          loading={isSubmitting}
-          startIcon={<Iconify icon="mingcute:close-line" />}
-        >
-          취소
-        </LoadingButton>
-      )}
-      <Button
-        variant="outlined"
-        size="medium"
-        color="inherit"
-        href={listPath}
-        startIcon={<Iconify icon="mingcute:list-check-line" />}
-      >
-        목록
-      </Button>
-    </Stack>
-  );
-
   return (
     <>
       <Form methods={methods} onSubmit={onSubmit}>
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
-          {renderActions}
+          <DnaBottomButtons
+            editing={editing}
+            listPath={listPath}
+            editPath={editPath}
+            confirm={confirm}
+            isSubmitting={isSubmitting}
+            cancelEdit={cancelEdit}
+          />
         </Stack>
       </Form>
       <ConfirmDialog

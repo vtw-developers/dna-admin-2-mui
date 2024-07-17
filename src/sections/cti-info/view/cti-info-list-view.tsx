@@ -19,13 +19,12 @@ import { Iconify } from 'src/components/iconify';
 import { EmptyContent } from 'src/components/empty-content';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { defaultApiInfoFilters } from 'src/types/api-info';
-
 import { paths } from '../../../routes/paths';
 import { useRouter } from '../../../routes/hooks';
 import { CtiInfoFilter } from '../cti-info-filter';
 import { useGetCtiInfos } from '../../../actions/cti-info';
 import { defaultPagination } from '../../../utils/pagination';
+import { defaultCtiInfoFilters } from '../../../types/cti-info';
 import { DnaPagination } from '../../../components/dna-pagination';
 
 import type { CtiInfo, CtiInfoFilters } from '../../../types/cti-info';
@@ -35,7 +34,7 @@ export function CtiInfoListView() {
 
   const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
-  const [filters, setFilters] = useState<CtiInfoFilters>(defaultApiInfoFilters);
+  const [filters, setFilters] = useState<CtiInfoFilters>(defaultCtiInfoFilters);
   const { data, loading, totalCount } = useGetCtiInfos(pagination, sortModel, filters);
   const [tableData, setTableData] = useState<CtiInfo[]>([]);
 
@@ -45,7 +44,7 @@ export function CtiInfoListView() {
 
   const handleViewRow = useCallback(
     (id: string) => {
-      router.push(paths.manage.api.details(id));
+      router.push(paths.manage.cti.details(id));
     },
     [router]
   );
@@ -82,7 +81,7 @@ export function CtiInfoListView() {
   return (
     <DashboardContent className="dna-common-list">
       <CustomBreadcrumbs
-        heading="CTI 목록"
+        heading="CTI 관리"
         links={[
           { name: '관리', href: 'test' },
           { name: 'CTI', href: 'test' },
@@ -93,6 +92,7 @@ export function CtiInfoListView() {
             component={RouterLink}
             href={paths.manage.cti.new}
             variant="contained"
+            color="primary"
             startIcon={<Iconify icon="mingcute:add-line" />}
           >
             CTI 등록

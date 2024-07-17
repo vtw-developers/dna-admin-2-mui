@@ -1,6 +1,6 @@
 import { CONFIG } from 'src/config-global';
 
-import { getApiInfo } from '../../../../../actions/api-info';
+import { getServiceGroup } from '../../../../../actions/service-group';
 import { ServiceGroupEditView } from '../../../../../sections/service-group/view/service-group-edit-view';
 
 // ----------------------------------------------------------------------
@@ -14,7 +14,7 @@ type Props = {
 export default async function Page({ params }: Props) {
   const { id } = params;
 
-  const entity = await getApiInfo(id);
+  const entity = await getServiceGroup(id);
 
   return <ServiceGroupEditView editMode="details" entity={entity} />;
 }

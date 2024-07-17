@@ -7,8 +7,7 @@ export type ServiceGroupFilters = {
 export type ServiceGroup = {
   id?: number;
   name: string;
-  // serviceGroupId: number;
-  // enabled: boolean;
+  description: string;
 };
 
 export const defaultServiceGroupFilters: ServiceGroupFilters = { name: '' };

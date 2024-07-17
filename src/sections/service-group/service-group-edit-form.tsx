@@ -3,12 +3,13 @@ import { useForm } from 'react-hook-form';
 import { useMemo, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import CardHeader from '@mui/material/CardHeader';
-import LoadingButton from '@mui/lab/LoadingButton';
+import Typography from '@mui/material/Typography';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -16,6 +17,9 @@ import { useRouter } from 'src/routes/hooks';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
+import { useBoolean } from '../../hooks/use-boolean';
+import { ConfirmDialog } from '../../components/custom-dialog';
+import { DnaBottomButtons } from '../../components/dna-form-buttons/dna-bottom-buttons';
 import {
   createServiceGroup,
   deleteServiceGroup,
@@ -31,10 +35,7 @@ export type SchemaType = zod.infer<typeof Schema>;
 export const Schema = zod.object({
   id: zod.number().optional(),
   name: zod.string().min(1, { message: 'Name is required!' }),
-  // httpMethod: zod.string(),
-  // url: zod.string(),
-  // serviceGroupId: zod.number(),
-  // enabled: zod.boolean(),
+  description: zod.string(),
 });
 
 // ----------------------------------------------------------------------
@@ -47,6 +48,7 @@ type Props = {
 export function ServiceGroupEditForm({ editMode, entity }: Props) {
   const editing = editMode !== 'details';
   const router = useRouter();
+  const confirm = useBoolean();
 
   const listPath = paths.manage.serviceGroup.root;
   const editPath = paths.manage.serviceGroup.edit(entity?.id);
@@ -56,6 +58,7 @@ export function ServiceGroupEditForm({ editMode, entity }: Props) {
     () => ({
       id: entity?.id,
       name: entity?.name || '',
+      description: entity?.description || '',
     }),
     [entity]
   );
@@ -83,25 +86,29 @@ export function ServiceGroupEditForm({ editMode, entity }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log(data);
-
       if (editMode === 'create') {
-        await createServiceGroup(data);
+        await createServiceGroup(data).then(() => toast.success('저장되었습니다.'));
+        router.push(listPath);
       } else if (editMode === 'update') {
-        await updateServiceGroup(data);
+        await updateServiceGroup(data).then(() => toast.success('수정되었습니다.'));
+        router.push(detailsPath);
       }
-
-      // reset();
-      toast.success(entity ? 'Update success!' : 'Create success!');
-      router.push(listPath);
     } catch (error) {
+      toast.error(error.message);
       console.error(error);
     }
   });
+  const cancelEdit = () => {
+    if (editMode === 'create') {
+      router.push(listPath);
+    } else if (editMode === 'update') {
+      router.push(detailsPath);
+    }
+  };
 
   const confirmDelete = handleSubmit(async (data) => {
-    // TODO: 삭제 확인 팝업
     await deleteServiceGroup(data);
+    toast.success('삭제되었습니다.');
     router.push(listPath);
   });
 
@@ -111,57 +118,65 @@ export function ServiceGroupEditForm({ editMode, entity }: Props) {
 
       <Divider />
 
-      <Stack spacing={3} sx={{ p: 3 }}>
-        <Field.Text name="name" label="그룹명" inputProps={{ readOnly: editMode === 'details' }} />
-        {/*        <Field.Text
-          name="httpMethod"
-          label="HTTP Method"
-          inputProps={{ readOnly: editMode === 'details' }}
-        />
-        <Field.Text name="url" label="URL" inputProps={{ readOnly: editMode === 'details' }} /> */}
-        {/*        <Field.Text
-          name="serviceGroupId"
-          label="서비스 그룹"
-          inputProps={{ readOnly: editMode === 'details' }}
-        /> */}
-        {/*        <Field.Text
-          name="enabled"
-          label="사용여부"
-          inputProps={{ readOnly: editMode === 'details' }}
-        /> */}
-      </Stack>
+      <Grid container spacing={3} sx={{ p: 3 }}>
+        <Grid item xs={12} md={12}>
+          <Field.Text
+            name="name"
+            label="그룹명"
+            inputProps={{ readOnly: editMode === 'details' }}
+          />
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <>
+            <Typography variant="subtitle1">내용</Typography>
+            {editMode === 'details' && (
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: entity?.description ? entity?.description : `<div></div>`,
+                }}
+              />
+            )}
+            {editMode !== 'details' && (
+              <Field.Editor fullItem name="description" sx={{ maxHeight: 480 }} />
+            )}
+          </>
+        </Grid>
+      </Grid>
     </Card>
-  );
-
-  const renderActions = (
-    <Stack spacing={3} direction="row" alignItems="center" flexWrap="wrap">
-      {!editing && (
-        <Button variant="contained" size="large" href={editPath}>
-          수정
-        </Button>
-      )}
-      {!editing && (
-        <Button variant="contained" size="large" onClick={confirmDelete}>
-          삭제
-        </Button>
-      )}
-      {editing && (
-        <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-          저장
-        </LoadingButton>
-      )}
-      <Button variant="contained" size="large" href={listPath}>
-        목록
-      </Button>
-    </Stack>
   );
 
   return (
     <Form methods={methods} onSubmit={onSubmit}>
-      <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto', maxWidth: { xs: 720, xl: 880 } }}>
+      <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
         {renderDetails}
-        {renderActions}
+        <DnaBottomButtons
+          editing={editing}
+          listPath={listPath}
+          editPath={editPath}
+          confirm={confirm}
+          isSubmitting={isSubmitting}
+          cancelEdit={cancelEdit}
+        />
       </Stack>
+      <ConfirmDialog
+        open={confirm.value}
+        onClose={confirm.onFalse}
+        title="삭제"
+        content={<>선택한 항목을 삭제하시겠습니까?</>}
+        action={
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              confirmDelete().then((e) => {
+                confirm.onFalse();
+              });
+            }}
+          >
+            삭제
+          </Button>
+        }
+      />
     </Form>
   );
 }
