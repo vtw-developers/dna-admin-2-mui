@@ -90,7 +90,7 @@ export function ApiInfoListView() {
   return (
     <DashboardContent className="dna-common-list">
       <CustomBreadcrumbs
-        heading="API 목록"
+        heading="API 관리"
         links={[
           { name: '관리', href: 'test' },
           { name: 'API', href: 'test' },
@@ -101,6 +101,7 @@ export function ApiInfoListView() {
             component={RouterLink}
             href={paths.manage.api.new}
             variant="contained"
+            color="primary"
             startIcon={<Iconify icon="mingcute:add-line" />}
           >
             API 등록

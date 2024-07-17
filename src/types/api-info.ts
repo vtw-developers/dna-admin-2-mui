@@ -15,7 +15,7 @@ export type ApiInfo = {
   name: string;
   httpMethod: string;
   url: string;
-  // serviceGroupId: number;
+  serviceGroupId: number;
   enabled: boolean;
 };
 
@@ -25,6 +25,6 @@ export const defaultApiInfoFilters: ApiInfoFilters = {
   author: '',
   startModifiedTime: undefined,
   endModifiedTime: undefined,
-  enabled: true,
+  enabled: undefined,
   serviceGroupId: undefined,
 };

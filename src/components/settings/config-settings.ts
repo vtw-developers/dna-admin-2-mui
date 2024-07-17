@@ -11,7 +11,7 @@ export const defaultSettings: SettingsState = {
   direction: 'ltr',
   contrast: 'default',
   navLayout: 'vertical',
-  primaryColor: 'default',
+  primaryColor: 'blue',
   navColor: 'integrate',
   compactLayout: false,
   fontFamily: defaultFont,

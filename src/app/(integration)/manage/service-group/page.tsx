@@ -4,7 +4,7 @@ import { ServiceGroupListView } from '../../../../sections/service-group/view/se
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Product list | Dashboard - ${CONFIG.site.name}` };
+export const metadata = { title: `Service Group | ${CONFIG.site.name}` };
 
 export default function Page() {
   return <ServiceGroupListView />;

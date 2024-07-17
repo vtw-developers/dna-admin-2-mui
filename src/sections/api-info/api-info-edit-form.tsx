@@ -3,10 +3,12 @@ import { useForm } from 'react-hook-form';
 import { useMemo, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
 import CardHeader from '@mui/material/CardHeader';
 import LoadingButton from '@mui/lab/LoadingButton';
 
@@ -16,6 +18,9 @@ import { useRouter } from 'src/routes/hooks';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
+import { Iconify } from '../../components/iconify';
+import { useBoolean } from '../../hooks/use-boolean';
+import { ConfirmDialog } from '../../components/custom-dialog';
 import { createApiInfo, deleteApiInfo, updateApiInfo } from '../../actions/api-info';
 
 import type { ApiInfo } from '../../types/api-info';
@@ -29,8 +34,8 @@ export const Schema = zod.object({
   name: zod.string().min(1, { message: 'Name is required!' }),
   httpMethod: zod.string(),
   url: zod.string(),
-  // serviceGroupId: zod.number(),
-  // enabled: zod.boolean(),
+  serviceGroupId: zod.number(),
+  enabled: zod.boolean(),
 });
 
 // ----------------------------------------------------------------------
@@ -43,6 +48,7 @@ type Props = {
 export function ApiInfoEditForm({ editMode, entity }: Props) {
   const editing = editMode !== 'details';
   const router = useRouter();
+  const confirm = useBoolean();
 
   const listPath = paths.manage.api.root;
   const editPath = paths.manage.api.edit(entity?.id);
@@ -54,6 +60,8 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
       name: entity?.name || '',
       httpMethod: entity?.httpMethod || 'GET',
       url: entity?.url || '',
+      serviceGroupId: entity?.serviceGroupId || 0,
+      enabled: entity?.enabled || false,
     }),
     [entity]
   );
@@ -81,86 +89,164 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log(data);
-
       if (editMode === 'create') {
-        await createApiInfo(data);
+        await createApiInfo(data).then(() => toast.success('저장되었습니다.'));
+        router.push(listPath);
       } else if (editMode === 'update') {
-        await updateApiInfo(data);
+        await updateApiInfo(data).then(() => toast.success('수정되었습니다.'));
+        router.push(detailsPath);
       }
-
-      // reset();
-      toast.success(entity ? 'Update success!' : 'Create success!');
-      router.push(listPath);
     } catch (error) {
+      toast.error(error.message);
       console.error(error);
     }
   });
 
+  const cancelEdit = () => {
+    if (editMode === 'create') {
+      router.push(listPath);
+    } else if (editMode === 'update') {
+      router.push(detailsPath);
+    }
+  };
+
   const confirmDelete = handleSubmit(async (data) => {
-    // TODO: 삭제 확인 팝업
     await deleteApiInfo(data);
+    toast.success('삭제되었습니다.');
     router.push(listPath);
   });
 
   const renderDetails = (
     <Card>
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
-
       <Divider />
-
-      <Stack spacing={3} sx={{ p: 3 }}>
-        <Field.Text name="name" label="API명" inputProps={{ readOnly: editMode === 'details' }} />
-        <Field.Text
-          name="httpMethod"
-          label="HTTP Method"
-          inputProps={{ readOnly: editMode === 'details' }}
-        />
-        <Field.Text name="url" label="URL" inputProps={{ readOnly: editMode === 'details' }} />
-        {/*        <Field.Text
-          name="serviceGroupId"
-          label="서비스 그룹"
-          inputProps={{ readOnly: editMode === 'details' }}
-        /> */}
-        {/*        <Field.Text
-          name="enabled"
-          label="사용여부"
-          inputProps={{ readOnly: editMode === 'details' }}
-        /> */}
-      </Stack>
+      <Grid container spacing={3} sx={{ p: 3 }}>
+        <Grid item xs={12} md={12}>
+          <Field.Switch
+            name="enabled"
+            label="사용여부"
+            labelPlacement="start"
+            slotProps={{ switch: { disabled: editMode === 'details' } }}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Field.Text name="name" label="API명" inputProps={{ readOnly: editMode === 'details' }} />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Field.Select
+            name="httpMethod"
+            label="HTTP Method"
+            inputProps={{ readOnly: editMode === 'details' }}
+          >
+            {['GET', 'POST'].map((option) => (
+              <MenuItem key={option} value={option} sx={{ textTransform: 'capitalize' }}>
+                {option}
+              </MenuItem>
+            ))}
+          </Field.Select>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Field.Text name="url" label="URL" inputProps={{ readOnly: editMode === 'details' }} />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Field.Text
+            type="number"
+            name="serviceGroupId"
+            label="서비스 그룹"
+            inputProps={{ readOnly: editMode === 'details' }}
+          />
+        </Grid>
+      </Grid>
     </Card>
   );
 
   const renderActions = (
-    <Stack spacing={3} direction="row" alignItems="center" flexWrap="wrap">
+    <Stack spacing={3} direction="row" alignItems="center" flexWrap="wrap" justifyContent="center">
       {!editing && (
-        <Button variant="contained" size="large" href={editPath}>
+        <Button
+          variant="outlined"
+          size="medium"
+          color="primary"
+          href={editPath}
+          startIcon={<Iconify icon="mingcute:edit-line" />}
+        >
           수정
         </Button>
       )}
       {!editing && (
-        <Button variant="contained" size="large" onClick={confirmDelete}>
+        <Button
+          variant="outlined"
+          size="medium"
+          color="error"
+          onClick={confirm.onTrue}
+          startIcon={<Iconify icon="mingcute:delete-2-line" />}
+        >
           삭제
         </Button>
       )}
       {editing && (
-        <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
+        <LoadingButton
+          type="submit"
+          variant="outlined"
+          size="medium"
+          color="primary"
+          loading={isSubmitting}
+          startIcon={<Iconify icon="mingcute:save-2-line" />}
+        >
           저장
         </LoadingButton>
       )}
-
-      <Button variant="contained" size="large" href={listPath}>
+      {editing && (
+        <LoadingButton
+          onClick={cancelEdit}
+          variant="outlined"
+          size="medium"
+          color="error"
+          loading={isSubmitting}
+          startIcon={<Iconify icon="mingcute:close-line" />}
+        >
+          취소
+        </LoadingButton>
+      )}
+      <Button
+        variant="outlined"
+        size="medium"
+        color="inherit"
+        href={listPath}
+        startIcon={<Iconify icon="mingcute:list-check-line" />}
+      >
         목록
       </Button>
     </Stack>
   );
 
   return (
-    <Form methods={methods} onSubmit={onSubmit}>
-      <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto', maxWidth: { xs: 720, xl: 880 } }}>
-        {renderDetails}
-        {renderActions}
-      </Stack>
-    </Form>
+    <>
+      <Form methods={methods} onSubmit={onSubmit}>
+        <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
+          {renderDetails}
+          {renderActions}
+        </Stack>
+      </Form>
+      <ConfirmDialog
+        open={confirm.value}
+        onClose={confirm.onFalse}
+        title="삭제"
+        content={<>선택한 항목을 삭제하시겠습니까?</>}
+        action={
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              confirmDelete().then((e) => {
+                confirm.onFalse();
+              });
+            }}
+          >
+            삭제
+          </Button>
+        }
+      />
+    </>
   );
 }

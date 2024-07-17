@@ -17,6 +17,7 @@ import { SettingsDrawer, defaultSettings, SettingsProvider } from 'src/component
 
 import { AuthProvider } from 'src/auth/context/jwt';
 
+import { Snackbar } from '../components/snackbar';
 import { detectLanguage } from '../locales/server';
 import { I18nProvider } from '../locales/i18n-provider';
 import { LocalizationProvider } from '../locales/localization-provider';
@@ -57,6 +58,7 @@ export default async function RootLayout({ children }: Props) {
                 <ThemeProvider>
                   <MotionLazy>
                     <ProgressBar />
+                    <Snackbar />
                     <SettingsDrawer />
                     {children}
                   </MotionLazy>

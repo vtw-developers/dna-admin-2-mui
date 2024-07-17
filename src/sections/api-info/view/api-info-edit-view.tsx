@@ -29,7 +29,7 @@ export function ApiInfoEditView({ editMode, entity }: Props): JSX.Element {
         return 'API 정보';
     }
   };
-
+  console.log(entity);
   return (
     <DashboardContent>
       <CustomBreadcrumbs

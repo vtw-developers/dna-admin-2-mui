@@ -15,6 +15,5 @@ export default async function Page({ params }: Props) {
   const { id } = params;
 
   const entity = await getApiInfo(id);
-
   return <ApiInfoEditView editMode="details" entity={entity} />;
 }

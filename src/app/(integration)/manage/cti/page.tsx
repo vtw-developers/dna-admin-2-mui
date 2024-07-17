@@ -4,7 +4,7 @@ import { CtiInfoListView } from '../../../../sections/cti-info/view/cti-info-lis
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Product list | Dashboard - ${CONFIG.site.name}` };
+export const metadata = { title: `CTI | ${CONFIG.site.name}` };
 
 export default function Page() {
   return <CtiInfoListView />;

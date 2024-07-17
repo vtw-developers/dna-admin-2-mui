@@ -6,7 +6,6 @@ import { Grid } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
-import { fDate } from '../../utils/format-time';
 import { Iconify } from '../../components/iconify';
 import { defaultApiInfoFilters } from '../../types/api-info';
 import { DnaSelectBox } from '../../components/form/dna-select-box';
@@ -43,10 +42,7 @@ export function ApiInfoFilter({ onSearch }: Props) {
   );
   const handleFilterDate = useCallback(
     (field: string) => (e: any) => {
-      console.log(field);
-      console.log(fDate(e, 'YYYY-MM-DD HH:mm:ss'));
       setFilters({ ...filters, [field]: e });
-      console.log(filters);
     },
     [filters]
   );

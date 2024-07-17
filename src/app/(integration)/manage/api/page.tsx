@@ -4,7 +4,7 @@ import { ApiInfoListView } from '../../../../sections/api-info/view/api-info-lis
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `API list - ${CONFIG.site.name}` };
+export const metadata = { title: `API | ${CONFIG.site.name}` };
 
 export default function Page() {
   return <ApiInfoListView />;
