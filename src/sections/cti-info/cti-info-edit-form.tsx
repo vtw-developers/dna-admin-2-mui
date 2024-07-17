@@ -18,8 +18,9 @@ import { Form, Field } from 'src/components/hook-form';
 
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
+import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 import { createCtiInfo, deleteCtiInfo, updateCtiInfo } from '../../actions/cti-info';
-import { DnaBottomButtons } from '../../components/dna-form-buttons/dna-bottom-buttons';
+import { ServiceGroupSearchBox } from '../../components/dna-form/dna-service-group-search-box';
 
 import type { CtiInfo } from '../../types/cti-info';
 
@@ -127,12 +128,7 @@ export function CtiInfoEditForm({ editMode, entity }: Props) {
           <Field.Text name="name" label="CTI명" inputProps={{ readOnly: editMode === 'details' }} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <Field.Text
-            type="number"
-            name="serviceGroupId"
-            label="서비스 그룹"
-            inputProps={{ readOnly: editMode === 'details' }}
-          />
+          <ServiceGroupSearchBox />
         </Grid>
       </Grid>
     </Card>

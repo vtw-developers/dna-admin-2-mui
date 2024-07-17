@@ -10,6 +10,7 @@ import { Iconify } from '../../components/iconify';
 import { selectEnabled } from '../api-info/api-info-filter';
 import { defaultCtiInfoFilters } from '../../types/cti-info';
 import { DnaSelectBox } from '../../components/form/dna-select-box';
+import { ServiceGroupSearchBox } from '../../components/dna-form/dna-service-group-search-box';
 
 import type { CtiInfoFilters } from '../../types/cti-info';
 
@@ -67,12 +68,7 @@ export function CtiInfoFilter({ onSearch }: Props) {
         />
       </Grid>
       <Grid item xs={12} md={3}>
-        <TextField
-          label="서비스 그룹"
-          fullWidth
-          value={filters.name}
-          onChange={handleFilterName('name')}
-        />
+        <ServiceGroupSearchBox />
       </Grid>
       <Grid item xs={12} md={12} textAlign="center">
         <Button

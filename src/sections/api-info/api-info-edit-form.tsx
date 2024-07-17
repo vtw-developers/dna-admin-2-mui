@@ -19,8 +19,9 @@ import { Form, Field } from 'src/components/hook-form';
 
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
+import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 import { createApiInfo, deleteApiInfo, updateApiInfo } from '../../actions/api-info';
-import { DnaBottomButtons } from '../../components/dna-form-buttons/dna-bottom-buttons';
+import { ServiceGroupSearchBox } from '../../components/dna-form/dna-service-group-search-box';
 
 import type { ApiInfo } from '../../types/api-info';
 
@@ -148,12 +149,7 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
           <Field.Text name="url" label="URL" inputProps={{ readOnly: editMode === 'details' }} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <Field.Text
-            type="number"
-            name="serviceGroupId"
-            label="서비스 그룹"
-            inputProps={{ readOnly: editMode === 'details' }}
-          />
+          <ServiceGroupSearchBox />
         </Grid>
       </Grid>
     </Card>

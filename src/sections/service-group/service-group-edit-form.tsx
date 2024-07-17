@@ -19,7 +19,7 @@ import { Form, Field } from 'src/components/hook-form';
 
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
-import { DnaBottomButtons } from '../../components/dna-form-buttons/dna-bottom-buttons';
+import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 import {
   createServiceGroup,
   deleteServiceGroup,

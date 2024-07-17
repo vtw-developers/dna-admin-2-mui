@@ -10,6 +10,7 @@ import { Iconify } from '../../components/iconify';
 import { defaultApiInfoFilters } from '../../types/api-info';
 import { DnaSelectBox } from '../../components/form/dna-select-box';
 import { DnaDateRangeBox } from '../../components/form/dna-date-range-box';
+import { ServiceGroupSearchBox } from '../../components/dna-form/dna-service-group-search-box';
 
 import type { ApiInfoFilters } from '../../types/api-info';
 
@@ -98,12 +99,7 @@ export function ApiInfoFilter({ onSearch }: Props) {
         />
       </Grid>
       <Grid item xs={12} md={3}>
-        <TextField
-          label="서비스 그룹"
-          fullWidth
-          value={filters.name}
-          onChange={handleFilterName('name')}
-        />
+        <ServiceGroupSearchBox />
       </Grid>
       <Grid item xs={12} md={12} textAlign="center">
         <Button

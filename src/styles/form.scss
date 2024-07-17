@@ -6,3 +6,11 @@
     flex: 1;
   }
 }
+
+.service-group-search-button {
+  min-width: 20px !important;
+  padding: 0 !important;
+  .MuiButton-icon {
+    margin: 0 8px !important;
+  }
+}
