@@ -37,6 +37,13 @@ export function CtiInfoFilter({ onSearch }: Props) {
     [filters]
   );
 
+  const handleFilter = useCallback(
+    (field: string) => (e: any) => {
+      setFilters({ ...filters, [field]: e });
+    },
+    [filters]
+  );
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={3}>
@@ -68,7 +75,7 @@ export function CtiInfoFilter({ onSearch }: Props) {
         />
       </Grid>
       <Grid item xs={12} md={3}>
-        <ServiceGroupSearchBox />
+        <ServiceGroupSearchBox onChange={handleFilter('httpMethod')} />
       </Grid>
       <Grid item xs={12} md={12} textAlign="center">
         <Button

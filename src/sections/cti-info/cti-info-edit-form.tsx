@@ -31,10 +31,7 @@ export type SchemaType = zod.infer<typeof Schema>;
 export const Schema = zod.object({
   id: zod.number().optional(),
   name: zod.string().min(1, { message: 'Name is required!' }),
-  // httpMethod: zod.string(),
-  // url: zod.string(),
-  // serviceGroupId: zod.number(),
-  // enabled: zod.boolean(),
+  serviceGroupId: zod.number(),
 });
 
 // ----------------------------------------------------------------------
@@ -128,7 +125,7 @@ export function CtiInfoEditForm({ editMode, entity }: Props) {
           <Field.Text name="name" label="CTI명" inputProps={{ readOnly: editMode === 'details' }} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <ServiceGroupSearchBox name="serviceGroupId" />
+          <ServiceGroupSearchBox onChange={(e: number) => setValue('serviceGroupId', e)} />
         </Grid>
       </Grid>
     </Card>

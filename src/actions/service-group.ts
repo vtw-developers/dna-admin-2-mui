@@ -1,4 +1,3 @@
-import type { ApiInfo } from 'src/types/api-info';
 import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
@@ -21,7 +20,7 @@ const swrOptions = {
 
 type ServiceGroupsData = {
   totalCount: number;
-  data: ApiInfo[];
+  data: ServiceGroup[];
 };
 
 const PATH_PREFIX = '/serviceGroup';

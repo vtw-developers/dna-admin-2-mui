@@ -28,8 +28,6 @@ export const signInWithPassword = async ({ email, password }: SignInParams): Pro
 
     const res = await axios.post(endpoints.auth.signIn, params);
 
-    console.log(res);
-
     const { token } = res.data;
 
     if (!token) {

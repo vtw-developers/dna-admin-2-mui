@@ -1,5 +1,5 @@
-import type { GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
+import type { GridRowId, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
 import { useState, useEffect } from 'react';
@@ -12,7 +12,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 
-import { useRouter } from '../../../routes/hooks';
 import { EmptyContent } from '../../empty-content';
 import { DnaPagination } from '../../dna-pagination';
 import { defaultPagination } from '../../../utils/pagination';
@@ -25,26 +24,18 @@ import type { ServiceGroup, ServiceGroupFilters } from '../../../types/service-g
 type DialogProps = {
   open: boolean;
   onClose: () => void;
-  selectedItem: any;
   onChange: any;
 };
 
-export const ServiceGroupSelectionPopup = ({
-  open,
-  onClose,
-  selectedItem,
-  onChange,
-}: DialogProps) => {
-  const router = useRouter();
+export const ServiceGroupSelectionPopup = ({ open, onClose, onChange }: DialogProps) => {
   const [tableData, setTableData] = useState<ServiceGroup[]>([]);
   const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
   const [filters, setFilters] = useState<ServiceGroupFilters>(defaultServiceGroupFilters);
   const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const { data, loading, totalCount } = useGetServiceGroups(pagination, sortModel, filters);
-  const [selectionModel, setSelectionModel] = useState<number[]>([]);
+  const [selectionModel, setSelectionModel] = useState<GridRowId[]>([]);
 
   useEffect(() => {
-    console.log(data);
     setTableData(data);
   }, [data, sortModel, pagination, filters]);
 
@@ -59,13 +50,10 @@ export const ServiceGroupSelectionPopup = ({
   const selectItem = () => {
     if (selectionModel.length > 0) {
       const select = tableData.find((e: ServiceGroup) => e.id === selectionModel[0]);
-      console.log(selectionModel);
       onChange(select);
       onClose();
     }
   };
-
-  console.log(selectionModel);
 
   return (
     <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose}>
@@ -96,7 +84,6 @@ export const ServiceGroupSelectionPopup = ({
             onSortModelChange={setSortModel}
             rowSelectionModel={selectionModel}
             onRowSelectionModelChange={(e: GridRowSelectionModel) => {
-              console.log(e);
               setSelectionModel(e);
             }}
             slots={{
