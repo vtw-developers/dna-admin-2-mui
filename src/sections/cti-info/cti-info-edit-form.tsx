@@ -128,7 +128,7 @@ export function CtiInfoEditForm({ editMode, entity }: Props) {
           <Field.Text name="name" label="CTI명" inputProps={{ readOnly: editMode === 'details' }} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <ServiceGroupSearchBox />
+          <ServiceGroupSearchBox name="serviceGroupId" />
         </Grid>
       </Grid>
     </Card>

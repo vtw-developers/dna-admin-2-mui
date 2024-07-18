@@ -5,16 +5,17 @@ import { Iconify } from '../iconify';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ServiceGroupSelectionPopup } from '../popup/selection/service-group-selection-popup';
 
-type Props = {};
+type Props = { value: any; onChange: any };
 
-export const ServiceGroupSearchBox = ({}: Props) => {
-  // const [popupVisible, setPopupVisible] = useState(false)
+export const ServiceGroupSearchBox = ({ value, onChange }: Props) => {
   const confirm = useBoolean();
+
   return (
     <>
       <TextField
         label="서비스 그룹"
         sx={{ width: '100%' }}
+        value={value || ''}
         InputProps={{
           readOnly: true,
           endAdornment: (
@@ -27,7 +28,12 @@ export const ServiceGroupSearchBox = ({}: Props) => {
           ),
         }}
       />
-      <ServiceGroupSelectionPopup open={confirm.value} onClose={confirm.onFalse} />
+      <ServiceGroupSelectionPopup
+        selectedItem={value}
+        onChange={onChange}
+        open={confirm.value}
+        onClose={confirm.onFalse}
+      />
     </>
   );
 };

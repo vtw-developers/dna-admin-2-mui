@@ -149,7 +149,7 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
           <Field.Text name="url" label="URL" inputProps={{ readOnly: editMode === 'details' }} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <ServiceGroupSearchBox />
+          <ServiceGroupSearchBox name="serviceGroupId" />
         </Grid>
       </Grid>
     </Card>

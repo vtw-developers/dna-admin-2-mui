@@ -1,18 +1,17 @@
+import type { GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
-import { useState, useEffect, useCallback, type ChangeEvent } from 'react';
+import { useState, useEffect } from 'react';
 
-import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import { DataGrid, gridClasses, type GridColDef } from '@mui/x-data-grid';
+import { DataGrid, gridClasses } from '@mui/x-data-grid';
 
-import { paths } from '../../../routes/paths';
 import { useRouter } from '../../../routes/hooks';
 import { EmptyContent } from '../../empty-content';
 import { DnaPagination } from '../../dna-pagination';
@@ -26,52 +25,44 @@ import type { ServiceGroup, ServiceGroupFilters } from '../../../types/service-g
 type DialogProps = {
   open: boolean;
   onClose: () => void;
+  selectedItem: any;
+  onChange: any;
 };
 
-export const ServiceGroupSelectionPopup = ({ open, onClose }: DialogProps) => {
+export const ServiceGroupSelectionPopup = ({
+  open,
+  onClose,
+  selectedItem,
+  onChange,
+}: DialogProps) => {
   const router = useRouter();
   const [tableData, setTableData] = useState<ServiceGroup[]>([]);
   const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
   const [filters, setFilters] = useState<ServiceGroupFilters>(defaultServiceGroupFilters);
   const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const { data, loading, totalCount } = useGetServiceGroups(pagination, sortModel, filters);
+  const [selectionModel, setSelectionModel] = useState<number[]>([]);
 
   useEffect(() => {
     setTableData(data);
   }, [data, sortModel, pagination, filters]);
-
-  const handleViewRow = useCallback(
-    (id: string) => {
-      router.push(paths.manage.serviceGroup.details(id));
-    },
-    [router]
-  );
-
-  const handleFilterName = useCallback(
-    (field: string) => (event: ChangeEvent<HTMLInputElement>) => {
-      setFilters({ ...filters, [field]: event.target.value });
-    },
-    [filters]
-  );
 
   const columns: GridColDef[] = [
     {
       field: 'name',
       headerName: '서비스그룹명',
       width: 300,
-      renderCell: (params) => (
-        <Link
-          noWrap
-          color="inherit"
-          variant="subtitle2"
-          onClick={() => handleViewRow(params.row.id)}
-          sx={{ cursor: 'pointer' }}
-        >
-          {params.row.name}
-        </Link>
-      ),
     },
   ];
+
+  const selectItem = () => {
+    if (selectionModel.length > 0) {
+      const select = tableData.find((e: ServiceGroup) => e.id === selectionModel[0]);
+      onChange(selectionModel[0]);
+      onClose();
+    }
+  };
+
   return (
     <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose}>
       <DialogTitle sx={{ pb: 2 }}>서비스 그룹</DialogTitle>
@@ -91,7 +82,6 @@ export const ServiceGroupSelectionPopup = ({ open, onClose }: DialogProps) => {
           }}
         >
           <DataGrid
-            disableRowSelectionOnClick
             rows={tableData}
             columns={columns}
             loading={loading}
@@ -100,6 +90,9 @@ export const ServiceGroupSelectionPopup = ({ open, onClose }: DialogProps) => {
             paginationMode="server"
             sortModel={sortModel}
             onSortModelChange={setSortModel}
+            onRowSelectionModelChange={(e: GridRowSelectionModel) => {
+              setSelectionModel(e);
+            }}
             slots={{
               pagination: () => (
                 <DnaPagination
@@ -120,7 +113,7 @@ export const ServiceGroupSelectionPopup = ({ open, onClose }: DialogProps) => {
       </DialogContent>
 
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={onClose}>
+        <Button variant="contained" color="primary" onClick={selectItem}>
           확인
         </Button>
         <Button variant="outlined" color="inherit" onClick={onClose}>

@@ -37,13 +37,17 @@ export function ApiInfoFilter({ onSearch }: Props) {
 
   const handleFilterName = useCallback(
     (field: string) => (event: ChangeEvent<HTMLInputElement>) => {
-      setFilters({ ...filters, [field]: event.target.value });
+      filters[field] = event.target.value;
+      // setFilters({ ...filters, [field]: event.target.value });
+      // console.log(event);
     },
     [filters]
   );
+
   const handleFilterDate = useCallback(
     (field: string) => (e: any) => {
       setFilters({ ...filters, [field]: e });
+      console.log(filters);
     },
     [filters]
   );
@@ -53,8 +57,9 @@ export function ApiInfoFilter({ onSearch }: Props) {
       <Grid item xs={12} md={6}>
         <TextField
           label="API명"
+          defaultValue={filters.name}
           fullWidth
-          value={filters.name}
+          // value={filters.name}
           onChange={handleFilterName('name')}
         />
       </Grid>
@@ -80,8 +85,8 @@ export function ApiInfoFilter({ onSearch }: Props) {
       </Grid>
       <Grid item xs={12} md={6}>
         <DnaDateRangeBox
-          startValue={filters.startModifiedTime}
-          endValue={filters.endModifiedTime}
+          startValue={filters.startModifiedTime || null}
+          endValue={filters.endModifiedTime || null}
           onValueChange={handleFilterDate}
           startLabel="시작일시"
           endLabel="종료일시"
@@ -99,7 +104,10 @@ export function ApiInfoFilter({ onSearch }: Props) {
         />
       </Grid>
       <Grid item xs={12} md={3}>
-        <ServiceGroupSearchBox />
+        <ServiceGroupSearchBox
+          value={filters.serviceGroupId}
+          onChange={handleFilterDate('serviceGroupId')}
+        />
       </Grid>
       <Grid item xs={12} md={12} textAlign="center">
         <Button
