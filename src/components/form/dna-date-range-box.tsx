@@ -29,7 +29,6 @@ export const DnaDateRangeBox = ({
     <DateTimePicker
       className="datetimebox"
       label={startLabel}
-      value={startValue}
       defaultValue={startValue}
       onChange={onValueChange(startFieldName)}
       format={format}
@@ -43,7 +42,7 @@ export const DnaDateRangeBox = ({
     <DateTimePicker
       className="datetimebox"
       label={endLabel}
-      value={endValue}
+      defaultValue={endValue}
       onChange={onValueChange(endFieldName)}
       format={format}
       slotProps={{

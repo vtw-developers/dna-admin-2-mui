@@ -6,6 +6,7 @@ import { Grid } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
+import { fDate } from '../../utils/format-time';
 import { Iconify } from '../../components/iconify';
 import { defaultApiInfoFilters } from '../../types/api-info';
 import { DnaSelectBox } from '../../components/form/dna-select-box';
@@ -37,17 +38,14 @@ export function ApiInfoFilter({ onSearch }: Props) {
 
   const handleFilterName = useCallback(
     (field: string) => (event: ChangeEvent<HTMLInputElement>) => {
-      filters[field] = event.target.value;
-      // setFilters({ ...filters, [field]: event.target.value });
-      // console.log(event);
+      setFilters({ ...filters, [field]: event.target.value });
     },
     [filters]
   );
 
   const handleFilterDate = useCallback(
     (field: string) => (e: any) => {
-      setFilters({ ...filters, [field]: e });
-      console.log(filters);
+      setFilters({ ...filters, [field]: fDate(e, 'YYYY-MM-DD hh:mm:ss') });
     },
     [filters]
   );
@@ -57,9 +55,8 @@ export function ApiInfoFilter({ onSearch }: Props) {
       <Grid item xs={12} md={6}>
         <TextField
           label="API명"
-          defaultValue={filters.name}
+          value={filters.name}
           fullWidth
-          // value={filters.name}
           onChange={handleFilterName('name')}
         />
       </Grid>
