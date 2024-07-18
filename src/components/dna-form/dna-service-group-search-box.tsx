@@ -7,16 +7,16 @@ import { Iconify } from '../iconify';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ServiceGroupSelectionPopup } from '../popup/selection/service-group-selection-popup';
 
-type Props = { value: any; onChange: any };
+type Props = { onChange: any };
 
-export const ServiceGroupSearchBox = ({ value, onChange }: Props) => {
+export const ServiceGroupSearchBox = ({ onChange }: Props) => {
   const confirm = useBoolean();
 
   const [serviceGroup, setServiceGroup] = useState({ id: undefined, name: '' });
 
-  const onChangeObject = (sg) => {
-    setServiceGroup(sg);
-    onChange(sg.id);
+  const onChangeServiceGroup = (serviceGroup: any) => {
+    setServiceGroup(serviceGroup);
+    onChange(serviceGroup.id);
   };
 
   return (
@@ -38,8 +38,7 @@ export const ServiceGroupSearchBox = ({ value, onChange }: Props) => {
         }}
       />
       <ServiceGroupSelectionPopup
-        selectedItem={value}
-        onChange={onChangeObject}
+        onChange={onChangeServiceGroup}
         open={confirm.value}
         onClose={confirm.onFalse}
       />
