@@ -45,6 +45,13 @@ export function ApiInfoFilter({ onSearch }: Props) {
 
   const handleFilter = useCallback(
     (field: string) => (e: any) => {
+      setFilters({ ...filters, [field]: e });
+    },
+    [filters]
+  );
+
+  const handleFilterDate = useCallback(
+    (field: string) => (e: any) => {
       setFilters({ ...filters, [field]: fDate(e, 'YYYY-MM-DD hh:mm:ss') });
     },
     [filters]
@@ -84,7 +91,7 @@ export function ApiInfoFilter({ onSearch }: Props) {
         <DnaDateRangeBox
           startValue={filters.startModifiedTime || null}
           endValue={filters.endModifiedTime || null}
-          onValueChange={handleFilter}
+          onValueChange={handleFilterDate}
           startLabel="시작일시"
           endLabel="종료일시"
           startFieldName="startModifiedTime"
