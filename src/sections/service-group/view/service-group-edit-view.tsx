@@ -34,11 +34,7 @@ export function ServiceGroupEditView({ editMode, entity }: Props): JSX.Element {
     <DashboardContent>
       <CustomBreadcrumbs
         heading={title()}
-        links={[
-          { name: '관리', href: 'test' },
-          { name: '서비스그룹', href: 'test' },
-          { name: title() },
-        ]}
+        links={[{ name: '서비스그룹 관리', href: '/manage/service-group' }, { name: title() }]}
         sx={{ mb: { xs: 3, md: 5 } }}
       />
 

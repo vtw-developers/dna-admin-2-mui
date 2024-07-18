@@ -82,11 +82,7 @@ export function CtiInfoListView() {
     <DashboardContent className="dna-common-list">
       <CustomBreadcrumbs
         heading="CTI 관리"
-        links={[
-          { name: '관리', href: 'test' },
-          { name: 'CTI', href: 'test' },
-          { name: 'CTI 목록' },
-        ]}
+        links={[{ name: 'CTI 관리' }]}
         action={
           <Button
             component={RouterLink}

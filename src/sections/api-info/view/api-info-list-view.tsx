@@ -91,11 +91,7 @@ export function ApiInfoListView() {
     <DashboardContent className="dna-common-list">
       <CustomBreadcrumbs
         heading="API 관리"
-        links={[
-          { name: '관리', href: 'test' },
-          { name: 'API', href: 'test' },
-          { name: 'API 목록' },
-        ]}
+        links={[{ name: 'API 관리' }]}
         action={
           <Button
             component={RouterLink}

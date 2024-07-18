@@ -77,11 +77,7 @@ export function ServiceGroupListView() {
     <DashboardContent className="dna-common-list">
       <CustomBreadcrumbs
         heading="서비스그룹 관리"
-        links={[
-          { name: '관리', href: 'test' },
-          { name: '서비스그룹', href: 'test' },
-          { name: '서비스그룹 목록' },
-        ]}
+        links={[{ name: '서비스그룹 관리' }]}
         action={
           <Button
             component={RouterLink}

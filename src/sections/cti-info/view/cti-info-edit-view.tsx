@@ -6,8 +6,8 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
 import { CtiInfoEditForm } from '../cti-info-edit-form';
 
-import type { CtiInfo } from '../../../types/cti-info';
 import type { EditModes } from '../../../types/edit';
+import type { CtiInfo } from '../../../types/cti-info';
 
 // ----------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ export function CtiInfoEditView({ editMode, entity }: Props): JSX.Element {
     <DashboardContent>
       <CustomBreadcrumbs
         heading={title()}
-        links={[{ name: '관리', href: 'test' }, { name: 'CTI', href: 'test' }, { name: title() }]}
+        links={[{ name: 'CTI 관리', href: '/manage/cti' }, { name: title() }]}
         sx={{ mb: { xs: 3, md: 5 } }}
       />
 

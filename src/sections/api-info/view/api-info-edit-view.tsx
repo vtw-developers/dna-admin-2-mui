@@ -33,7 +33,7 @@ export function ApiInfoEditView({ editMode, entity }: Props): JSX.Element {
     <DashboardContent>
       <CustomBreadcrumbs
         heading={title()}
-        links={[{ name: '관리', href: 'test' }, { name: 'API', href: 'test' }, { name: title() }]}
+        links={[{ name: 'API 관리', href: '/manage/api/' }, { name: title() }]}
         sx={{ mb: { xs: 3, md: 5 } }}
       />
 
