@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
@@ -10,12 +12,19 @@ type Props = { value: any; onChange: any };
 export const ServiceGroupSearchBox = ({ value, onChange }: Props) => {
   const confirm = useBoolean();
 
+  const [serviceGroup, setServiceGroup] = useState({ id: undefined, name: '' });
+
+  const onChangeObject = (sg) => {
+    setServiceGroup(sg);
+    onChange(sg.id);
+  };
+
   return (
     <>
       <TextField
         label="서비스 그룹"
         sx={{ width: '100%' }}
-        value={value || ''}
+        value={serviceGroup?.name}
         InputProps={{
           readOnly: true,
           endAdornment: (
@@ -30,7 +39,7 @@ export const ServiceGroupSearchBox = ({ value, onChange }: Props) => {
       />
       <ServiceGroupSelectionPopup
         selectedItem={value}
-        onChange={onChange}
+        onChange={onChangeObject}
         open={confirm.value}
         onClose={confirm.onFalse}
       />

@@ -44,6 +44,7 @@ export const ServiceGroupSelectionPopup = ({
   const [selectionModel, setSelectionModel] = useState<number[]>([]);
 
   useEffect(() => {
+    console.log(data);
     setTableData(data);
   }, [data, sortModel, pagination, filters]);
 
@@ -58,10 +59,13 @@ export const ServiceGroupSelectionPopup = ({
   const selectItem = () => {
     if (selectionModel.length > 0) {
       const select = tableData.find((e: ServiceGroup) => e.id === selectionModel[0]);
-      onChange(selectionModel[0]);
+      console.log(selectionModel);
+      onChange(select);
       onClose();
     }
   };
+
+  console.log(selectionModel);
 
   return (
     <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose}>
@@ -90,7 +94,9 @@ export const ServiceGroupSelectionPopup = ({
             paginationMode="server"
             sortModel={sortModel}
             onSortModelChange={setSortModel}
+            rowSelectionModel={selectionModel}
             onRowSelectionModelChange={(e: GridRowSelectionModel) => {
+              console.log(e);
               setSelectionModel(e);
             }}
             slots={{
@@ -108,6 +114,7 @@ export const ServiceGroupSelectionPopup = ({
             sx={{
               [`& .${gridClasses.cell}`]: { alignItems: 'center', display: 'inline-flex' },
             }}
+            keepNonExistentRowsSelected
           />
         </Card>
       </DialogContent>
