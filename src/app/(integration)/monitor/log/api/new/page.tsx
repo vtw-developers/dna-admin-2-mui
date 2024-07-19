@@ -1,11 +1,11 @@
 import { CONFIG } from 'src/config-global';
 
-import { BlankView } from 'src/sections/blank/view';
+import { ApiInfoEditView } from '../../../../../sections/api-info/view/api-info-edit-view';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Blank | Dashboard - ${CONFIG.site.name}` };
+export const metadata = { title: `Create a new product | Dashboard - ${CONFIG.site.name}` };
 
 export default function Page() {
-  return <BlankView />;
+  return <ApiInfoEditView editMode="create" />;
 }

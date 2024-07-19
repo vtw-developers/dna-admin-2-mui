@@ -1,11 +1,19 @@
 import { CONFIG } from 'src/config-global';
 
-import { BlankView } from 'src/sections/blank/view';
+import { getApiInfo } from '../../../../../actions/api-info';
+import { ApiInfoEditView } from '../../../../../sections/api-info/view/api-info-edit-view';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Blank | Dashboard - ${CONFIG.site.name}` };
+export const metadata = { title: `Create a new product | Dashboard - ${CONFIG.site.name}` };
 
-export default function Page() {
-  return <BlankView />;
+type Props = {
+  params: { id: string };
+};
+
+export default async function Page({ params }: Props) {
+  const { id } = params;
+
+  const entity = await getApiInfo(id);
+  return <ApiInfoEditView editMode="details" entity={entity} />;
 }

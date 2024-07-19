@@ -1,7 +1,6 @@
 import { CONFIG } from 'src/config-global';
 
-import { getApiInfo } from '../../../../../../actions/api-info';
-import { CtiInfoEditView } from '../../../../../../sections/cti-info/view/cti-info-edit-view';
+import { BlankView } from '../../../../../../../sections/blank/view';
 
 // ----------------------------------------------------------------------
 
@@ -12,9 +11,5 @@ type Props = {
 };
 
 export default async function Page({ params }: Props) {
-  const { id } = params;
-
-  const entity = await getApiInfo(id);
-
-  return <CtiInfoEditView editMode="update" entity={entity} />;
+  return <BlankView />;
 }
