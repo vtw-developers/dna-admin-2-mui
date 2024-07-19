@@ -14,7 +14,7 @@ export type ConfigValue = {
     version: string;
   };
   auth: {
-    method: 'jwt' | 'amplify' | 'firebase' | 'supabase' | 'auth0';
+    method: 'jwt';
     skip: boolean;
     redirectPath: string;
   };
