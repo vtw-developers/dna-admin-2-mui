@@ -50,11 +50,6 @@ export function ServiceGroupListView() {
   );
 
   const columns: GridColDef[] = [
-    // {
-    //   field: 'serviceGroupName',
-    //   headerName: '서비스그룹',
-    //   width: 400,
-    // },
     {
       field: 'name',
       headerName: '서비스그룹명',

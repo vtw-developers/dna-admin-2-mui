@@ -2,7 +2,7 @@
 
 const ROOTS = {
   AUTH: '/auth',
-  DASHBOARD: '/dashboard',
+  DASHBOARD: '/dashboard/analytics',
   MANAGE: '/manage',
   API_INFO: '/manage/api',
   CTI_INFO: '/manage/cti',

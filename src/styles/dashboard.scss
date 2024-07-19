@@ -1,0 +1,20 @@
+.piechart-card {
+  .Mui-expanded{
+    margin: 0 !important;
+  }
+  .legends-detail {
+    .MuiStack-root {
+      padding: 0;
+    }
+  }
+}
+
+.dashboard-state {
+  .item {
+
+  }
+}
+
+.apexcharts-tooltip {
+  background-color: var(--palette-background-paper);
+}

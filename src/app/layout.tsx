@@ -1,6 +1,7 @@
 import 'src/styles/list.scss';
 import 'src/styles/form.scss';
 import 'src/styles/global.scss';
+import 'src/styles/dashboard.scss';
 
 // ----------------------------------------------------------------------
 import type { Viewport } from 'next';
