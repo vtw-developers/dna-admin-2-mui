@@ -1,11 +1,11 @@
 import { CONFIG } from 'src/config-global';
 
-import { BlankView } from 'src/sections/blank/view';
+import { CtiLogListView } from '../../../../../sections/cti-log/view/cti-log-list-view';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Blank | Dashboard - ${CONFIG.site.name}` };
+export const metadata = { title: `CTI | ${CONFIG.site.name}` };
 
 export default function Page() {
-  return <BlankView />;
+  return <CtiLogListView />;
 }

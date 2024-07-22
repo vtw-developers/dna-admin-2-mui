@@ -1,11 +1,11 @@
 import { CONFIG } from 'src/config-global';
 
-import { BlankView } from '../../../../../sections/blank/view';
+import { ApiLogListView } from '../../../../../sections/api-log/view/api-log-list-view';
 
 // ----------------------------------------------------------------------
 
 export const metadata = { title: `API | ${CONFIG.site.name}` };
 
 export default function Page() {
-  return <BlankView />;
+  return <ApiLogListView />;
 }
