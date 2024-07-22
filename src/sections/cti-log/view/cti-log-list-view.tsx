@@ -95,8 +95,8 @@ export function CtiLogListView() {
   return (
     <DashboardContent className="dna-common-list">
       <CustomBreadcrumbs
-        heading="API 로그"
-        links={[{ name: 'API 로그' }]}
+        heading="CTI 로그"
+        links={[{ name: 'CTI 로그' }]}
         sx={{ mb: { xs: 3, md: 5 } }}
       />
       <Card className="list-filter" sx={{ mb: { xs: 3, md: 5 } }}>
