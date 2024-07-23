@@ -7,13 +7,13 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { PageInfoEditForm } from '../page-info-edit-form';
 
 import type { EditModes } from '../../../types/edit';
-import type { ApiInfo } from '../../../types/api-info';
+import type { PageInfo } from '../../../types/page-info';
 
 // ----------------------------------------------------------------------
 
 type Props = {
   editMode: EditModes;
-  entity?: ApiInfo;
+  entity?: PageInfo;
 };
 
 export function PageInfoEditView({ editMode, entity }: Props): JSX.Element {
