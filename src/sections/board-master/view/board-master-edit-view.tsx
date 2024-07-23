@@ -7,13 +7,13 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { BoardMasterEditForm } from '../board-master-edit-form';
 
 import type { EditModes } from '../../../types/edit';
-import type { ApiInfo } from '../../../types/api-info';
+import type { BoardMaster } from '../../../types/board-master';
 
 // ----------------------------------------------------------------------
 
 type Props = {
   editMode: EditModes;
-  entity?: ApiInfo;
+  entity?: BoardMaster;
 };
 
 export function BoardMasterEditView({ editMode, entity }: Props): JSX.Element {
