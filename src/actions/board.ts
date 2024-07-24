@@ -53,6 +53,7 @@ export function useGetBoards(
     fetcher,
     swrOptions
   );
+  console.log(data);
 
   const memoizedValue = useMemo(
     () => ({
@@ -76,11 +77,19 @@ export const getBoard = async (id: string | number) =>
     })
   ).data;
 
-export const createBoard = async (params: Board) =>
-  (await axiosInstance.post(`${PATH_PREFIX}/create`, params)).data;
+export const createBoard = async (params: FormData) =>
+  (
+    await axiosInstance.post(`${PATH_PREFIX}/create`, params, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+  ).data;
 
-export const updateBoard = async (params: Board) =>
-  (await axiosInstance.post(`${PATH_PREFIX}/update`, params)).data;
+export const updateBoard = async (params: FormData) =>
+  (
+    await axiosInstance.post(`${PATH_PREFIX}/update`, params, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+  ).data;
 
 export const deleteBoard = async (params: Board) =>
   (await axiosInstance.post(`${PATH_PREFIX}/delete`, params)).data;

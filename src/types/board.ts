@@ -12,14 +12,14 @@ export type Board = {
   boardNo?: number;
   parentId?: number;
   viewCount?: number;
-  useYn: boolean;
+  useYn?: boolean;
   pinYn?: boolean;
   popupYn?: boolean;
   pinStartTime?: string;
   pinEndTime?: string;
   popupStartTime?: string;
   popupEndTime?: string;
-  modifiedTime?: string;
+  files?: any[];
 };
 
 export const defaultBoardFilters = (e: number) => ({

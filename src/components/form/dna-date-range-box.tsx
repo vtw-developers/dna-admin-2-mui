@@ -1,5 +1,7 @@
 import type { PropsWithChildren } from 'react';
 
+import dayjs from 'dayjs';
+
 import { DateTimePicker } from '@mui/x-date-pickers';
 
 type DateRangeBoxProps = {
@@ -29,7 +31,7 @@ export const DnaDateRangeBox = ({
     <DateTimePicker
       className="datetimebox"
       label={startLabel}
-      defaultValue={startValue}
+      defaultValue={startValue === undefined ? undefined : dayjs(startValue)}
       onChange={onValueChange(startFieldName)}
       format={format}
       slotProps={{
@@ -43,7 +45,7 @@ export const DnaDateRangeBox = ({
     <DateTimePicker
       className="datetimebox"
       label={endLabel}
-      defaultValue={endValue}
+      defaultValue={endValue === undefined ? undefined : dayjs(endValue)}
       onChange={onValueChange(endFieldName)}
       format={format}
       slotProps={{

@@ -19,11 +19,10 @@ import { Form, Field } from 'src/components/hook-form';
 import { fDate } from '../../utils/format-time';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
-import { DnaDateRangeBox } from '../../components/form/dna-date-range-box';
 import { createBoard, deleteBoard, updateBoard } from '../../actions/board';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 
-import type { Board } from '../../types/board'; // ----------------------------------------------------------------------
+import type { Board } from '../../types/board';
 
 // ----------------------------------------------------------------------
 
@@ -54,14 +53,14 @@ type Props = {
   entity?: Board;
 };
 
-export function NoticeEditForm({ editMode, entity }: Props) {
+export function FreeEditForm({ editMode, entity }: Props) {
   const editing = editMode !== 'details';
   const router = useRouter();
   const confirm = useBoolean();
 
-  const listPath = paths.boards.notice.root;
-  const editPath = paths.boards.notice.edit(entity?.id);
-  const detailsPath = paths.boards.notice.details(entity?.id);
+  const listPath = paths.boards.free.root;
+  const editPath = paths.boards.free.edit(entity?.id);
+  const detailsPath = paths.boards.free.details(entity?.id);
 
   const defaultValues = useMemo(
     () => ({
@@ -154,48 +153,11 @@ export function NoticeEditForm({ editMode, entity }: Props) {
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
       <Divider />
       <Grid container spacing={3} sx={{ p: 3 }}>
-        <Grid item xs={12} md={12}>
+        <Grid item xs={12} md={9}>
           <Field.Text name="title" label="제목" inputProps={{ readOnly: editMode === 'details' }} />
         </Grid>
         <Grid item xs={12} md={3}>
-          <Field.Switch
-            name="pinYn"
-            label="중요표기"
-            slotProps={{ switch: { disabled: editMode === 'details' } }}
-          />
-        </Grid>
-        <Grid item xs={12} md={9}>
-          <DnaDateRangeBox
-            startValue={values.pinStartTime}
-            endValue={values.pinEndTime}
-            onValueChange={handleFilterDate}
-            startLabel="시작일시"
-            endLabel="종료일시"
-            startFieldName="pinStartTime"
-            endFieldName="pinEndTime"
-            format="YYYY-MM-DD HH:mm:ss"
-            readonly={editMode === 'details' || !values.pinYn}
-          />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <Field.Switch
-            name="popupYn"
-            label="팝업표기"
-            slotProps={{ switch: { disabled: editMode === 'details' } }}
-          />
-        </Grid>
-        <Grid item xs={12} md={9}>
-          <DnaDateRangeBox
-            startValue={values.popupStartTime}
-            endValue={values.popupEndTime}
-            onValueChange={handleFilterDate}
-            startLabel="시작일시"
-            endLabel="종료일시"
-            startFieldName="popupStartTime"
-            endFieldName="popupEndTime"
-            format="YYYY-MM-DD HH:mm:ss"
-            readonly={editMode === 'details' || !values.popupYn}
-          />
+          <Field.Text name="viewCount" label="조회수" inputProps={{ readOnly: true }} />
         </Grid>
         <Grid item xs={12} md={12}>
           <Field.Editor name="content" sx={{ maxHeight: 480 }} />

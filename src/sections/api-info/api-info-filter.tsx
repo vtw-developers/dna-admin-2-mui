@@ -89,8 +89,8 @@ export function ApiInfoFilter({ onSearch }: Props) {
       </Grid>
       <Grid item xs={12} md={6}>
         <DnaDateRangeBox
-          startValue={filters.startModifiedTime || null}
-          endValue={filters.endModifiedTime || null}
+          startValue={filters.startModifiedTime}
+          endValue={filters.endModifiedTime}
           onValueChange={handleFilterDate}
           startLabel="시작일시"
           endLabel="종료일시"
