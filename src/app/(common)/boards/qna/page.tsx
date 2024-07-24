@@ -1,11 +1,11 @@
 import { CONFIG } from 'src/config-global';
 
-import { BlankView } from 'src/sections/blank/view';
+import { QnaListView } from '../../../../sections/qna/view/qna-list-view';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Blank | Dashboard - ${CONFIG.site.name}` };
+export const metadata = { title: `QnA | ${CONFIG.site.name}` };
 
 export default function Page() {
-  return <BlankView />;
+  return <QnaListView />;
 }
