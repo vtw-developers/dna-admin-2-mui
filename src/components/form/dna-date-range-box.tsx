@@ -37,6 +37,7 @@ export const DnaDateRangeBox = ({
           actions: ['clear', 'accept'],
         },
       }}
+      readOnly={readonly}
     />
     ~
     <DateTimePicker
@@ -50,6 +51,7 @@ export const DnaDateRangeBox = ({
           actions: ['clear', 'accept'],
         },
       }}
+      readOnly={readonly}
     />
   </div>
 );

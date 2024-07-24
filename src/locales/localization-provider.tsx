@@ -7,12 +7,14 @@ import 'dayjs/locale/vi';
 import 'dayjs/locale/fr';
 import 'dayjs/locale/zh-cn';
 import 'dayjs/locale/ar-sa';
+import 'dayjs/locale/ko';
 
 import dayjs from 'dayjs';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider as Provider } from '@mui/x-date-pickers/LocalizationProvider';
 
+import React from 'react';
 import { useTranslate } from './use-locales';
 
 // ----------------------------------------------------------------------
@@ -22,7 +24,9 @@ type Props = {
 };
 
 export function LocalizationProvider({ children }: Props) {
-  const { currentLang } = useTranslate();
+  const { currentLang } = useTranslate('ko');
+  console.log(currentLang);
+  console.log(currentLang.adapterLocale);
 
   dayjs.locale(currentLang.adapterLocale);
 

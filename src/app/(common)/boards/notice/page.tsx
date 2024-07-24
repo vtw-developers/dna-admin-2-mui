@@ -1,11 +1,11 @@
 import { CONFIG } from 'src/config-global';
 
-import { BlankView } from 'src/sections/blank/view';
+import { NoticeListView } from '../../../../sections/notice/view/notice-list-view';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Blank | Dashboard - ${CONFIG.site.name}` };
+export const metadata = { title: `Notice | ${CONFIG.site.name}` };
 
 export default function Page() {
-  return <BlankView />;
+  return <NoticeListView />;
 }
