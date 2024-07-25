@@ -55,11 +55,17 @@ export const NoticeListView = () => {
       field: 'boardNo',
       headerName: '번호',
       width: 200,
+      // eslint-disable-next-line consistent-return
+      renderCell: (params) => {
+        if (params.row.pinYn) return <Iconify icon="mingcute:pin-line" />;
+        return <>{params.row.boardNo}</>;
+      },
+      cellClassName: (params) => (params.row.pinYn ? 'highlight-row' : ''),
     },
     {
       field: 'title',
       headerName: '제목',
-      width: 1200,
+      flex: 1,
       renderCell: (params) => (
         <Link
           noWrap
@@ -71,16 +77,19 @@ export const NoticeListView = () => {
           {params.row.title}
         </Link>
       ),
+      cellClassName: (params) => (params.row.pinYn ? 'highlight-row' : ''),
     },
     {
       field: 'authorName',
       headerName: '작성자',
       width: 200,
+      cellClassName: (params) => (params.row.pinYn ? 'highlight-row' : ''),
     },
     {
       field: 'modifiedTime',
       headerName: '작성일',
       width: 200,
+      cellClassName: (params) => (params.row.pinYn ? 'highlight-row' : ''),
     },
   ];
 
