@@ -26,7 +26,7 @@ export function FileThumbnail({
 
   const format = fileFormat(path || previewUrl);
 
-  const renderImg = (
+  /* const renderImg = (
     <Box
       component="img"
       src={previewUrl}
@@ -40,7 +40,7 @@ export function FileThumbnail({
       }}
     />
   );
-
+*/
   const renderIcon = (
     <Box
       component="img"
@@ -67,7 +67,7 @@ export function FileThumbnail({
       }}
       {...other}
     >
-      {format === 'image' && imageView ? renderImg : renderIcon}
+      {renderIcon}
 
       {onRemove && (
         <RemoveButton

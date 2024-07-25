@@ -1,14 +1,14 @@
 import { z as zod } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMemo, useEffect, useCallback } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 
+import Box from '@mui/material/Box';
 import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import CardHeader from '@mui/material/CardHeader';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -16,12 +16,14 @@ import { useRouter } from 'src/routes/hooks';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
+import { varAlpha } from '../../theme/styles';
 import { fDate } from '../../utils/format-time';
+import { Iconify } from '../../components/iconify';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
 import { DnaDateRangeBox } from '../../components/form/dna-date-range-box';
-import { createBoard, deleteBoard, updateBoard } from '../../actions/board';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
+import { download, createBoard, deleteBoard, updateBoard } from '../../actions/board';
 
 import type { Board } from '../../types/board'; // ----------------------------------------------------------------------
 
@@ -44,7 +46,7 @@ export const Schema = zod.object({
   pinEndTime: zod.string().optional(),
   popupStartTime: zod.string().optional(),
   popupEndTime: zod.string().optional(),
-  files: zod.any().array().optional(),
+  files: zod.any().array(),
 });
 
 // ----------------------------------------------------------------------
@@ -55,6 +57,7 @@ type Props = {
 };
 
 export function NoticeEditForm({ editMode, entity }: Props) {
+  const [removeFiles, setRemoveFiles] = useState<number[]>([]);
   const editing = editMode !== 'details';
   const router = useRouter();
   const confirm = useBoolean();
@@ -106,13 +109,13 @@ export function NoticeEditForm({ editMode, entity }: Props) {
   }, [entity, defaultValues, reset]);
 
   const onSubmit = handleSubmit(async (data: Board) => {
+    console.log(data);
     const format = new FormData();
-    // if (selectedFiles) {
-    //   selectedFiles.forEach((file) => {
-    //     format.append('files', file)
-    //   })
-    // }
-
+    if (data.files?.length > 0) {
+      data.files.forEach((file) => {
+        format.append('files', file);
+      });
+    }
     format.append('entity', new Blob([JSON.stringify(data)], { type: 'application/json' }));
     try {
       if (editMode === 'create') {
@@ -148,23 +151,41 @@ export function NoticeEditForm({ editMode, entity }: Props) {
     },
     [setValue]
   );
+  const handleRemoveAllFiles = useCallback(() => {
+    setValue('files', [], { shouldValidate: true });
+  }, [setValue]);
+
+  const handleRemoveFile = useCallback(
+    (inputFile: File | string) => {
+      const filtered = values.files && values.files?.filter((file) => file !== inputFile);
+      setValue('files', filtered, { shouldValidate: true });
+    },
+    [setValue, values.files]
+  );
+  const downloadFile = async (fileId: number) => {
+    const fileName = values.files.find((e) => e.id === fileId)?.originalFileName;
+    const file = await download(fileId);
+    const blob = new Blob([file], { type: 'image/png' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
+  };
 
   const renderDetails = (
     <Card>
-      <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
-      <Divider />
       <Grid container spacing={3} sx={{ p: 3 }}>
         <Grid item xs={12} md={12}>
           <Field.Text name="title" label="제목" inputProps={{ readOnly: editMode === 'details' }} />
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={1}>
           <Field.Switch
             name="pinYn"
             label="중요표기"
             slotProps={{ switch: { disabled: editMode === 'details' } }}
           />
         </Grid>
-        <Grid item xs={12} md={9}>
+        <Grid item xs={12} md={11}>
           <DnaDateRangeBox
             startValue={values.pinStartTime}
             endValue={values.pinEndTime}
@@ -177,14 +198,14 @@ export function NoticeEditForm({ editMode, entity }: Props) {
             readonly={editMode === 'details' || !values.pinYn}
           />
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={1}>
           <Field.Switch
             name="popupYn"
             label="팝업표기"
             slotProps={{ switch: { disabled: editMode === 'details' } }}
           />
         </Grid>
-        <Grid item xs={12} md={9}>
+        <Grid item xs={12} md={11}>
           <DnaDateRangeBox
             startValue={values.popupStartTime}
             endValue={values.popupEndTime}
@@ -198,7 +219,57 @@ export function NoticeEditForm({ editMode, entity }: Props) {
           />
         </Grid>
         <Grid item xs={12} md={12}>
-          <Field.Editor name="content" sx={{ maxHeight: 480 }} />
+          {editMode !== 'details' && <Field.Editor name="content" sx={{ maxHeight: 480 }} />}
+          {editMode === 'details' && (
+            <Box
+              sx={{
+                px: 2,
+                border: (theme) =>
+                  `solid 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.2)}`,
+              }}
+            >
+              <div dangerouslySetInnerHTML={{ __html: values.content }} />
+            </Box>
+          )}
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <Divider sx={{ my: 2 }} />
+
+          {editMode !== 'details' && (
+            <Field.Upload
+              name="files"
+              multiple
+              // thumbnail
+              maxSize={3145728}
+              onRemove={handleRemoveFile}
+              onRemoveAll={handleRemoveAllFiles}
+            />
+          )}
+          {editMode === 'details' &&
+            values.files?.map((file, index) => {
+              const { originalFileName } = file;
+              return (
+                <Box
+                  onClick={() => downloadFile(file.id)}
+                  component="li"
+                  key={index}
+                  sx={{
+                    py: 1,
+                    pr: 1,
+                    pl: 1.5,
+                    gap: 1.5,
+                    display: 'flex',
+                    borderRadius: 1,
+                    alignItems: 'center',
+                    border: (theme) =>
+                      `solid 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.16)}`,
+                  }}
+                >
+                  <Iconify icon="mingcute:download-2-line" width={16} />
+                  {originalFileName}
+                </Box>
+              );
+            })}
         </Grid>
         <Grid item xs={12} md={12} />
       </Grid>

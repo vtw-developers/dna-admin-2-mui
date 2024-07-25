@@ -19,7 +19,7 @@ export type Board = {
   pinEndTime?: string;
   popupStartTime?: string;
   popupEndTime?: string;
-  files?: any[];
+  files: any[];
 };
 
 export const defaultBoardFilters = (e: number) => ({

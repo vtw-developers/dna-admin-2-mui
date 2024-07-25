@@ -25,9 +25,6 @@ type Props = {
 
 export function LocalizationProvider({ children }: Props) {
   const { currentLang } = useTranslate('ko');
-  console.log(currentLang);
-  console.log(currentLang.adapterLocale);
-
   dayjs.locale(currentLang.adapterLocale);
 
   return (

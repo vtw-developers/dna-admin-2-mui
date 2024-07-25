@@ -15,5 +15,6 @@ export default async function Page({ params }: Props) {
   const { id } = params;
 
   const entity = await getBoard(id);
+  console.log(entity);
   return <NoticeEditView editMode="details" entity={entity} />;
 }

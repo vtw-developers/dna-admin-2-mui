@@ -23,3 +23,12 @@ export type FileThumbnailProps = StackProps & {
     downloadBtn?: SxProps<Theme>;
   };
 };
+
+export interface DnaFile extends File {
+  boardId: number;
+  filePath: string;
+  id: number;
+  originalFileName: string;
+  storeFileName: string;
+  useYn: boolean;
+}

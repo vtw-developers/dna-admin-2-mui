@@ -41,7 +41,7 @@ export const NoticeListView = () => {
 
   useEffect(() => {
     setTableData(data);
-  }, [data, sortModel, pagination, defaultBoardFilters]);
+  }, [data, sortModel, pagination]);
 
   const handleViewRow = useCallback(
     (id: string) => {
@@ -88,7 +88,7 @@ export const NoticeListView = () => {
     <DashboardContent className="dna-common-list">
       <CustomBreadcrumbs
         heading="공지사항"
-        links={[{ name: '공지사항' }]}
+        links={[{ name: '공지사항 목록' }]}
         action={
           <Button
             component={RouterLink}

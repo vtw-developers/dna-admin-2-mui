@@ -64,7 +64,7 @@ export function useGetBoards(
       empty: !isLoading && !data?.data.length,
       totalCount: data?.totalCount || 0,
     }),
-    [data?.data, error, isLoading, isValidating, pagination, filters]
+    [data?.data, data?.totalCount, isLoading, error, isValidating]
   );
 
   return memoizedValue;
@@ -93,3 +93,11 @@ export const updateBoard = async (params: FormData) =>
 
 export const deleteBoard = async (params: Board) =>
   (await axiosInstance.post(`${PATH_PREFIX}/delete`, params)).data;
+
+export const download = async (id: string | number) =>
+  (
+    await axiosInstance.get(`${PATH_PREFIX}/download`, {
+      params: { id },
+      responseType: 'blob',
+    })
+  ).data;
