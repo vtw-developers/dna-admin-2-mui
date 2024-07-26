@@ -55,7 +55,6 @@ export const NoticeListView = () => {
       field: 'boardNo',
       headerName: '번호',
       width: 200,
-      // eslint-disable-next-line consistent-return
       renderCell: (params) => {
         if (params.row.pinYn) return <Iconify icon="mingcute:pin-line" />;
         return <>{params.row.boardNo}</>;

@@ -4,6 +4,16 @@ export type BoardFilters = {
   boardMasterId: number | undefined;
 };
 
+export type Comment = {
+  id?: number;
+  boardId: number;
+  commentNo: number;
+  content: string;
+  useYn: boolean;
+  authorName: string;
+  modifiedTime: string;
+};
+
 export type Board = {
   id?: number;
   boardMasterId: number;

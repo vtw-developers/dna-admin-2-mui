@@ -59,7 +59,7 @@ export const FreeListView = () => {
     {
       field: 'title',
       headerName: '제목',
-      width: 1200,
+      flex: 1,
       renderCell: (params) => (
         <Link
           noWrap
