@@ -31,9 +31,6 @@ export type Board = {
   popupEndTime?: string;
   files: any[];
 };
-
-export const defaultBoardFilters: BoardFilters = {
-  boardMasterId: 0,
-  title: '',
-  author: '',
-};
+export const defaultBoardFilters = (e: number) => ({
+  boardMasterId: e,
+});
