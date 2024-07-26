@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo, useEffect, useCallback } from 'react';
 
+import Box from '@mui/material/Box';
 import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -16,6 +17,7 @@ import { useRouter } from 'src/routes/hooks';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
+import { varAlpha } from '../../theme/styles';
 import { fDate } from '../../utils/format-time';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
@@ -106,12 +108,6 @@ export function QnaEditForm({ editMode, entity }: Props) {
 
   const onSubmit = handleSubmit(async (data: Board) => {
     const format = new FormData();
-    // if (selectedFiles) {
-    //   selectedFiles.forEach((file) => {
-    //     format.append('files', file)
-    //   })
-    // }
-
     format.append('entity', new Blob([JSON.stringify(data)], { type: 'application/json' }));
     try {
       if (editMode === 'create') {
@@ -160,7 +156,18 @@ export function QnaEditForm({ editMode, entity }: Props) {
           <Field.Text name="viewCount" label="조회수" inputProps={{ readOnly: true }} />
         </Grid>
         <Grid item xs={12} md={12}>
-          <Field.Editor name="content" sx={{ maxHeight: 480 }} />
+          {editMode !== 'details' && <Field.Editor name="content" sx={{ maxHeight: 480 }} />}
+          {editMode === 'details' && (
+            <Box
+              sx={{
+                px: 2,
+                border: (theme) =>
+                  `solid 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.2)}`,
+              }}
+            >
+              <div dangerouslySetInnerHTML={{ __html: values.content }} />
+            </Box>
+          )}
         </Grid>
         <Grid item xs={12} md={12} />
       </Grid>

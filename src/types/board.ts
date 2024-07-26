@@ -32,6 +32,8 @@ export type Board = {
   files: any[];
 };
 
-export const defaultBoardFilters = (e: number) => ({
-  boardMasterId: e,
-});
+export const defaultBoardFilters: BoardFilters = {
+  boardMasterId: 0,
+  title: '',
+  author: '',
+};
