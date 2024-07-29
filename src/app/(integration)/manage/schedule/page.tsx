@@ -1,11 +1,10 @@
 import { CONFIG } from 'src/config-global';
-
-import { ApiInfoListView } from '../../../../sections/api-info/view/api-info-list-view';
+import { ScheduleListView } from '../../../../sections/schedule/view/schedule-list-view';
 
 // ----------------------------------------------------------------------
 
 export const metadata = { title: `API | ${CONFIG.site.name}` };
 
 export default function Page() {
-  return <ApiInfoListView />;
+  return <ScheduleListView />;
 }

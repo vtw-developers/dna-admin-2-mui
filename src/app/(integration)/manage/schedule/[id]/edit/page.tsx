@@ -1,7 +1,8 @@
 import { CONFIG } from 'src/config-global';
 
-import { getApiInfo } from '../../../../../../actions/api-info';
+import { getSchedule } from '../../../../../../actions/schedule';
 import { ApiInfoEditView } from '../../../../../../sections/api-info/view/api-info-edit-view';
+import { ScheduleEditView } from '../../../../../../sections/schedule/view/schedule-edit-view';
 
 // ----------------------------------------------------------------------
 
@@ -14,7 +15,7 @@ type Props = {
 export default async function Page({ params }: Props) {
   const { id } = params;
 
-  const entity = await getApiInfo(id);
+  const entity = await getSchedule(id);
 
-  return <ApiInfoEditView editMode="update" entity={entity} />;
+  return <ScheduleEditView editMode="update" entity={entity} />;
 }
