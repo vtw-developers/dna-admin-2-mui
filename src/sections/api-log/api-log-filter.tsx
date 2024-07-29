@@ -73,8 +73,8 @@ export function ApiLogFilter({ onSearch }: Props) {
       </Grid>
       <Grid item xs={12} md={6}>
         <DnaDateRangeBox
-          startValue={filters.fromTime || null}
-          endValue={filters.toTime || null}
+          startValue={filters.fromTime}
+          endValue={filters.toTime}
           onValueChange={handleFilterDate}
           startLabel="시작일시"
           endLabel="종료일시"

@@ -1,4 +1,5 @@
 // ----------------------------------------------------------------------
+import moment from 'moment';
 
 export type ApiLogFilters = {
   result: string;
@@ -19,8 +20,8 @@ export type ApiLog = {
 
 export const defaultApiLogFilters: ApiLogFilters = {
   result: '',
-  fromTime: undefined,
-  toTime: undefined,
+  fromTime: moment(Date.now() - 1000 * 60 * 60).format('YYYY-MM-DD HH:mm:ss'),
+  toTime: moment().format('YYYY-MM-DD HH:mm:ss'),
   serviceGroupId: undefined,
   apiId: undefined,
 };

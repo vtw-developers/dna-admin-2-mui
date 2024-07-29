@@ -47,11 +47,6 @@ export function ApiLogListView() {
 
   const columns: GridColDef[] = [
     {
-      field: 'id',
-      headerName: 'id',
-      width: 400,
-    },
-    {
       field: 'messageId',
       headerName: '메시지ID',
       width: 400,
@@ -113,6 +108,7 @@ export function ApiLogListView() {
         }}
       >
         <DataGrid
+          getRowId={(row) => row.messageId}
           disableRowSelectionOnClick
           rows={tableData}
           columns={columns}
