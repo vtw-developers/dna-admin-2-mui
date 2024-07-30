@@ -10,6 +10,7 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import CardHeader from '@mui/material/CardHeader';
+import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -25,6 +26,8 @@ import { ServiceGroupSearchBox } from '../../components/dna-form/dna-service-gro
 
 import type { ApiInfo } from '../../types/api-info';
 
+const yaml = require('js-yaml');
+
 // ----------------------------------------------------------------------
 
 export type SchemaType = zod.infer<typeof Schema>;
@@ -36,6 +39,10 @@ export const Schema = zod.object({
   url: zod.string(),
   serviceGroupId: zod.number(),
   enabled: zod.boolean(),
+  flowId: zod.string(),
+  flowMetaYaml: zod.string(),
+  requestParameters: zod.unknown(),
+  responseElements: zod.unknown(),
 });
 
 // ----------------------------------------------------------------------
@@ -62,6 +69,10 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
       url: entity?.url || '',
       serviceGroupId: entity?.serviceGroupId || 0,
       enabled: entity?.enabled || false,
+      flowId: entity?.flowId || '',
+      flowMetaYaml: entity?.flowMetaYaml || '',
+      requestParameters: entity?.requestParameters || [],
+      responseElements: entity?.responseElements || [],
     }),
     [entity]
   );
@@ -121,16 +132,14 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
       <Divider />
       <Grid container spacing={3} sx={{ p: 3 }}>
-        <Grid item xs={12} md={12}>
-          <Field.Switch
-            name="enabled"
-            label="사용여부"
-            labelPlacement="start"
-            slotProps={{ switch: { disabled: editMode === 'details' } }}
-          />
-        </Grid>
         <Grid item xs={12} md={6}>
           <Field.Text name="name" label="API명" inputProps={{ readOnly: editMode === 'details' }} />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <ServiceGroupSearchBox
+            label="서비스그룹"
+            onChange={(e: number) => setValue('serviceGroupId', e)}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           <Field.Select
@@ -148,10 +157,123 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
         <Grid item xs={12} md={6}>
           <Field.Text name="url" label="URL" inputProps={{ readOnly: editMode === 'details' }} />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <ServiceGroupSearchBox onChange={(e: number) => setValue('serviceGroupId', e)} />
+        <Grid item xs={12} md={12}>
+          <Field.Switch
+            name="enabled"
+            label="사용여부"
+            labelPlacement="start"
+            slotProps={{ switch: { disabled: editMode === 'details' } }}
+          />
         </Grid>
       </Grid>
+    </Card>
+  );
+
+  const onUploaded = (e) => {
+    const { files } = e.target;
+    if (files.length < 1) {
+      return;
+    }
+    const file = files[0];
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      const flowMetaYaml = e.target?.result as string;
+      const flowMeta = yaml.load(flowMetaYaml);
+      const pack = flowMeta.package ? `${flowMeta.package}.` : '';
+      const flowId = pack + flowMeta.name;
+      console.log(flowMeta);
+      setValue('flowId', flowId);
+      setValue('flowMetaYaml', flowMetaYaml);
+    };
+    fileReader.readAsText(file);
+  };
+
+  const syncFormData = () => {
+    console.log('syncFormData');
+    console.log(watch());
+
+    const { flowMetaYaml } = values;
+    const flowMeta = yaml.load(flowMetaYaml);
+    console.log(flowMeta);
+
+    const { nodes } = flowMeta.diagram;
+    const restNode = nodes.find((node) => node.data.component === 'Rest');
+    const { httpMethod } = restNode.data;
+    const url = restNode.data.path;
+    const { requestParameters } = restNode.data;
+    const { responseElements } = restNode.data;
+
+    console.log(requestParameters);
+
+    setValue('httpMethod', httpMethod);
+    setValue('url', url);
+    setValue('requestParameters', requestParameters);
+    setValue('responseElements', responseElements);
+  };
+
+  const renderDna = (
+    <Card>
+      <CardHeader title="DnA 플로우" subheader="" sx={{ mb: 3 }} />
+      <Divider />
+      <Stack direction="row" spacing={2} sx={{ p: 3 }}>
+        <Button variant="contained" color="primary" component="label">
+          메타 파일 선택...
+          <input type="file" hidden onChange={onUploaded} />
+        </Button>
+        <Button variant="contained" color="info" component="label">
+          메타정보 보기
+        </Button>
+        <Button variant="contained" color="success" component="label" onClick={syncFormData}>
+          동기화
+        </Button>
+      </Stack>
+      <Stack spacing={2} sx={{ p: 3 }}>
+        <Field.Text name="flowId" label="플로우 ID" inputProps={{ readOnly: false }} />
+      </Stack>
+    </Card>
+  );
+
+  const columns: GridColDef[] = [
+    {
+      field: 'name',
+      headerName: '이름',
+      minWidth: 300,
+    },
+    {
+      field: 'type',
+      headerName: '유형',
+    },
+  ];
+
+  const renderRequestParameters = (
+    <Card>
+      <CardHeader title="요청 파라미터" subheader="" sx={{ mb: 3 }} />
+      <Divider />
+      <Stack spacing={3} sx={{ p: 3 }}>
+        <DataGrid
+          getRowId={(row) => row.name}
+          columns={columns}
+          rows={values?.requestParameters || []}
+          hideFooterPagination
+          disableColumnSorting
+        />
+      </Stack>
+    </Card>
+  );
+
+  const renderResponseElements = (
+    <Card>
+      <CardHeader title="응답 항목" subheader="" sx={{ mb: 3 }} />
+      <Divider />
+      <Stack spacing={3} sx={{ p: 3 }}>
+        <DataGrid
+          getRowId={(row) => row.name}
+          columns={columns}
+          rows={values?.responseElements || []}
+          hideFooterPagination
+          disableColumnSorting
+        />
+      </Stack>
     </Card>
   );
 
@@ -160,6 +282,9 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
       <Form methods={methods} onSubmit={onSubmit}>
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
+          {renderDna}
+          {renderRequestParameters}
+          {renderResponseElements}
           <DnaBottomButtons
             editing={editing}
             listPath={listPath}

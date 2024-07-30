@@ -17,6 +17,7 @@ export type ApiInfo = {
   url: string;
   serviceGroupId: number;
   enabled: boolean;
+  flowId: string;
 };
 
 export const defaultApiInfoFilters: ApiInfoFilters = {
