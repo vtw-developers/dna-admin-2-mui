@@ -1,7 +1,8 @@
-.dna-datetime-range-box{
+.dna-datetime-range-box {
   display: flex;
   align-items: center;
   gap: 10px;
+
   .datetimebox {
     flex: 1;
   }
@@ -10,7 +11,45 @@
 .service-group-search-button {
   min-width: 20px !important;
   padding: 0 !important;
+
   .MuiButton-icon {
     margin: 0 8px !important;
   }
+}
+
+
+.block {
+  position: relative;
+  background: white;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  cursor: move;
+
+  &:hover {
+    //background: #eeeeee;
+  }
+
+  &.group .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+  }
+
+  &.page {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .iconify {
+    cursor: pointer;
+  }
+}
+
+
+.ghost {
+  background: var(--palette-grey-200);
 }

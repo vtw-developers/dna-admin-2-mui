@@ -1,11 +1,13 @@
 import { CONFIG } from 'src/config-global';
 
-import { BlankView } from 'src/sections/blank/view';
+import { getMenuView } from '../../../../actions/menu';
+import { MenuEditView } from '../../../../sections/menu/menu-edit-view';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Blank | Dashboard - ${CONFIG.site.name}` };
+export const metadata = { title: `Menu - ${CONFIG.site.name}` };
 
-export default function Page() {
-  return <BlankView />;
+export default async function Page() {
+  const entity = await getMenuView();
+  return <MenuEditView entity={entity} />;
 }
