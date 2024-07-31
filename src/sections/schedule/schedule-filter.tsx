@@ -4,26 +4,27 @@ import { useState, useCallback } from 'react';
 
 import { Grid } from '@mui/material';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 import { fDate } from '../../utils/format-time';
 import { Iconify } from '../../components/iconify';
-import { defaultApiLogFilters } from '../../types/api-log';
+import { defaultApiInfoFilters } from '../../types/api-info';
 import { DnaSelectBox } from '../../components/form/dna-select-box';
 import { DnaDateRangeBox } from '../../components/form/dna-date-range-box';
 import { ServiceGroupSearchBox } from '../../components/dna-form/dna-service-group-search-box';
 
-import type { ApiLogFilters } from '../../types/api-log';
+import type { ApiInfoFilters } from '../../types/api-info';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  onSearch: (filters: ApiLogFilters) => void;
+  onSearch: (filters: ApiInfoFilters) => void;
 };
 
-const selectResult = [
+const selectMethod = [
   { id: undefined, text: '[ 전체 ]' },
-  { id: 'ERROR', text: '오류' },
-  { id: 'SUCCESS', text: '성공' },
+  { id: 'GET', text: 'GET' },
+  { id: 'POST', text: 'POST' },
 ];
 
 export const selectEnabled = [
@@ -32,8 +33,8 @@ export const selectEnabled = [
   { id: false, text: '미사용' },
 ];
 
-export function ApiLogFilter({ onSearch }: Props) {
-  const [filters, setFilters] = useState<ApiLogFilters>(defaultApiLogFilters);
+export function ScheduleFilter({ onSearch }: Props) {
+  const [filters, setFilters] = useState<ApiInfoFilters>(defaultApiInfoFilters);
 
   const handleFilterName = useCallback(
     (field: string) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -58,30 +59,56 @@ export function ApiLogFilter({ onSearch }: Props) {
 
   return (
     <Grid container spacing={2}>
+      <Grid item xs={12} md={6}>
+        <TextField
+          label="API명"
+          value={filters.name}
+          fullWidth
+          onChange={handleFilterName('name')}
+        />
+      </Grid>
       <Grid item xs={12} md={3}>
         <DnaSelectBox
-          label="결과"
-          items={selectResult}
-          value={filters.result}
-          onValueChange={handleFilterName('result')}
+          label="HTTP Method"
+          items={selectMethod}
+          value={filters.httpMethod}
+          onValueChange={handleFilterName('httpMethod')}
           valueField="id"
           textField="text"
         />
       </Grid>
       <Grid item xs={12} md={3}>
-        <ServiceGroupSearchBox onChange={handleFilter('serviceGroupId')} />
+        <DnaSelectBox
+          label="사용여부"
+          items={selectEnabled}
+          value={filters.enabled}
+          onValueChange={handleFilterName('enabled')}
+          valueField="id"
+          textField="text"
+        />
       </Grid>
       <Grid item xs={12} md={6}>
         <DnaDateRangeBox
-          startValue={filters.fromTime}
-          endValue={filters.toTime}
+          startValue={filters.startModifiedTime}
+          endValue={filters.endModifiedTime}
           onValueChange={handleFilterDate}
           startLabel="시작일시"
           endLabel="종료일시"
-          startFieldName="fromTime"
-          endFieldName="toTime"
+          startFieldName="startModifiedTime"
+          endFieldName="endModifiedTime"
           format="YYYY-MM-DD HH:mm:ss"
         />
+      </Grid>
+      <Grid item xs={12} md={3}>
+        <TextField
+          label="작성자"
+          fullWidth
+          value={filters.author}
+          onChange={handleFilterName('author')}
+        />
+      </Grid>
+      <Grid item xs={12} md={3}>
+        <ServiceGroupSearchBox onChange={handleFilter('serviceGroupId')} />
       </Grid>
       <Grid item xs={12} md={12} textAlign="center">
         <Button

@@ -10,14 +10,12 @@ export type ApiInfoFilters = {
   serviceGroupId: undefined | number;
 };
 
-export type ApiInfo = {
+export type Schedule = {
   id?: number;
-  name: string;
-  httpMethod: string;
-  url: string;
-  serviceGroupId: number;
-  enabled: boolean;
-  flowId: string;
+  serviceGroupName: string;
+  ctiInfoId: number;
+  ctiInfoName: string;
+  cronExpr: string;
 };
 
 export const defaultApiInfoFilters: ApiInfoFilters = {

@@ -7,9 +7,9 @@ import { Iconify } from '../iconify';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ServiceGroupSelectionPopup } from '../popup/selection/service-group-selection-popup';
 
-type Props = { onChange: any };
+type Props = { label: string; onChange: any };
 
-export const ServiceGroupSearchBox = ({ onChange }: Props) => {
+export const ServiceGroupSearchBox = ({ label, onChange }: Props) => {
   const confirm = useBoolean();
 
   const [serviceGroup, setServiceGroup] = useState({ id: undefined, name: '' });
@@ -22,7 +22,7 @@ export const ServiceGroupSearchBox = ({ onChange }: Props) => {
   return (
     <>
       <TextField
-        label="서비스 그룹"
+        label={label}
         sx={{ width: '100%' }}
         value={serviceGroup?.name}
         InputProps={{
