@@ -7,7 +7,7 @@ import { Iconify } from '../iconify';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ServiceGroupSelectionPopup } from '../popup/selection/service-group-selection-popup';
 
-type Props = { label: string; onChange: any };
+type Props = { label?: string; onChange: any };
 
 export const ServiceGroupSearchBox = ({ label, onChange }: Props) => {
   const confirm = useBoolean();

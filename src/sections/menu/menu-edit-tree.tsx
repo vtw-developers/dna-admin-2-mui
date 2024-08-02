@@ -1,8 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
 import { ReactSortable } from 'react-sortablejs';
 import { useState, useEffect, useCallback, type ChangeEvent } from 'react';
 
-import Box from '@mui/material/Box';
 import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
@@ -12,168 +10,17 @@ import CardHeader from '@mui/material/CardHeader';
 
 import * as index from './index';
 import * as graph from './graph';
+import { BlockWrapper } from './block-wrapper';
 import { Iconify } from '../../components/iconify';
+import { useBoolean } from '../../hooks/use-boolean';
 import { useGetPageInfos } from '../../actions/page-info';
 import { defaultPagination } from '../../utils/pagination';
+import { defaultTree, defaultGroup } from '../../types/menu';
 import { defaultPageInfoFilters } from '../../types/page-info';
 import { ConfirmDialog } from '../../components/custom-dialog';
 import { DnaSelectBox } from '../../components/form/dna-select-box';
-import { useBoolean, type UseBooleanReturn } from '../../hooks/use-boolean';
 
-import type { Menu } from '../../types/menu';
-import type { PageInfo } from '../../types/page-info';
-
-type Props = {
-  entity: Menu[];
-};
-
-type functionProps = {
-  menu: MenuView;
-  menuIndex: number[];
-  setMenus: any;
-  selectedMenu: MenuView;
-  setSelectedMenu: any;
-  setPlainMenus: any;
-  confirm: UseBooleanReturn;
-};
-
-interface MenuView {
-  id: string;
-  name: string;
-  icon: string | null;
-  pageInfoId?: number;
-  parentId?: string;
-  type: string;
-  children?: MenuView[];
-}
-
-function Container({
-  menu,
-  menuIndex,
-  setMenus,
-  selectedMenu,
-  setSelectedMenu,
-  confirm,
-}: functionProps) {
-  return (
-    <ReactSortable
-      key={menu.id}
-      list={menu.children}
-      setList={(currentList) => {
-        setMenus((sourceList: any) => {
-          const tempList = [...sourceList];
-          const _blockIndex = [...menuIndex];
-          const lastIndex = _blockIndex.pop();
-          const lastArr = _blockIndex.reduce((arr, i) => arr[i].children, tempList);
-          lastArr[lastIndex].children = currentList;
-          return tempList;
-        });
-      }}
-      animation={150}
-      fallbackOnBody
-      swapThreshold={0.65}
-      ghostClass="ghost"
-      group="shared"
-    >
-      {menu.children &&
-        menu.children.map((childBlock, idx) => (
-          <BlockWrapper
-            key={childBlock.id}
-            menu={childBlock}
-            menuIndex={[...menuIndex, idx]}
-            setMenus={setMenus}
-            selectedMenu={selectedMenu}
-            setSelectedMenu={setSelectedMenu}
-            confirm={confirm}
-          />
-        ))}
-    </ReactSortable>
-  );
-}
-
-function BlockWrapper({
-  menu,
-  menuIndex,
-  setMenus,
-  selectedMenu,
-  setSelectedMenu,
-  setPlainMenus,
-  confirm,
-}: functionProps) {
-  if (!menu) return null;
-  const defaultPage = {
-    icon: '',
-    index: '',
-    id: '',
-    menuId: uuidv4(),
-    name: 'new Page',
-    pageInfoId: '',
-    path: '',
-    type: 'page',
-    upperMenuId: menu.id,
-  };
-
-  const addPage = () => {
-    console.log('addPage');
-    setPlainMenus((prev: any) => [defaultPage, ...prev]);
-  };
-
-  const selectItem = (item) => {
-    setSelectedMenu(item);
-  };
-
-  if (menu.type === 'group') {
-    return (
-      <Box
-        className={`block group ${selectedMenu?.id === menu.id ? 'selected' : ''}`}
-        onClick={() => selectItem(menu)}
-      >
-        <div className="header">
-          {menu.name}
-          <div>
-            <Iconify icon="mingcute:add-line" onClick={addPage} />
-            <Iconify icon="mingcute:delete-2-line" onClick={confirm.onTrue} />
-          </div>
-        </div>
-        <Container
-          menu={menu}
-          setMenus={setMenus}
-          menuIndex={menuIndex}
-          confirm={confirm}
-          selectedMenu={selectedMenu}
-          setSelectedMenu={setSelectedMenu}
-          setPlainMenus={setPlainMenus}
-        />
-      </Box>
-    );
-  }
-  return (
-    <Box
-      className={`block page ${selectedMenu?.id === menu.id ? 'selected' : ''}`}
-      onClick={(e) => {
-        selectItem(menu);
-        e.stopPropagation();
-      }}
-    >
-      <Iconify icon="mingcute:selector-vertical-line" />
-      {menu.name}
-      <Iconify icon="mingcute:delete-2-line" onClick={confirm.onTrue} />
-    </Box>
-  );
-}
-
-const defaultMenu = {
-  icon: '',
-  index: '',
-  id: '',
-  menuId: uuidv4(),
-  name: 'new Group',
-  pageInfoId: '',
-  path: '',
-  type: 'group',
-  upperMenuId: '0',
-  parentId: '0',
-};
+import type { Menu, MenuTree } from '../../types/menu';
 
 const types = [
   { id: 'group', name: 'Group' },
@@ -189,26 +36,19 @@ const icons = [
   { text: 'Like', icon: 'like' },
 ];
 
+type Props = {
+  entity?: Menu[];
+};
+
 export function MenuEditTree({ entity }: Props) {
-  const [plainMenus, setPlainMenus] = useState(entity);
-  const [menuViews, setMenuViews] = useState<MenuView[]>([]);
-  const [selectedMenu, setSelectedMenu] = useState(defaultMenu);
-  const { data } = useGetPageInfos(defaultPagination, [], defaultPageInfoFilters);
-  const [pageInfos, setPageInfos] = useState<PageInfo[]>([]);
+  const [menuList, setMenuList] = useState<Menu[]>(entity || []);
+  const [menuTree, setMenuTree] = useState<MenuTree[]>([]);
+  const [selectedMenu, setSelectedMenu] = useState<MenuTree>(defaultTree);
+  const { data: pageInfos } = useGetPageInfos(defaultPagination, [], defaultPageInfoFilters);
   const confirm = useBoolean();
 
-  useEffect(() => {
-    console.log(plainMenus);
-    changeFormat();
-  }, [plainMenus]);
-
-  useEffect(() => {
-    setPageInfos(data);
-  }, [data]);
-
   const changeFormat = useCallback(() => {
-    console.log(plainMenus);
-    const formattedData = plainMenus.map((e) => ({
+    const formattedData = menuList.map((e) => ({
       id: e.menuId,
       name: e.name,
       icon: e.icon,
@@ -225,33 +65,26 @@ export function MenuEditTree({ entity }: Props) {
         children: children(node.id),
       })
     );
-    setMenuViews(tree);
-  }, [plainMenus]);
+    setMenuTree(tree);
+  }, [menuList]);
+
+  useEffect(() => {
+    changeFormat();
+  }, [changeFormat, menuList]);
 
   const confirmDelete = () => {
-    console.log('삭제하세요');
-    setPlainMenus((prev: any) => [...prev.filter((e) => e.menuId !== selectedMenu.id)]);
+    setMenuList((prev: any) => [...prev.filter((e: Menu) => e.menuId !== selectedMenu.id)]);
     confirm.onFalse();
   };
 
-  useEffect(() => {
-    console.log(menuViews);
-  }, [menuViews]);
-
-  useEffect(() => {
-    console.log(selectedMenu);
-    console.log(menuViews);
-  }, [selectedMenu]);
-
   const addGroup = () => {
-    console.log('addGroup');
-    setPlainMenus((prev: any) => [defaultMenu, ...prev]);
+    setMenuList((prev: any) => [defaultGroup, ...prev]);
   };
 
   const handleFilterName = useCallback(
     (field: string) => (event: ChangeEvent<HTMLInputElement>) => {
       setSelectedMenu({ ...selectedMenu, [field]: event.target.value });
-      setPlainMenus((menus) =>
+      setMenuList((menus) =>
         menus.map((menu) => {
           if (menu.menuId === selectedMenu?.id) {
             const test = { ...menu, [field]: event.target.value };
@@ -279,23 +112,23 @@ export function MenuEditTree({ entity }: Props) {
             그룹 추가
           </Button>
           <ReactSortable
-            list={menuViews}
-            setList={setMenuViews}
+            list={menuTree}
+            setList={setMenuTree}
             animation={150}
             fallbackOnBody
             swapThreshold={0.65}
             ghostClass="ghost"
             group="shared"
           >
-            {menuViews.map((block, blockIndex) => (
+            {menuTree.map((block, blockIndex) => (
               <BlockWrapper
                 key={block.id}
                 menu={block}
                 menuIndex={[blockIndex]}
                 confirm={confirm}
-                setMenus={setMenuViews}
+                setMenus={setMenuTree}
                 selectedMenu={selectedMenu}
-                setPlainMenus={setPlainMenus}
+                setPlainMenus={setMenuList}
                 setSelectedMenu={setSelectedMenu}
               />
             ))}
