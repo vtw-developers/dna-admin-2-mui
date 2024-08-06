@@ -12,6 +12,7 @@ import { Logo } from 'src/components/logo';
 import { Scrollbar } from 'src/components/scrollbar';
 import { NavSectionMini, NavSectionVertical } from 'src/components/nav-section';
 
+import { icon } from '../config-nav-dashboard';
 import { getMenuView } from '../../actions/menu';
 import { NavToggleButton } from '../components/nav-toggle-button';
 
@@ -56,6 +57,9 @@ export function NavVertical({
             .items.push({
               path: e.pageInfoPath,
               title: e.name,
+              icon: icon(
+                `ic-${e.icon.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase())}`
+              ),
             })
         );
       setList([...group]);

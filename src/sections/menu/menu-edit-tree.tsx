@@ -17,9 +17,8 @@ import { saveMenu } from '../../actions/menu';
 import { BlockWrapper } from './block-wrapper';
 import { Iconify } from '../../components/iconify';
 import { useBoolean } from '../../hooks/use-boolean';
-import { ICONS } from '../../layouts/config-nav-dashboard';
 import { useGetPageInfos } from '../../actions/page-info';
-import { defaultPagination } from '../../utils/pagination';
+import { ICONS } from '../../layouts/config-nav-dashboard';
 import { defaultTree, defaultGroup } from '../../types/menu';
 import { defaultPageInfoFilters } from '../../types/page-info';
 import { ConfirmDialog } from '../../components/custom-dialog';
@@ -34,11 +33,31 @@ const types = [
 
 const icons = [
   { text: 'job', icon: ICONS.job },
-  { text: 'Folder', icon: 'folder' },
-  { text: 'Box', icon: 'box' },
-  { text: 'Check', icon: 'check' },
-  { text: 'User', icon: 'user' },
-  { text: 'Like', icon: 'like' },
+  { text: 'blog', icon: ICONS.blog },
+  { text: 'chat', icon: ICONS.chat },
+  { text: 'mail', icon: ICONS.mail },
+  { text: 'user', icon: ICONS.user },
+  { text: 'file', icon: ICONS.file },
+  { text: 'lock', icon: ICONS.lock },
+  { text: 'tour', icon: ICONS.tour },
+  { text: 'order', icon: ICONS.order },
+  { text: 'label', icon: ICONS.label },
+  { text: 'blank', icon: ICONS.blank },
+  { text: 'kanban', icon: ICONS.kanban },
+  { text: 'folder', icon: ICONS.folder },
+  { text: 'course', icon: ICONS.course },
+  { text: 'banking', icon: ICONS.banking },
+  { text: 'booking', icon: ICONS.booking },
+  { text: 'invoice', icon: ICONS.invoice },
+  { text: 'product', icon: ICONS.product },
+  { text: 'calendar', icon: ICONS.calendar },
+  { text: 'disabled', icon: ICONS.disabled },
+  { text: 'external', icon: ICONS.external },
+  { text: 'menuItem', icon: ICONS.menuItem },
+  { text: 'ecommerce', icon: ICONS.ecommerce },
+  { text: 'analytics', icon: ICONS.analytics },
+  { text: 'dashboard', icon: ICONS.dashboard },
+  { text: 'parameter', icon: ICONS.parameter },
 ];
 
 type Props = {
@@ -57,7 +76,11 @@ export function MenuEditTree({ entity }: Props) {
   const [menuList, setMenuList] = useState<Menu[]>(entity || []);
   const [menuTree, setMenuTree] = useState<MenuTree[]>([]);
   const [selectedMenu, setSelectedMenu] = useState<MenuTree>(defaultTree(uuidv4()));
-  const { data: pageInfos } = useGetPageInfos(defaultPagination, [], defaultPageInfoFilters);
+  const { data: pageInfos } = useGetPageInfos(
+    { page: 0, pageSize: 100 },
+    [],
+    defaultPageInfoFilters
+  );
   const confirm = useBoolean();
 
   const changeFormat = useCallback(() => {
@@ -204,14 +227,14 @@ export function MenuEditTree({ entity }: Props) {
                 textField="name"
               />
             </Grid>
-            <Grid item xs={12} md={12}>
+            <Grid item xs={12} md={12} className="icon-select">
               <DnaSelectBox
                 label="아이콘"
                 items={icons}
                 value={selectedMenu.icon || ''}
                 onValueChange={handleFilterName('icon')}
-                valueField="id"
-                textField="text"
+                valueField="text"
+                textField="icon"
               />
             </Grid>
             <Grid item xs={12} md={12}>

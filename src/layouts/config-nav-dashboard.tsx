@@ -6,11 +6,11 @@ import { SvgColor } from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
 
-const icon = (name: string) => (
+export const icon = (name: string) => (
   <SvgColor src={`${CONFIG.site.basePath}/assets/icons/navbar/${name}.svg`} />
 );
 
-const ICONS = {
+export const ICONS = {
   job: icon('ic-job'),
   blog: icon('ic-blog'),
   chat: icon('ic-chat'),
@@ -38,6 +38,8 @@ const ICONS = {
   dashboard: icon('ic-dashboard'),
   parameter: icon('ic-parameter'),
 };
+
+export const getIcon = (e: string) => icon(`ic-${e}`);
 
 // ----------------------------------------------------------------------
 
