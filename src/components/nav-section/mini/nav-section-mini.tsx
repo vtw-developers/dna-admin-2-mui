@@ -13,6 +13,7 @@ import type { NavGroupProps, NavSectionProps } from '../types';
 export function NavSectionMini({
   sx,
   data,
+  list,
   render,
   slotProps,
   enabledRootRedirect,
@@ -28,7 +29,7 @@ export function NavSectionMini({
   return (
     <Stack component="nav" className={navSectionClasses.mini.root} sx={{ ...cssVars, ...sx }}>
       <NavUl sx={{ flex: '1 1 auto', gap: 'var(--nav-item-gap)' }}>
-        {data.map((group) => (
+        {list.map((group) => (
           <Group
             key={group.subheader ?? group.items[0].title}
             render={render}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 import Stack from '@mui/material/Stack';
 import Collapse from '@mui/material/Collapse';
@@ -10,7 +10,6 @@ import { NavList } from './nav-list';
 import { navSectionClasses } from '../classes';
 import { navSectionCssVars } from '../css-vars';
 import { NavLi, NavUl, Subheader } from '../styles';
-import { getMenuView } from '../../../actions/menu';
 
 import type { NavGroupProps, NavSectionProps } from '../types';
 
@@ -19,39 +18,13 @@ import type { NavGroupProps, NavSectionProps } from '../types';
 export function NavSectionVertical({
   sx,
   data,
+  list,
   render,
   slotProps,
   enabledRootRedirect,
   cssVars: overridesVars,
 }: NavSectionProps) {
-  const [list, setList] = useState<NavSectionProps['data']>([]);
   const theme = useTheme();
-
-  useEffect(() => {
-    nav().then((result) => {
-      const group = result
-        .filter((e) => e.type === 'group')
-        .map((e) => ({
-          id: e.menuId,
-          subheader: e.name,
-          items: [],
-        }));
-      result
-        .filter((e) => e.type === 'page')
-        .forEach((e) =>
-          group
-            .find((f) => f.id === e.upperMenuId)
-            .items.push({
-              path: e.pageInfoPath,
-              title: e.name,
-            })
-        );
-      console.log(group);
-      setList([...group]);
-    });
-  }, [data]);
-
-  const nav = async () => getMenuView();
 
   const cssVars = {
     ...navSectionCssVars.vertical(theme),

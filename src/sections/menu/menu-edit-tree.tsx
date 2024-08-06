@@ -17,6 +17,7 @@ import { saveMenu } from '../../actions/menu';
 import { BlockWrapper } from './block-wrapper';
 import { Iconify } from '../../components/iconify';
 import { useBoolean } from '../../hooks/use-boolean';
+import { ICONS } from '../../layouts/config-nav-dashboard';
 import { useGetPageInfos } from '../../actions/page-info';
 import { defaultPagination } from '../../utils/pagination';
 import { defaultTree, defaultGroup } from '../../types/menu';
@@ -32,7 +33,7 @@ const types = [
 ];
 
 const icons = [
-  { text: 'none', icon: '' },
+  { text: 'job', icon: ICONS.job },
   { text: 'Folder', icon: 'folder' },
   { text: 'Box', icon: 'box' },
   { text: 'Check', icon: 'check' },

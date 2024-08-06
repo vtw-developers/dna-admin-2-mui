@@ -1,6 +1,8 @@
 import type { Breakpoint } from '@mui/material/styles';
 import type { NavSectionProps } from 'src/components/nav-section';
 
+import { useState, useEffect } from 'react';
+
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 
@@ -10,6 +12,7 @@ import { Logo } from 'src/components/logo';
 import { Scrollbar } from 'src/components/scrollbar';
 import { NavSectionMini, NavSectionVertical } from 'src/components/nav-section';
 
+import { getMenuView } from '../../actions/menu';
 import { NavToggleButton } from '../components/nav-toggle-button';
 
 // ----------------------------------------------------------------------
@@ -34,6 +37,32 @@ export function NavVertical({
   ...other
 }: NavVerticalProps) {
   const theme = useTheme();
+  const [list, setList] = useState<NavSectionProps['data']>([]);
+
+  useEffect(() => {
+    nav().then((result) => {
+      const group = result
+        .filter((e) => e.type === 'group')
+        .map((e) => ({
+          id: e.menuId,
+          subheader: e.name,
+          items: [],
+        }));
+      result
+        .filter((e) => e.type === 'page')
+        .forEach((e) =>
+          group
+            .find((f) => f.id === e.upperMenuId)
+            .items.push({
+              path: e.pageInfoPath,
+              title: e.name,
+            })
+        );
+      setList([...group]);
+    });
+  }, []);
+
+  const nav = async () => getMenuView();
 
   const renderNavVertical = (
     <>
@@ -44,7 +73,7 @@ export function NavVertical({
       )}
 
       <Scrollbar fillContent>
-        <NavSectionVertical data={data} sx={{ px: 2, flex: '1 1 auto' }} {...other} />
+        <NavSectionVertical data={data} list={list} sx={{ px: 2, flex: '1 1 auto' }} {...other} />
 
         {/* {slots?.bottomArea ?? <NavUpgrade />} */}
       </Scrollbar>
@@ -61,6 +90,7 @@ export function NavVertical({
 
       <NavSectionMini
         data={data}
+        list={list}
         sx={{ pb: 2, px: 0.5, ...hideScrollY, flex: '1 1 auto', overflowY: 'auto' }}
         {...other}
       />
