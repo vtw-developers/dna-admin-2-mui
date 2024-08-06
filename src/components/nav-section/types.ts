@@ -71,6 +71,7 @@ export type NavGroupProps = Omit<NavListProps, 'data' | 'depth'> & {
 export type NavSectionProps = Omit<NavListProps, 'data' | 'depth'> & {
   sx?: SxProps<Theme>;
   data: {
+    id?: string;
     subheader?: string;
     items: NavItemBaseProps[];
   }[];
