@@ -1,8 +1,10 @@
+import { v4 as uuidv4 } from 'uuid';
 import { ReactSortable } from 'react-sortablejs';
 
 import Box from '@mui/material/Box';
 
 import { defaultPage } from '../../types/menu';
+import { sortableOptions } from './menu-edit-tree';
 import { Iconify } from '../../components/iconify';
 
 import type { MenuTree } from '../../types/menu';
@@ -28,6 +30,7 @@ const Container = ({
   confirm,
 }: FunctionProps) => (
   <ReactSortable
+    {...sortableOptions}
     key={menu.id}
     list={menu.children}
     setList={(currentList) => {
@@ -40,11 +43,6 @@ const Container = ({
         return tempList;
       });
     }}
-    animation={150}
-    fallbackOnBody
-    swapThreshold={0.65}
-    ghostClass="ghost"
-    group="shared"
   >
     {menu.children &&
       menu.children.map((childBlock, idx) => (
@@ -73,7 +71,7 @@ export const BlockWrapper = ({
 }: FunctionProps) => {
   if (!menu) return null;
   const addPage = () => {
-    setPlainMenus((prev: any) => [defaultPage(menu.id), ...prev]);
+    setPlainMenus((prev: any) => [defaultPage(menu.id, uuidv4()), ...prev]);
   };
 
   const selectItem = (item: MenuTree) => {

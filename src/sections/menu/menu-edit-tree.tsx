@@ -1,6 +1,9 @@
+import { toast } from 'sonner';
+import { v4 as uuidv4 } from 'uuid';
 import { ReactSortable } from 'react-sortablejs';
 import { useState, useEffect, useCallback, type ChangeEvent } from 'react';
 
+import Box from '@mui/material/Box';
 import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
@@ -10,6 +13,7 @@ import CardHeader from '@mui/material/CardHeader';
 
 import * as index from './index';
 import * as graph from './graph';
+import { saveMenu } from '../../actions/menu';
 import { BlockWrapper } from './block-wrapper';
 import { Iconify } from '../../components/iconify';
 import { useBoolean } from '../../hooks/use-boolean';
@@ -40,10 +44,18 @@ type Props = {
   entity?: Menu[];
 };
 
+export const sortableOptions = {
+  animation: 150,
+  fallbackOnBody: true,
+  swapThreshold: 0.2,
+  ghostClass: 'ghost',
+  group: 'shared',
+};
+
 export function MenuEditTree({ entity }: Props) {
   const [menuList, setMenuList] = useState<Menu[]>(entity || []);
   const [menuTree, setMenuTree] = useState<MenuTree[]>([]);
-  const [selectedMenu, setSelectedMenu] = useState<MenuTree>(defaultTree);
+  const [selectedMenu, setSelectedMenu] = useState<MenuTree>(defaultTree(uuidv4()));
   const { data: pageInfos } = useGetPageInfos(defaultPagination, [], defaultPageInfoFilters);
   const confirm = useBoolean();
 
@@ -73,12 +85,16 @@ export function MenuEditTree({ entity }: Props) {
   }, [changeFormat, menuList]);
 
   const confirmDelete = () => {
-    setMenuList((prev: any) => [...prev.filter((e: Menu) => e.menuId !== selectedMenu.id)]);
+    setMenuList((prev: any) => [
+      ...prev.filter(
+        (e: Menu) => e.menuId !== selectedMenu.id && e.upperMenuId !== selectedMenu.id
+      ),
+    ]);
     confirm.onFalse();
   };
 
   const addGroup = () => {
-    setMenuList((prev: any) => [defaultGroup, ...prev]);
+    setMenuList((prev: any) => [defaultGroup(uuidv4()), ...prev]);
   };
 
   const handleFilterName = useCallback(
@@ -87,8 +103,7 @@ export function MenuEditTree({ entity }: Props) {
       setMenuList((menus) =>
         menus.map((menu) => {
           if (menu.menuId === selectedMenu?.id) {
-            const test = { ...menu, [field]: event.target.value };
-            return test;
+            return { ...menu, [field]: event.target.value };
           }
           return menu;
         })
@@ -96,30 +111,60 @@ export function MenuEditTree({ entity }: Props) {
     },
     [selectedMenu]
   );
+  const save = () => {
+    const seq = { number: 0 };
+    const arr: any[] = [];
+    menuTree.forEach((e) => {
+      recursive(e, seq, arr);
+    });
+
+    const menus = menuList.map((menu) => {
+      menu.index = arr.find((e) => e.id === menu.menuId).index;
+      return menu;
+    });
+
+    saveMenu(menus).then(() => {
+      toast.success('저장되었습니다.');
+    });
+  };
+
+  function recursive(parent: MenuTree, seq: any, arr: any[]) {
+    parent.seq = seq.number;
+    arr.push({ id: parent.id, index: seq.number });
+    seq.number += 1;
+
+    parent.children?.forEach((child: MenuTree) => {
+      recursive(child, seq, arr);
+    });
+  }
 
   return (
     <Grid container spacing={3} className="menu-edit-tree">
       <Grid item xs={12} md={6} lg={4}>
         <Card sx={{ p: 2 }}>
-          <Button
-            variant="outlined"
-            size="medium"
-            color="primary"
-            onClick={addGroup}
-            startIcon={<Iconify icon="mingcute:add-line" />}
-            sx={{ mb: 2 }}
-          >
-            그룹 추가
-          </Button>
-          <ReactSortable
-            list={menuTree}
-            setList={setMenuTree}
-            animation={150}
-            fallbackOnBody
-            swapThreshold={0.65}
-            ghostClass="ghost"
-            group="shared"
-          >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Button
+              variant="text"
+              size="medium"
+              color="inherit"
+              onClick={addGroup}
+              startIcon={<Iconify icon="mingcute:add-line" />}
+              sx={{ mb: 2 }}
+            >
+              그룹 추가
+            </Button>
+            <Button
+              size="medium"
+              color="primary"
+              variant="contained"
+              onClick={save}
+              startIcon={<Iconify icon="mingcute:save-2-line" />}
+              sx={{ mb: 2 }}
+            >
+              저장
+            </Button>
+          </Box>
+          <ReactSortable list={menuTree} setList={setMenuTree} {...sortableOptions}>
             {menuTree.map((block, blockIndex) => (
               <BlockWrapper
                 key={block.id}
@@ -177,17 +222,6 @@ export function MenuEditTree({ entity }: Props) {
                 valueField="id"
                 textField="name"
               />
-            </Grid>
-            <Grid item xs={12} md={12}>
-              <Button
-                size="medium"
-                color="primary"
-                onClick={addGroup}
-                startIcon={<Iconify icon="mingcute:check-line" />}
-                sx={{ mb: 2 }}
-              >
-                저장
-              </Button>
             </Grid>
           </Grid>
         </Card>

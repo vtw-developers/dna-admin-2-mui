@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
-
 export type Menu = {
   menuId: string;
   name: string;
@@ -17,25 +15,26 @@ export type MenuTree = {
   pageInfoId?: number;
   parentId?: string;
   type: string;
+  seq?: number;
   children?: MenuTree[];
 };
 
-export const defaultGroup: Menu = {
-  menuId: uuidv4(),
+export const defaultGroup = (uuid: string) => ({
+  menuId: uuid,
   name: 'New Group',
   type: 'group',
   upperMenuId: '0',
-};
+});
 
-export const defaultPage = (menuId: string) => ({
-  menuId: uuidv4(),
+export const defaultPage = (menuId: string, uuid: string) => ({
+  menuId: uuid,
   name: 'New Menu',
   type: 'page',
   upperMenuId: menuId,
 });
 
-export const defaultTree: MenuTree = {
-  id: uuidv4(),
+export const defaultTree = (uuid: string) => ({
+  id: uuid,
   name: '',
   type: '',
-};
+});
