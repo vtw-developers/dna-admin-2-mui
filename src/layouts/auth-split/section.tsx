@@ -32,9 +32,9 @@ export function Section({
   method,
   layoutQuery,
   methods,
-  title = 'Manage the job',
+  title = 'DnA Admin',
   imgUrl = `${CONFIG.site.basePath}/assets/illustrations/illustration-dashboard.webp`,
-  subtitle = 'More effectively with optimized workflows.',
+  subtitle = '안녕하세요, 다시 오신 것을 환영합니다',
   ...other
 }: SectionProps) {
   const theme = useTheme();

@@ -77,15 +77,15 @@ export function JwtSignInView() {
 
   const renderHead = (
     <Stack spacing={1.5} sx={{ mb: 5 }}>
-      <Typography variant="h5">Sign in to your account</Typography>
+      <Typography variant="h5">로그인 하세요.</Typography>
 
       <Stack direction="row" spacing={0.5}>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {`Don't have an account?`}
+          계정이 없습니까?
         </Typography>
 
         <Link component={RouterLink} href={paths.auth.jwt.signUp} variant="subtitle2">
-          Get started
+          회원가입
         </Link>
       </Stack>
     </Stack>
@@ -93,7 +93,7 @@ export function JwtSignInView() {
 
   const renderForm = (
     <Stack spacing={3}>
-      <Field.Text name="email" label="Email address" InputLabelProps={{ shrink: true }} />
+      <Field.Text name="email" label="Email" InputLabelProps={{ shrink: true }} />
 
       <Stack spacing={1.5}>
         <Link
@@ -103,7 +103,7 @@ export function JwtSignInView() {
           color="inherit"
           sx={{ alignSelf: 'flex-end' }}
         >
-          Forgot password?
+          비밀번호가 기억나지 않는다면?
         </Link>
 
         <Field.Text
@@ -133,7 +133,7 @@ export function JwtSignInView() {
         loading={isSubmitting}
         loadingIndicator="Sign in..."
       >
-        Sign in
+        로그인
       </LoadingButton>
     </Stack>
   );
@@ -143,8 +143,8 @@ export function JwtSignInView() {
       {renderHead}
 
       <Alert severity="info" sx={{ mb: 3 }}>
-        Use <strong>{defaultValues.email}</strong>
-        {' with password '}
+        아이디 <strong>{defaultValues.email}</strong>
+        {' 비밀번호 '}
         <strong>{defaultValues.password}</strong>
       </Alert>
 

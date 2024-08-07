@@ -89,15 +89,15 @@ export function JwtSignUpView() {
 
   const renderHead = (
     <Stack spacing={1.5} sx={{ mb: 5 }}>
-      <Typography variant="h5">Get started absolutely free</Typography>
+      <Typography variant="h5">DnA Admin을 시작해 보세요</Typography>
 
       <Stack direction="row" spacing={0.5}>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Already have an account?
+          이미 계정이 존재한다면?
         </Typography>
 
         <Link component={RouterLink} href={paths.auth.jwt.signIn} variant="subtitle2">
-          Sign in
+          로그인
         </Link>
       </Stack>
     </Stack>
@@ -106,16 +106,16 @@ export function JwtSignUpView() {
   const renderForm = (
     <Stack spacing={3}>
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <Field.Text name="firstName" label="First name" InputLabelProps={{ shrink: true }} />
-        <Field.Text name="lastName" label="Last name" InputLabelProps={{ shrink: true }} />
+        <Field.Text name="lastName" label="성" InputLabelProps={{ shrink: true }} />
+        <Field.Text name="firstName" label="이름" InputLabelProps={{ shrink: true }} />
       </Stack>
 
-      <Field.Text name="email" label="Email address" InputLabelProps={{ shrink: true }} />
+      <Field.Text name="email" label="이메일" InputLabelProps={{ shrink: true }} />
 
       <Field.Text
         name="password"
-        label="Password"
-        placeholder="6+ characters"
+        label="비밀번호"
+        placeholder="6자 이상 입력하세요."
         type={password.value ? 'text' : 'password'}
         InputLabelProps={{ shrink: true }}
         InputProps={{
@@ -138,7 +138,7 @@ export function JwtSignUpView() {
         loading={isSubmitting}
         loadingIndicator="Create account..."
       >
-        Create account
+        계정 생성
       </LoadingButton>
     </Stack>
   );
@@ -153,15 +153,14 @@ export function JwtSignUpView() {
         color: 'text.secondary',
       }}
     >
-      {'By signing up, I agree to '}
       <Link underline="always" color="text.primary">
-        Terms of service
+        서비스 약관
       </Link>
-      {' and '}
+      {' 및 '}
       <Link underline="always" color="text.primary">
-        Privacy policy
+        개인정보 처리 방침
       </Link>
-      .
+      에 동의합니다.
     </Typography>
   );
 

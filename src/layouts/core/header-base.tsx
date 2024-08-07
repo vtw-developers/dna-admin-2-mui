@@ -8,6 +8,7 @@ import { Logo } from 'src/components/logo';
 import { HeaderSection } from './header-section';
 import { Searchbar } from '../components/searchbar';
 import { MenuButton } from '../components/menu-button';
+import { AccountTimer } from '../components/account-timer';
 import { SignInButton } from '../components/sign-in-button';
 import { AccountDrawer } from '../components/account-drawer';
 import { SettingsButton } from '../components/settings-button';
@@ -165,11 +166,14 @@ export function HeaderBase({
               {/* -- Contacts popover -- */}
               {contacts && <ContactsPopover data-slot="contacts" data={data?.contacts} />}
 
-              {/* -- Settings button -- */}
-              {settings && <SettingsButton data-slot="settings" />}
+              {/* -- Account timer -- */}
+              {account && <AccountTimer data-slot="account" data={data?.account} />}
 
               {/* -- Account drawer -- */}
               {account && <AccountDrawer data-slot="account" data={data?.account} />}
+
+              {/* -- Settings button -- */}
+              {settings && <SettingsButton data-slot="settings" />}
 
               {/* -- Sign in button -- */}
               {signIn && <SignInButton />}
