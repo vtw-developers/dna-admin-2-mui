@@ -1,5 +1,6 @@
 'use client';
 
+import axiosInstance from 'src/utils/axios';
 import axios, { endpoints } from 'src/utils/axios';
 
 import { setSession } from './utils';
@@ -13,10 +14,9 @@ export type SignInParams = {
 };
 
 export type SignUpParams = {
-  email: string;
+  id: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  name: string;
 };
 
 /** **************************************
@@ -44,6 +44,7 @@ export const signInWithPassword = async ({ email, password }: SignInParams): Pro
 /** **************************************
  * Sign up
  *************************************** */
+/*
 export const signUp = async ({
   email,
   password,
@@ -72,6 +73,43 @@ export const signUp = async ({
     throw error;
   }
 };
+*/
+
+/** **************************************
+ * create account
+ *************************************** */
+export const createAccount = async ({ id, password, name }: SignUpParams): Promise<void> => {
+  const params = {
+    id,
+    password,
+    name,
+  };
+
+  try {
+    const res = await axios.post(endpoints.auth.createAccount, params);
+
+    const { accessToken } = res.data;
+
+    if (!accessToken) {
+      throw new Error('Access token not found in response');
+    }
+
+    sessionStorage.setItem(STORAGE_KEY, accessToken);
+  } catch (error) {
+    console.error('Error during sign up:', error);
+    throw error;
+  }
+};
+
+/** **************************************
+ * id Check
+ *************************************** */
+export const idCheck = async (id: string) =>
+  (
+    await axiosInstance.get(endpoints.auth.idCheck, {
+      params: { id },
+    })
+  ).data;
 
 /** **************************************
  * Sign out

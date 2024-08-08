@@ -1,13 +1,14 @@
 'use client';
 
 import { z as zod } from 'zod';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import Link from '@mui/material/Link';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -22,20 +23,17 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import { Iconify } from 'src/components/iconify';
 import { Form, Field } from 'src/components/hook-form';
 
-import { signUp } from 'src/auth/context/jwt';
 import { useAuthContext } from 'src/auth/hooks';
+
+import { idCheck, createAccount } from '../../../auth/context/jwt';
 
 // ----------------------------------------------------------------------
 
 export type SignUpSchemaType = zod.infer<typeof SignUpSchema>;
 
 export const SignUpSchema = zod.object({
-  firstName: zod.string().min(1, { message: 'First name is required!' }),
-  lastName: zod.string().min(1, { message: 'Last name is required!' }),
-  email: zod
-    .string()
-    .min(1, { message: 'Email is required!' })
-    .email({ message: 'Email must be a valid email address!' }),
+  name: zod.string().min(1, { message: 'Name is required!' }),
+  id: zod.string().min(1, { message: 'ID is required!' }),
   password: zod
     .string()
     .min(1, { message: 'Password is required!' })
@@ -47,6 +45,8 @@ export const SignUpSchema = zod.object({
 export function JwtSignUpView() {
   const { checkUserSession } = useAuthContext();
 
+  const [duplicated, setDuplicated] = useState<boolean>(true);
+
   const router = useRouter();
 
   const password = useBoolean();
@@ -54,9 +54,8 @@ export function JwtSignUpView() {
   const [errorMsg, setErrorMsg] = useState('');
 
   const defaultValues = {
-    firstName: 'Hello',
-    lastName: 'Friend',
-    email: 'hello@gmail.com',
+    name: 'dna',
+    id: 'hello',
     password: '@demo1',
   };
 
@@ -67,25 +66,47 @@ export function JwtSignUpView() {
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    watch,
+    setError,
+    clearErrors,
+    setFocus,
+    formState: { isSubmitting, isValid },
   } = methods;
+  const values = watch();
+  const idValue = watch('id');
+
+  useEffect(() => {
+    setDuplicated(true);
+  }, [idValue]);
 
   const onSubmit = handleSubmit(async (data) => {
-    try {
-      await signUp({
-        email: data.email,
-        password: data.password,
-        firstName: data.firstName,
-        lastName: data.lastName,
-      });
-      await checkUserSession?.();
+    if (isValid) {
+      try {
+        await createAccount({
+          id: data.id,
+          password: data.password,
+          name: data.name,
+        });
+        await checkUserSession?.();
 
-      router.refresh();
-    } catch (error) {
-      console.error(error);
-      setErrorMsg(error instanceof Error ? error.message : error);
-    }
+        router.refresh();
+      } catch (error) {
+        console.error(error);
+        setErrorMsg(error instanceof Error ? error.message : error);
+      }
+    } else setFocus('id', { shouldSelect: true });
   });
+
+  const duplicatedCheck = async () => {
+    const entity = await idCheck(values.id);
+    setDuplicated(entity);
+    if (entity)
+      setError('id', {
+        type: 'duplicate',
+        message: '이미 사용중인 ID 입니다. 다른 ID를 사용해 주세요.',
+      });
+    else clearErrors('id');
+  };
 
   const renderHead = (
     <Stack spacing={1.5} sx={{ mb: 5 }}>
@@ -105,12 +126,18 @@ export function JwtSignUpView() {
 
   const renderForm = (
     <Stack spacing={3}>
+      <Field.Text name="name" label="이름" InputLabelProps={{ shrink: true }} variant="outlined" />
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <Field.Text name="lastName" label="성" InputLabelProps={{ shrink: true }} />
-        <Field.Text name="firstName" label="이름" InputLabelProps={{ shrink: true }} />
+        <Field.Text name="id" label="ID" InputLabelProps={{ shrink: true }} variant="outlined" />
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ minWidth: '80px' }}
+          onClick={duplicatedCheck}
+        >
+          중복체크
+        </Button>
       </Stack>
-
-      <Field.Text name="email" label="이메일" InputLabelProps={{ shrink: true }} />
 
       <Field.Text
         name="password"
@@ -127,8 +154,9 @@ export function JwtSignUpView() {
             </InputAdornment>
           ),
         }}
+        variant="outlined"
       />
-
+      {duplicated && <Typography variant="body2">ID 중복체크를 진행해 주세요.</Typography>}
       <LoadingButton
         fullWidth
         color="inherit"
@@ -136,6 +164,7 @@ export function JwtSignUpView() {
         type="submit"
         variant="contained"
         loading={isSubmitting}
+        disabled={duplicated}
         loadingIndicator="Create account..."
       >
         계정 생성

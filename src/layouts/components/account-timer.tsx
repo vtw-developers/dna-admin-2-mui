@@ -74,7 +74,7 @@ export function AccountTimer({ data = [], sx, ...other }: AccountTimerProps) {
   return (
     <>
       <Box>{decorateRemainingTime(remainingTime)}</Box>
-      <Button variant="outlined" color="inherit" onClick={onRefreshTokenClick}>
+      <Button variant="text" color="inherit" onClick={onRefreshTokenClick}>
         연장
       </Button>
     </>

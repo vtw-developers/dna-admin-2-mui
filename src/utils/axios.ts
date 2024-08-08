@@ -38,5 +38,7 @@ export const endpoints = {
     me: '/auth/me',
     signIn: '/auth/signIn',
     signUp: '/auth/signUp',
+    createAccount: '/auth/createAccount',
+    idCheck: '/auth/idCheck',
   },
 };
