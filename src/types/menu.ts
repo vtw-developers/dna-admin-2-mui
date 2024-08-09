@@ -13,6 +13,7 @@ export type MenuTree = {
   name: string;
   icon?: string;
   pageInfoId?: number;
+  pageInfoPath?: string;
   parentId?: string;
   type: string;
   seq?: number;

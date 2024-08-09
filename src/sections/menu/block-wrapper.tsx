@@ -4,8 +4,8 @@ import { ReactSortable } from 'react-sortablejs';
 import Box from '@mui/material/Box';
 
 import { defaultPage } from '../../types/menu';
-import { sortableOptions } from './menu-edit-tree';
 import { Iconify } from '../../components/iconify';
+import { icon } from '../../layouts/config-nav-dashboard';
 
 import type { MenuTree } from '../../types/menu';
 import type { UseBooleanReturn } from '../../hooks/use-boolean';
@@ -18,6 +18,14 @@ type FunctionProps = {
   setSelectedMenu: any;
   setPlainMenus: any;
   confirm: UseBooleanReturn;
+};
+
+export const sortableOptions = {
+  animation: 150,
+  fallbackOnBody: true,
+  swapThreshold: 0.2,
+  ghostClass: 'ghost',
+  group: 'shared',
 };
 
 const Container = ({
@@ -111,8 +119,20 @@ export const BlockWrapper = ({
         e.stopPropagation();
       }}
     >
-      <Iconify icon="mingcute:selector-vertical-line" />
-      {menu.name}
+      <Box sx={{ display: 'flex' }}>
+        <Box sx={{ pr: 2 }}>
+          <Iconify icon="mingcute:selector-vertical-line" />
+        </Box>
+        <Box sx={{}}>
+          {icon(
+            `ic-${menu.icon?.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase())}`
+          )}
+        </Box>
+        <Box sx={{ px: 2 }}>{menu.name} </Box>{' '}
+        <Box sx={{ color: 'text.disabled' }}>
+          <i>{menu?.pageInfoPath}</i>
+        </Box>
+      </Box>
       <Iconify icon="mingcute:delete-2-line" onClick={confirm.onTrue} />
     </Box>
   );

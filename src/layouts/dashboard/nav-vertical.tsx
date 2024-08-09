@@ -43,22 +43,22 @@ export function NavVertical({
   useEffect(() => {
     nav().then((result) => {
       const group = result
-        .filter((e) => e.type === 'group')
-        .map((e) => ({
+        .filter((e: { type: string }) => e.type === 'group')
+        .map((e: { menuId: any; name: any }) => ({
           id: e.menuId,
           subheader: e.name,
           items: [],
         }));
       result
-        .filter((e) => e.type === 'page')
-        .forEach((e) =>
+        .filter((e: { type: string }) => e.type === 'page')
+        .forEach((e: { upperMenuId: any; pageInfoPath: any; name: any; icon: string }) =>
           group
-            .find((f) => f.id === e.upperMenuId)
+            .find((f: { id: any }) => f.id === e.upperMenuId)
             .items.push({
               path: e.pageInfoPath,
               title: e.name,
               icon: icon(
-                `ic-${e.icon.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase())}`
+                `ic-${e.icon?.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase())}`
               ),
             })
         );

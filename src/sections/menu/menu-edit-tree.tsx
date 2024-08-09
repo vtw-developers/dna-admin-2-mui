@@ -14,7 +14,6 @@ import CardHeader from '@mui/material/CardHeader';
 import * as index from './index';
 import * as graph from './graph';
 import { saveMenu } from '../../actions/menu';
-import { BlockWrapper } from './block-wrapper';
 import { Iconify } from '../../components/iconify';
 import { useBoolean } from '../../hooks/use-boolean';
 import { useGetPageInfos } from '../../actions/page-info';
@@ -22,6 +21,7 @@ import { ICONS } from '../../layouts/config-nav-dashboard';
 import { defaultTree, defaultGroup } from '../../types/menu';
 import { defaultPageInfoFilters } from '../../types/page-info';
 import { ConfirmDialog } from '../../components/custom-dialog';
+import { BlockWrapper, sortableOptions } from './block-wrapper';
 import { DnaSelectBox } from '../../components/form/dna-select-box';
 
 import type { Menu, MenuTree } from '../../types/menu';
@@ -64,14 +64,6 @@ type Props = {
   entity?: Menu[];
 };
 
-export const sortableOptions = {
-  animation: 150,
-  fallbackOnBody: true,
-  swapThreshold: 0.2,
-  ghostClass: 'ghost',
-  group: 'shared',
-};
-
 export function MenuEditTree({ entity }: Props) {
   const [menuList, setMenuList] = useState<Menu[]>(entity || []);
   const [menuTree, setMenuTree] = useState<MenuTree[]>([]);
@@ -89,6 +81,7 @@ export function MenuEditTree({ entity }: Props) {
       name: e.name,
       icon: e.icon,
       pageInfoId: e.pageInfoId,
+      pageInfoPath: e.pageInfoPath,
       parentId: e.upperMenuId === '0' ? null : e.upperMenuId,
       type: e.type,
       children: [],
@@ -102,6 +95,8 @@ export function MenuEditTree({ entity }: Props) {
       })
     );
     setMenuTree(tree);
+    console.log(menuList);
+    console.log(tree);
   }, [menuList]);
 
   useEffect(() => {
