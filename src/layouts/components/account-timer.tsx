@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
 import { useAuthContext } from '../../auth/hooks';
-import { jwtDecode, STORAGE_KEY, refreshToken } from '../../auth/context/jwt';
+import { jwtDecode, setSession, STORAGE_KEY, refreshToken } from '../../auth/context/jwt';
 
 // ----------------------------------------------------------------------
 export type AccountTimerProps = IconButtonProps & {
@@ -57,7 +57,14 @@ export function AccountTimer({ data = [], sx, ...other }: AccountTimerProps) {
   }
 
   const onRefreshTokenClick = () => {
-    refreshToken().then(() => {
+    refreshToken().then((data) => {
+      const { token } = data;
+
+      if (!token) {
+        throw new Error('Access token not found in response');
+      }
+
+      setSession(token);
       resetRemainingTime();
     });
   };
