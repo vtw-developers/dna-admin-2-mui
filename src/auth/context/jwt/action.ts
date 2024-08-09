@@ -111,6 +111,9 @@ export const idCheck = async (id: string) =>
     })
   ).data;
 
+export const refreshToken = async () =>
+  (await axiosInstance.get(endpoints.auth.refreshToken, {})).data;
+
 /** **************************************
  * Sign out
  *************************************** */

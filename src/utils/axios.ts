@@ -40,5 +40,6 @@ export const endpoints = {
     signUp: '/auth/signUp',
     createAccount: '/auth/createAccount',
     idCheck: '/auth/idCheck',
+    refreshToken: '/auth/refreshToken',
   },
 };

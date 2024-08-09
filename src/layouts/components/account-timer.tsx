@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
 import { useAuthContext } from '../../auth/hooks';
-import { jwtDecode, STORAGE_KEY } from '../../auth/context/jwt';
+import { jwtDecode, STORAGE_KEY, refreshToken } from '../../auth/context/jwt';
 
 // ----------------------------------------------------------------------
 export type AccountTimerProps = IconButtonProps & {
@@ -57,9 +57,9 @@ export function AccountTimer({ data = [], sx, ...other }: AccountTimerProps) {
   }
 
   const onRefreshTokenClick = () => {
-    // refreshToken().then(() => {
-    resetRemainingTime();
-    // });
+    refreshToken().then(() => {
+      resetRemainingTime();
+    });
   };
 
   const resetRemainingTime = () => {
@@ -71,6 +71,7 @@ export function AccountTimer({ data = [], sx, ...other }: AccountTimerProps) {
       setRemainingTime(loginExpireMs);
     }
   };
+
   return (
     <>
       <Box>{decorateRemainingTime(remainingTime)}</Box>
