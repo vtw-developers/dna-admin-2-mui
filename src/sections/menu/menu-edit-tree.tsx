@@ -21,7 +21,7 @@ import { ICONS } from '../../layouts/config-nav-dashboard';
 import { defaultTree, defaultGroup } from '../../types/menu';
 import { defaultPageInfoFilters } from '../../types/page-info';
 import { ConfirmDialog } from '../../components/custom-dialog';
-import { BlockWrapper, sortableOptions } from './block-wrapper';
+import { MenuTreeBlock, sortableOptions } from './menu-tree-block';
 import { DnaSelectBox } from '../../components/form/dna-select-box';
 
 import type { Menu, MenuTree } from '../../types/menu';
@@ -184,15 +184,15 @@ export function MenuEditTree({ entity }: Props) {
             </Button>
           </Box>
           <ReactSortable list={menuTree} setList={setMenuTree} {...sortableOptions}>
-            {menuTree.map((block, blockIndex) => (
-              <BlockWrapper
-                key={block.id}
-                menu={block}
-                menuIndex={[blockIndex]}
+            {menuTree.map((menu, menuIndex) => (
+              <MenuTreeBlock
+                key={menu.id}
+                menu={menu}
+                menuIndex={[menuIndex]}
                 confirm={confirm}
-                setMenus={setMenuTree}
+                setMenuTree={setMenuTree}
                 selectedMenu={selectedMenu}
-                setPlainMenus={setMenuList}
+                setMenuList={setMenuList}
                 setSelectedMenu={setSelectedMenu}
               />
             ))}
