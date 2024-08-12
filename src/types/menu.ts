@@ -4,6 +4,7 @@ export type Menu = {
   type: string;
   icon?: string;
   upperMenuId?: string;
+  pageInfoPath?: string;
   pageInfoId?: number;
   index?: number;
 };

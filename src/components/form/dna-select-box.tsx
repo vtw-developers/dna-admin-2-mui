@@ -30,6 +30,7 @@ export const DnaSelectBox = ({
       value={value}
       onChange={onValueChange}
       readOnly={readonly}
+      variant="outlined"
     >
       {items.map((e, index) => (
         <MenuItem key={index} value={e[valueField]}>

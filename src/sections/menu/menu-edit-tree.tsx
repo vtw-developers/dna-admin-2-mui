@@ -95,8 +95,6 @@ export function MenuEditTree({ entity }: Props) {
       })
     );
     setMenuTree(tree);
-    console.log(menuList);
-    console.log(tree);
   }, [menuList]);
 
   useEffect(() => {
@@ -118,7 +116,14 @@ export function MenuEditTree({ entity }: Props) {
 
   const handleFilterName = useCallback(
     (field: string) => (event: ChangeEvent<HTMLInputElement>) => {
-      setSelectedMenu({ ...selectedMenu, [field]: event.target.value });
+      if (field === 'type')
+        setSelectedMenu({
+          ...selectedMenu,
+          [field]: event.target.value,
+          icon: '',
+          pageInfoId: undefined,
+        });
+      else setSelectedMenu({ ...selectedMenu, [field]: event.target.value });
       setMenuList((menus) =>
         menus.map((menu) => {
           if (menu.menuId === selectedMenu?.id) {
@@ -230,6 +235,7 @@ export function MenuEditTree({ entity }: Props) {
                 onValueChange={handleFilterName('icon')}
                 valueField="text"
                 textField="icon"
+                readonly={selectedMenu.type === 'group'}
               />
             </Grid>
             <Grid item xs={12} md={12}>
@@ -239,6 +245,7 @@ export function MenuEditTree({ entity }: Props) {
                 value={selectedMenu.pageInfoId || ''}
                 onValueChange={handleFilterName('pageInfoId')}
                 valueField="id"
+                readonly={selectedMenu.type === 'group'}
                 textField="name"
               />
             </Grid>
