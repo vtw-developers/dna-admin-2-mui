@@ -42,12 +42,7 @@ export function Upload({
   const hasError = isDragReject || !!error;
 
   const renderMultiPreview = hasFiles && (
-    <MultiFilePreview
-      files={value.filter((file) => !file.removed)}
-      thumbnail={thumbnail}
-      onRemove={onRemove}
-      sx={{ my: 3 }}
-    />
+    <MultiFilePreview files={value} thumbnail={thumbnail} onRemove={onRemove} sx={{ my: 3 }} />
   );
 
   return (

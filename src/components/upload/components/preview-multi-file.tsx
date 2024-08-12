@@ -26,8 +26,6 @@ export function MultiFilePreview({
 
   const renderLastNode = lastNode && <Box component="li">{lastNode}</Box>;
 
-  console.log(files);
-
   return (
     <Box
       component="ul"
