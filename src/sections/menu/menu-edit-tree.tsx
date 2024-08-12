@@ -1,6 +1,5 @@
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
-import { ReactSortable } from 'react-sortablejs';
 import { useState, useEffect, useCallback, type ChangeEvent } from 'react';
 
 import Box from '@mui/material/Box';
@@ -14,6 +13,7 @@ import CardHeader from '@mui/material/CardHeader';
 import * as index from './index';
 import * as graph from './graph';
 import { saveMenu } from '../../actions/menu';
+import { Container } from './menu-tree-block';
 import { Iconify } from '../../components/iconify';
 import { useBoolean } from '../../hooks/use-boolean';
 import { useGetPageInfos } from '../../actions/page-info';
@@ -21,7 +21,6 @@ import { ICONS } from '../../layouts/config-nav-dashboard';
 import { defaultTree, defaultGroup } from '../../types/menu';
 import { defaultPageInfoFilters } from '../../types/page-info';
 import { ConfirmDialog } from '../../components/custom-dialog';
-import { MenuTreeBlock, sortableOptions } from './menu-tree-block';
 import { DnaSelectBox } from '../../components/form/dna-select-box';
 
 import type { Menu, MenuTree } from '../../types/menu';
@@ -74,6 +73,7 @@ export function MenuEditTree({ entity }: Props) {
     defaultPageInfoFilters
   );
   const confirm = useBoolean();
+  const [rootMenuTree, setRootMenuTree] = useState({ id: 'test', name: '테스트', children: [] });
 
   const changeFormat = useCallback(() => {
     const formattedData = menuList.map((e) => ({
@@ -94,9 +94,11 @@ export function MenuEditTree({ entity }: Props) {
         children: children(node.id),
       })
     );
-    setMenuTree(tree);
+    // setMenuTree(tree);
     console.log(menuList);
     console.log(tree);
+
+    setRootMenuTree({ id: 'test', name: '테스트', children: tree });
   }, [menuList]);
 
   useEffect(() => {
@@ -120,12 +122,14 @@ export function MenuEditTree({ entity }: Props) {
     (field: string) => (event: ChangeEvent<HTMLInputElement>) => {
       setSelectedMenu({ ...selectedMenu, [field]: event.target.value });
       setMenuList((menus) =>
-        menus.map((menu) => {
-          if (menu.menuId === selectedMenu?.id) {
-            return { ...menu, [field]: event.target.value };
-          }
-          return menu;
-        })
+        menus
+          .map((menu) => {
+            if (menu.menuId === selectedMenu?.id) {
+              return { ...menu, [field]: event.target.value };
+            }
+            return menu;
+          })
+          .concat({ menuId: 'test', name: '테스트', type: 'group', index: -1 })
       );
     },
     [selectedMenu]
@@ -157,6 +161,8 @@ export function MenuEditTree({ entity }: Props) {
     });
   }
 
+  console.log(rootMenuTree);
+
   return (
     <Grid container spacing={3} className="menu-edit-tree">
       <Grid item xs={12} md={6} lg={4}>
@@ -183,7 +189,20 @@ export function MenuEditTree({ entity }: Props) {
               저장
             </Button>
           </Box>
-          <ReactSortable list={menuTree} setList={setMenuTree} {...sortableOptions}>
+          {rootMenuTree && setRootMenuTree && (
+            <Container
+              menu={rootMenuTree}
+              setRootMenuTree={setRootMenuTree}
+              setMenuTree={setMenuTree}
+              menuIndex={[0]}
+              confirm={confirm}
+              selectedMenu={selectedMenu}
+              setSelectedMenu={setSelectedMenu}
+              setMenuList={setMenuList}
+            />
+          )}
+
+          {/*          <ReactSortable list={menuTree} setList={setMenuTree} {...sortableOptions}>
             {menuTree.map((menu, menuIndex) => (
               <MenuTreeBlock
                 key={menu.id}
@@ -196,7 +215,7 @@ export function MenuEditTree({ entity }: Props) {
                 setSelectedMenu={setSelectedMenu}
               />
             ))}
-          </ReactSortable>
+          </ReactSortable> */}
         </Card>
       </Grid>
       <Grid item xs={12} md={6} lg={8}>

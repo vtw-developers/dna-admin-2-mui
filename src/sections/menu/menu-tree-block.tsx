@@ -12,6 +12,7 @@ import type { UseBooleanReturn } from '../../hooks/use-boolean';
 
 type FunctionProps = {
   menu: MenuTree;
+  setRootMenuTree: any;
   menuIndex: number[];
   setMenuTree: any;
   selectedMenu: MenuTree;
@@ -28,28 +29,58 @@ export const sortableOptions = {
   group: 'shared',
 };
 
-const Container = ({
+export const Container = ({
   menu,
+  setRootMenuTree,
   menuIndex,
   setMenuTree,
   selectedMenu,
   setSelectedMenu,
   setMenuList,
   confirm,
-}: FunctionProps) => (
-  <ReactSortable
-    {...sortableOptions}
-    key={menu.id}
-    list={menu.children}
-    setList={(currentList) => {
-      setMenuTree((sourceList: any) => {
-        const tempList = [...sourceList];
-        const _blockIndex = [...menuIndex];
-        const lastIndex = _blockIndex.pop() || 0;
-        const lastArr = _blockIndex.reduce((arr, i) => arr[i].children, tempList);
-        lastArr[lastIndex].children = currentList;
-        return tempList;
-        /* const tempList = [...sourceList];
+}: FunctionProps) => {
+  if (!menu || !setRootMenuTree) {
+    return;
+  }
+  return (
+    <ReactSortable
+      {...sortableOptions}
+      key={menu.id}
+      list={menu.children}
+      setList={(currentList) => {
+        console.log(currentList);
+        if (currentList.length < 1) return;
+
+        setRootMenuTree((rootMenuTree: any) => {
+          console.log(rootMenuTree);
+
+          menu.children = currentList;
+          console.log(menu);
+
+          setRootMenuTree({ ...rootMenuTree });
+
+          // const tempList = [...sourceList];
+          // const _blockIndex = [...menuIndex];
+          // const lastIndex = _blockIndex.pop() || 0;
+          // console.log(lastIndex);
+          // const lastArr = _blockIndex.reduce((arr, i) => arr[i].children, tempList);
+          // console.log(lastArr);
+          // lastArr[lastIndex].children = currentList;
+          return rootMenuTree;
+          /*          return { id: 'test', name: '테스트', children: [] }; */
+        });
+        /*        setMenuTree((sourceList: any) => {
+          console.log(currentList); // 안쪽
+          console.log(sourceList);
+          const tempList = [...sourceList];
+          // const _blockIndex = [...menuIndex];
+          // const lastIndex = _blockIndex.pop() || 0;
+          // console.log(lastIndex);
+          // const lastArr = _blockIndex.reduce((arr, i) => arr[i].children, tempList);
+          // console.log(lastArr);
+          // lastArr[lastIndex].children = currentList;
+          return tempList;
+          /!* const tempList = [...sourceList];
         const _blockIndex = [...menuIndex];
         const lastIndex = _blockIndex.pop() || 0;
         const lastArr = _blockIndex.reduce((arr, i) => arr[i].children, tempList);
@@ -62,28 +93,31 @@ const Container = ({
         console.log(find);
         lastArr[find].children = children;
         console.log(lastArr);
-        return lastArr; */
-      });
-    }}
-  >
-    {menu.children &&
-      menu.children.map((childBlock, idx) => (
-        <MenuTreeBlock
-          key={childBlock.id}
-          menu={childBlock}
-          menuIndex={[...menuIndex, idx]}
-          setMenuTree={setMenuTree}
-          selectedMenu={selectedMenu}
-          setMenuList={setMenuList}
-          setSelectedMenu={setSelectedMenu}
-          confirm={confirm}
-        />
-      ))}
-  </ReactSortable>
-);
+        return lastArr; *!/
+        }); */
+      }}
+    >
+      {menu.children &&
+        menu.children.map((childBlock, idx) => (
+          <MenuTreeBlock
+            key={childBlock.id}
+            menu={childBlock}
+            setRootMenuTree={setRootMenuTree}
+            menuIndex={[...menuIndex, idx]}
+            setMenuTree={setMenuTree}
+            selectedMenu={selectedMenu}
+            setMenuList={setMenuList}
+            setSelectedMenu={setSelectedMenu}
+            confirm={confirm}
+          />
+        ))}
+    </ReactSortable>
+  );
+};
 
 export const MenuTreeBlock = ({
   menu,
+  setRootMenuTree,
   menuIndex,
   setMenuTree,
   selectedMenu,
@@ -116,7 +150,7 @@ export const MenuTreeBlock = ({
         </div>
         <Container
           menu={menu}
-          setMenuTree={setMenuTree}
+          setRootMenuTree={setRootMenuTree}
           menuIndex={menuIndex}
           confirm={confirm}
           selectedMenu={selectedMenu}
