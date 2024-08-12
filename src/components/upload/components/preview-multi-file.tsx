@@ -45,7 +45,7 @@ export function MultiFilePreview({
         return (
           <Box
             component="li"
-            key={name}
+            key={file.id}
             sx={{
               py: 1,
               pr: 1,

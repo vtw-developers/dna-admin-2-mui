@@ -1,7 +1,5 @@
 import { CONFIG } from 'src/config-global';
 
-import type { ExtendFile } from './types';
-
 // ----------------------------------------------------------------------
 
 // Define more types here
@@ -130,6 +128,7 @@ export function fileNameByUrl(fileUrl: string) {
 // ----------------------------------------------------------------------
 
 export function fileData(file: File | string) {
+  console.log(file);
   // From url
   if (typeof file === 'string') {
     return {
@@ -143,14 +142,26 @@ export function fileData(file: File | string) {
     };
   }
 
-  // From file
+  if (file instanceof File) {
+    // 신규 등록
+    return {
+      name: file.name,
+      size: file.size,
+      // path: (file as ExtendFile).path,
+      // type: file.type,
+      // preview: (file as ExtendFile).preview,
+      // lastModified: file.lastModified,
+      // lastModifiedDate: (file as ExtendFile).lastModifiedDate,
+    };
+  }
   return {
-    name: file.name,
+    // 기존 파일
+    name: file.originalFileName,
     size: file.size,
-    path: (file as ExtendFile).path,
-    type: file.type,
-    preview: (file as ExtendFile).preview,
-    lastModified: file.lastModified,
-    lastModifiedDate: (file as ExtendFile).lastModifiedDate,
+    // path: (file as ExtendFile).path,
+    // type: file.type,
+    // preview: (file as ExtendFile).preview,
+    // lastModified: file.lastModified,
+    // lastModifiedDate: (file as ExtendFile).lastModifiedDate,
   };
 }

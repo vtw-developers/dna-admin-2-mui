@@ -1,7 +1,7 @@
 import { z as zod } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useMemo, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import { Grid } from '@mui/material';
@@ -47,6 +47,7 @@ export const Schema = zod.object({
   popupStartTime: zod.string().optional(),
   popupEndTime: zod.string().optional(),
   files: zod.any().array(),
+  removedFiles: zod.any().array(),
 });
 
 // ----------------------------------------------------------------------
@@ -57,7 +58,6 @@ type Props = {
 };
 
 export function NoticeEditForm({ editMode, entity }: Props) {
-  const [removeFiles, setRemoveFiles] = useState<number[]>([]);
   const editing = editMode !== 'details';
   const router = useRouter();
   const confirm = useBoolean();
@@ -83,6 +83,7 @@ export function NoticeEditForm({ editMode, entity }: Props) {
       popupStartTime: entity?.popupStartTime || undefined,
       popupEndTime: entity?.popupEndTime || undefined,
       files: entity?.files || [],
+      removedFiles: [],
     }),
     [entity]
   );
@@ -109,7 +110,6 @@ export function NoticeEditForm({ editMode, entity }: Props) {
   }, [entity, defaultValues, reset]);
 
   const onSubmit = handleSubmit(async (data: Board) => {
-    console.log(data);
     const format = new FormData();
     if (data.files?.length > 0) {
       data.files.forEach((file) => {
@@ -157,10 +157,14 @@ export function NoticeEditForm({ editMode, entity }: Props) {
 
   const handleRemoveFile = useCallback(
     (inputFile: File | string) => {
-      const filtered = values.files && values.files?.filter((file) => file !== inputFile);
+      const filtered = values.files && values.files?.filter((file) => file.id !== inputFile.id);
       setValue('files', filtered, { shouldValidate: true });
+
+      if (!(inputFile instanceof File)) {
+        setValue('removedFiles', [...values.removedFiles, inputFile], { shouldValidate: true });
+      }
     },
-    [setValue, values.files]
+    [setValue, values]
   );
   const downloadFile = async (fileId: number) => {
     const fileName = values.files.find((e) => e.id === fileId)?.originalFileName;
@@ -219,8 +223,8 @@ export function NoticeEditForm({ editMode, entity }: Props) {
           />
         </Grid>
         <Grid item xs={12} md={12}>
-          {editMode !== 'details' && <Field.Editor name="content" sx={{ maxHeight: 480 }} />}
-          {editMode === 'details' && (
+          {editing && <Field.Editor name="content" sx={{ maxHeight: 480 }} />}
+          {!editing && (
             <Box
               sx={{
                 px: 2,
@@ -234,8 +238,7 @@ export function NoticeEditForm({ editMode, entity }: Props) {
         </Grid>
         <Grid item xs={12} md={12}>
           <Divider sx={{ my: 2 }} />
-
-          {editMode !== 'details' && (
+          {editing && (
             <Field.Upload
               name="files"
               multiple
@@ -245,7 +248,7 @@ export function NoticeEditForm({ editMode, entity }: Props) {
               onRemoveAll={handleRemoveAllFiles}
             />
           )}
-          {editMode === 'details' &&
+          {!editing &&
             values.files?.map((file, index) => {
               const { originalFileName } = file;
               return (
