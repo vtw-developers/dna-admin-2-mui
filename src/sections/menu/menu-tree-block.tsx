@@ -48,10 +48,7 @@ export const Container = ({
       setList={(currentList) => {
         if (currentList.length < 1) return;
         setRootMenuTree((rootMenuTree: any) => {
-          menu.children = currentList.map((e) => ({
-            ...e,
-            parentId: menu.id,
-          }));
+          menu.children = currentList;
           setRootMenuTree({ ...rootMenuTree });
           return rootMenuTree;
         });

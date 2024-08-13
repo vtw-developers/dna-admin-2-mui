@@ -10,8 +10,6 @@ import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
 
-import * as index from './index';
-import * as graph from './graph';
 import { saveMenu } from '../../actions/menu';
 import { Container } from './menu-tree-block';
 import { Iconify } from '../../components/iconify';
@@ -66,13 +64,54 @@ type Props = {
 export function MenuEditTree({ entity }: Props) {
   const [menuList, setMenuList] = useState<Menu[]>(entity || []);
   const [selectedMenu, setSelectedMenu] = useState<MenuTree>(defaultTree(uuidv4()));
+  const [rootMenuTree, setRootMenuTree] = useState<MenuTree>();
   const { data: pageInfos } = useGetPageInfos(
     { page: 0, pageSize: 100 },
     [],
     defaultPageInfoFilters
   );
   const confirm = useBoolean();
-  const [rootMenuTree, setRootMenuTree] = useState<MenuTree>();
+
+  function buildTree(flatArray: MenuTree[]) {
+    const nodeMap: any = {};
+    const result: MenuTree[] = [];
+
+    flatArray.forEach((item: MenuTree) => {
+      nodeMap[item.id] = { ...item, children: [] };
+    });
+
+    flatArray.forEach((item: MenuTree) => {
+      const node = nodeMap[item.id];
+      if (item.parentId !== null && item.parentId) {
+        nodeMap[item.parentId].children.push(node);
+      } else {
+        result.push(node);
+      }
+    });
+
+    return result;
+  }
+
+  function treeToArray(menu: MenuTree, seq: any, arr: any[], parentId: string) {
+    if (menu.id !== '0') {
+      menu.seq = seq.number;
+      arr.push({
+        menuId: menu.id,
+        name: menu.name,
+        type: menu.type,
+        icon: menu.icon,
+        index: seq.number,
+        upperMenuId: parentId || 0,
+        pageInfoPath: menu.pageInfoPath,
+        pageInfoId: menu.pageInfoId,
+      });
+      seq.number += 1;
+    }
+
+    menu.children?.forEach((child: MenuTree) => {
+      treeToArray(child, seq, arr, menu.id);
+    });
+  }
 
   const changeFormat = useCallback(() => {
     const formattedData = menuList.map((e) => ({
@@ -81,20 +120,12 @@ export function MenuEditTree({ entity }: Props) {
       icon: e.icon,
       pageInfoId: e.pageInfoId,
       pageInfoPath: e.pageInfoPath,
-      parentId: e.upperMenuId === '0' ? null : e.upperMenuId,
+      parentId: e.upperMenuId === '0' ? undefined : e.upperMenuId,
       type: e.type,
       children: [],
     }));
 
-    const tree = graph._new(
-      index._new(formattedData, (node: { parentId: any }) => node.parentId),
-      (node: { id: any }, children: (arg0: any) => any) => ({
-        ...node,
-        children: children(node.id),
-      })
-    );
-
-    setRootMenuTree({ id: '0', name: 'root', type: 'group', children: tree });
+    setRootMenuTree({ id: '0', name: 'root', type: 'group', children: buildTree(formattedData) });
   }, [menuList]);
 
   useEffect(() => {
@@ -109,10 +140,6 @@ export function MenuEditTree({ entity }: Props) {
     ]);
     confirm.onFalse();
   };
-
-  useEffect(() => {
-    console.log(selectedMenu);
-  }, [selectedMenu]);
 
   const addGroup = () => {
     const newId = uuidv4();
@@ -157,27 +184,18 @@ export function MenuEditTree({ entity }: Props) {
     const seq = { number: 0 };
     const arr: any[] = [];
 
-    if (rootMenuTree) recursive(rootMenuTree, seq, arr);
+    if (rootMenuTree) treeToArray(rootMenuTree, seq, arr, '0');
 
     const menus = menuList.map((menu) => {
-      menu.index = arr.find((e) => e.id === menu.menuId).index;
-      menu.upperMenuId = arr.find((e) => e.id === menu.menuId).parentId || 0;
+      menu.index = arr.find((e) => e.menuId === menu.menuId).index;
+      menu.upperMenuId = arr.find((e) => e.menuId === menu.menuId).upperMenuId || 0;
       return menu;
     });
+
     saveMenu(menus).then(() => {
       toast.success('저장되었습니다.');
     });
   };
-
-  function recursive(parent: MenuTree, seq: any, arr: any[]) {
-    parent.seq = seq.number;
-    arr.push({ id: parent.id, index: seq.number, parentId: parent.parentId });
-    seq.number += 1;
-
-    parent.children?.forEach((child: MenuTree) => {
-      recursive(child, seq, arr);
-    });
-  }
 
   return (
     <Grid container spacing={3} className="menu-edit-tree">
