@@ -67,7 +67,7 @@ export function FreeEditForm({ editMode, entity }: Props) {
   const defaultValues = useMemo(
     () => ({
       id: entity?.id,
-      boardMasterId: entity?.boardMasterId || 1,
+      boardMasterId: entity?.boardMasterId || 2,
       title: entity?.title || '',
       content: entity?.content || '',
       boardNo: entity?.boardNo || 0,

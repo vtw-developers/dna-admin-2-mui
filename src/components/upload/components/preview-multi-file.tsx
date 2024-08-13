@@ -26,8 +26,6 @@ export function MultiFilePreview({
 
   const renderLastNode = lastNode && <Box component="li">{lastNode}</Box>;
 
-  console.log(files);
-
   return (
     <Box
       component="ul"
@@ -45,7 +43,7 @@ export function MultiFilePreview({
         return (
           <Box
             component="li"
-            key={name}
+            key={file.id}
             sx={{
               py: 1,
               pr: 1,

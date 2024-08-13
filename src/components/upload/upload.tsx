@@ -33,7 +33,6 @@ export function Upload({
     disabled,
     ...other,
   });
-
   const isArray = Array.isArray(value) && multiple;
 
   const hasFile = !isArray && !!value;
