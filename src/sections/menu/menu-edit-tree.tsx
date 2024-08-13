@@ -65,7 +65,6 @@ type Props = {
 
 export function MenuEditTree({ entity }: Props) {
   const [menuList, setMenuList] = useState<Menu[]>(entity || []);
-  const [menuTree, setMenuTree] = useState<MenuTree[]>([]);
   const [selectedMenu, setSelectedMenu] = useState<MenuTree>(defaultTree(uuidv4()));
   const { data: pageInfos } = useGetPageInfos(
     { page: 0, pageSize: 100 },
@@ -73,7 +72,7 @@ export function MenuEditTree({ entity }: Props) {
     defaultPageInfoFilters
   );
   const confirm = useBoolean();
-  const [rootMenuTree, setRootMenuTree] = useState({ id: 'test', name: '테스트', children: [] });
+  const [rootMenuTree, setRootMenuTree] = useState<MenuTree>();
 
   const changeFormat = useCallback(() => {
     const formattedData = menuList.map((e) => ({
@@ -94,11 +93,8 @@ export function MenuEditTree({ entity }: Props) {
         children: children(node.id),
       })
     );
-    // setMenuTree(tree);
-    console.log(menuList);
-    console.log(tree);
 
-    setRootMenuTree({ id: 'test', name: '테스트', children: tree });
+    setRootMenuTree({ id: '0', name: 'root', type: 'group', children: tree });
   }, [menuList]);
 
   useEffect(() => {
@@ -114,38 +110,60 @@ export function MenuEditTree({ entity }: Props) {
     confirm.onFalse();
   };
 
+  useEffect(() => {
+    console.log(selectedMenu);
+  }, [selectedMenu]);
+
   const addGroup = () => {
-    setMenuList((prev: any) => [defaultGroup(uuidv4()), ...prev]);
+    const newId = uuidv4();
+    setSelectedMenu({ id: newId, name: 'New Group', type: 'group' });
+    setMenuList((prev: any) => [defaultGroup(newId), ...prev]);
   };
 
   const handleFilterName = useCallback(
     (field: string) => (event: ChangeEvent<HTMLInputElement>) => {
-      setSelectedMenu({ ...selectedMenu, [field]: event.target.value });
+      if (field === 'type')
+        setSelectedMenu({
+          ...selectedMenu,
+          [field]: event.target.value,
+          icon: '',
+          pageInfoId: undefined,
+        });
+      else setSelectedMenu({ ...selectedMenu, [field]: event.target.value });
       setMenuList((menus) =>
-        menus
-          .map((menu) => {
-            if (menu.menuId === selectedMenu?.id) {
-              return { ...menu, [field]: event.target.value };
-            }
-            return menu;
-          })
-          .concat({ menuId: 'test', name: '테스트', type: 'group', index: -1 })
+        menus.map((menu) => {
+          if (menu.menuId === selectedMenu?.id) {
+            return { ...menu, [field]: event.target.value };
+          }
+          return menu;
+        })
       );
     },
     [selectedMenu]
   );
+
+  const validate = () => {
+    try {
+      menuList.forEach((e) => {
+        if (e.type === 'page' && !e.pageInfoId) throw new Error();
+      });
+      save();
+    } catch (error) {
+      toast.error('Page 타입의 메뉴에 page가 지정되지 않았습니다.');
+    }
+  };
+
   const save = () => {
     const seq = { number: 0 };
     const arr: any[] = [];
-    menuTree.forEach((e) => {
-      recursive(e, seq, arr);
-    });
+
+    if (rootMenuTree) recursive(rootMenuTree, seq, arr);
 
     const menus = menuList.map((menu) => {
       menu.index = arr.find((e) => e.id === menu.menuId).index;
+      menu.upperMenuId = arr.find((e) => e.id === menu.menuId).parentId || 0;
       return menu;
     });
-
     saveMenu(menus).then(() => {
       toast.success('저장되었습니다.');
     });
@@ -153,15 +171,13 @@ export function MenuEditTree({ entity }: Props) {
 
   function recursive(parent: MenuTree, seq: any, arr: any[]) {
     parent.seq = seq.number;
-    arr.push({ id: parent.id, index: seq.number });
+    arr.push({ id: parent.id, index: seq.number, parentId: parent.parentId });
     seq.number += 1;
 
     parent.children?.forEach((child: MenuTree) => {
       recursive(child, seq, arr);
     });
   }
-
-  console.log(rootMenuTree);
 
   return (
     <Grid container spacing={3} className="menu-edit-tree">
@@ -182,7 +198,7 @@ export function MenuEditTree({ entity }: Props) {
               size="medium"
               color="primary"
               variant="contained"
-              onClick={save}
+              onClick={validate}
               startIcon={<Iconify icon="mingcute:save-2-line" />}
               sx={{ mb: 2 }}
             >
@@ -193,7 +209,6 @@ export function MenuEditTree({ entity }: Props) {
             <Container
               menu={rootMenuTree}
               setRootMenuTree={setRootMenuTree}
-              setMenuTree={setMenuTree}
               menuIndex={[0]}
               confirm={confirm}
               selectedMenu={selectedMenu}
@@ -201,21 +216,6 @@ export function MenuEditTree({ entity }: Props) {
               setMenuList={setMenuList}
             />
           )}
-
-          {/*          <ReactSortable list={menuTree} setList={setMenuTree} {...sortableOptions}>
-            {menuTree.map((menu, menuIndex) => (
-              <MenuTreeBlock
-                key={menu.id}
-                menu={menu}
-                menuIndex={[menuIndex]}
-                confirm={confirm}
-                setMenuTree={setMenuTree}
-                selectedMenu={selectedMenu}
-                setMenuList={setMenuList}
-                setSelectedMenu={setSelectedMenu}
-              />
-            ))}
-          </ReactSortable> */}
         </Card>
       </Grid>
       <Grid item xs={12} md={6} lg={8}>
@@ -248,6 +248,7 @@ export function MenuEditTree({ entity }: Props) {
                 value={selectedMenu.icon || ''}
                 onValueChange={handleFilterName('icon')}
                 valueField="text"
+                readonly={selectedMenu.type === 'group'}
                 textField="icon"
               />
             </Grid>
@@ -257,6 +258,7 @@ export function MenuEditTree({ entity }: Props) {
                 items={pageInfos}
                 value={selectedMenu.pageInfoId || ''}
                 onValueChange={handleFilterName('pageInfoId')}
+                readonly={selectedMenu.type === 'group'}
                 valueField="id"
                 textField="name"
               />

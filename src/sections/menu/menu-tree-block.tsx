@@ -14,7 +14,6 @@ type FunctionProps = {
   menu: MenuTree;
   setRootMenuTree: any;
   menuIndex: number[];
-  setMenuTree: any;
   selectedMenu: MenuTree;
   setSelectedMenu: any;
   setMenuList: any;
@@ -33,14 +32,13 @@ export const Container = ({
   menu,
   setRootMenuTree,
   menuIndex,
-  setMenuTree,
   selectedMenu,
   setSelectedMenu,
   setMenuList,
   confirm,
 }: FunctionProps) => {
   if (!menu || !setRootMenuTree) {
-    return;
+    return null;
   }
   return (
     <ReactSortable
@@ -48,53 +46,15 @@ export const Container = ({
       key={menu.id}
       list={menu.children}
       setList={(currentList) => {
-        console.log(currentList);
         if (currentList.length < 1) return;
-
         setRootMenuTree((rootMenuTree: any) => {
-          console.log(rootMenuTree);
-
-          menu.children = currentList;
-          console.log(menu);
-
+          menu.children = currentList.map((e) => ({
+            ...e,
+            parentId: menu.id,
+          }));
           setRootMenuTree({ ...rootMenuTree });
-
-          // const tempList = [...sourceList];
-          // const _blockIndex = [...menuIndex];
-          // const lastIndex = _blockIndex.pop() || 0;
-          // console.log(lastIndex);
-          // const lastArr = _blockIndex.reduce((arr, i) => arr[i].children, tempList);
-          // console.log(lastArr);
-          // lastArr[lastIndex].children = currentList;
           return rootMenuTree;
-          /*          return { id: 'test', name: '테스트', children: [] }; */
         });
-        /*        setMenuTree((sourceList: any) => {
-          console.log(currentList); // 안쪽
-          console.log(sourceList);
-          const tempList = [...sourceList];
-          // const _blockIndex = [...menuIndex];
-          // const lastIndex = _blockIndex.pop() || 0;
-          // console.log(lastIndex);
-          // const lastArr = _blockIndex.reduce((arr, i) => arr[i].children, tempList);
-          // console.log(lastArr);
-          // lastArr[lastIndex].children = currentList;
-          return tempList;
-          /!* const tempList = [...sourceList];
-        const _blockIndex = [...menuIndex];
-        const lastIndex = _blockIndex.pop() || 0;
-        const lastArr = _blockIndex.reduce((arr, i) => arr[i].children, tempList);
-        console.log(menu);
-        console.log(lastIndex);
-        console.log(lastArr);
-        console.log(children);
-        console.log(sourceList);
-        const find = tempList.findIndex((e) => e.id === menu.id);
-        console.log(find);
-        lastArr[find].children = children;
-        console.log(lastArr);
-        return lastArr; *!/
-        }); */
       }}
     >
       {menu.children &&
@@ -104,7 +64,6 @@ export const Container = ({
             menu={childBlock}
             setRootMenuTree={setRootMenuTree}
             menuIndex={[...menuIndex, idx]}
-            setMenuTree={setMenuTree}
             selectedMenu={selectedMenu}
             setMenuList={setMenuList}
             setSelectedMenu={setSelectedMenu}
@@ -119,7 +78,6 @@ export const MenuTreeBlock = ({
   menu,
   setRootMenuTree,
   menuIndex,
-  setMenuTree,
   selectedMenu,
   setSelectedMenu,
   setMenuList,
