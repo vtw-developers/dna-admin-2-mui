@@ -10,179 +10,206 @@ import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
 
-import * as index from './index';
-import * as graph from './graph';
+import { icons, types } from './items';
 import { saveMenu } from '../../actions/menu';
 import { Container } from './menu-tree-block';
 import { Iconify } from '../../components/iconify';
 import { useBoolean } from '../../hooks/use-boolean';
 import { useGetPageInfos } from '../../actions/page-info';
-import { ICONS } from '../../layouts/config-nav-dashboard';
-import { defaultTree, defaultGroup } from '../../types/menu';
 import { defaultPageInfoFilters } from '../../types/page-info';
 import { ConfirmDialog } from '../../components/custom-dialog';
 import { DnaSelectBox } from '../../components/form/dna-select-box';
+import { defaultPage, defaultTree, defaultGroup } from '../../types/menu';
 
 import type { Menu, MenuTree } from '../../types/menu';
-
-const types = [
-  { id: 'group', name: 'Group' },
-  { id: 'page', name: 'Page' },
-];
-
-const icons = [
-  { text: 'job', icon: ICONS.job },
-  { text: 'blog', icon: ICONS.blog },
-  { text: 'chat', icon: ICONS.chat },
-  { text: 'mail', icon: ICONS.mail },
-  { text: 'user', icon: ICONS.user },
-  { text: 'file', icon: ICONS.file },
-  { text: 'lock', icon: ICONS.lock },
-  { text: 'tour', icon: ICONS.tour },
-  { text: 'order', icon: ICONS.order },
-  { text: 'label', icon: ICONS.label },
-  { text: 'blank', icon: ICONS.blank },
-  { text: 'kanban', icon: ICONS.kanban },
-  { text: 'folder', icon: ICONS.folder },
-  { text: 'course', icon: ICONS.course },
-  { text: 'banking', icon: ICONS.banking },
-  { text: 'booking', icon: ICONS.booking },
-  { text: 'invoice', icon: ICONS.invoice },
-  { text: 'product', icon: ICONS.product },
-  { text: 'calendar', icon: ICONS.calendar },
-  { text: 'disabled', icon: ICONS.disabled },
-  { text: 'external', icon: ICONS.external },
-  { text: 'menuItem', icon: ICONS.menuItem },
-  { text: 'ecommerce', icon: ICONS.ecommerce },
-  { text: 'analytics', icon: ICONS.analytics },
-  { text: 'dashboard', icon: ICONS.dashboard },
-  { text: 'parameter', icon: ICONS.parameter },
-];
 
 type Props = {
   entity?: Menu[];
 };
 
 export function MenuEditTree({ entity }: Props) {
-  const [menuList, setMenuList] = useState<Menu[]>(entity || []);
-  const [menuTree, setMenuTree] = useState<MenuTree[]>([]);
   const [selectedMenu, setSelectedMenu] = useState<MenuTree>(defaultTree(uuidv4()));
+  const [rootMenuTree, setRootMenuTree] = useState<MenuTree>();
   const { data: pageInfos } = useGetPageInfos(
     { page: 0, pageSize: 100 },
     [],
     defaultPageInfoFilters
   );
   const confirm = useBoolean();
-  const [rootMenuTree, setRootMenuTree] = useState({ id: 'test', name: '테스트', children: [] });
 
-  const changeFormat = useCallback(() => {
-    const formattedData = menuList.map((e) => ({
+  function arrayToTree(array: Menu[]) {
+    const formattedArray = array.map((e) => ({
       id: e.menuId,
       name: e.name,
       icon: e.icon,
       pageInfoId: e.pageInfoId,
       pageInfoPath: e.pageInfoPath,
-      parentId: e.upperMenuId === '0' ? null : e.upperMenuId,
+      parentId: e.upperMenuId === '0' ? undefined : e.upperMenuId,
       type: e.type,
       children: [],
     }));
 
-    const tree = graph._new(
-      index._new(formattedData, (node: { parentId: any }) => node.parentId),
-      (node: { id: any }, children: (arg0: any) => any) => ({
-        ...node,
-        children: children(node.id),
-      })
-    );
-    // setMenuTree(tree);
-    console.log(menuList);
-    console.log(tree);
+    const nodeMap: any = {};
+    const result: MenuTree[] = [];
 
-    setRootMenuTree({ id: 'test', name: '테스트', children: tree });
-  }, [menuList]);
+    formattedArray.forEach((item: MenuTree) => {
+      nodeMap[item.id] = { ...item, children: [] };
+    });
+
+    formattedArray.forEach((item: MenuTree) => {
+      const node = nodeMap[item.id];
+      if (item.parentId !== null && item.parentId) {
+        nodeMap[item.parentId].children.push(node);
+      } else {
+        result.push(node);
+      }
+    });
+
+    return result;
+  }
+
+  const treeToArray = useCallback((menu: MenuTree, seq: any, arr: any[], parentId: string) => {
+    if (menu.id !== '0') {
+      menu.seq = seq.number;
+      arr.push({
+        menuId: menu.id,
+        name: menu.name,
+        type: menu.type,
+        icon: menu.icon,
+        index: seq.number,
+        upperMenuId: parentId || 0,
+        pageInfoPath: menu.pageInfoPath,
+        pageInfoId: menu.pageInfoId,
+      });
+      seq.number += 1;
+    }
+
+    menu.children?.forEach((child: MenuTree) => {
+      treeToArray(child, seq, arr, menu.id);
+    });
+  }, []);
+
+  const setRootTree = (formattedData: MenuTree[]) => {
+    setRootMenuTree({ id: '0', name: 'root', type: 'group', children: formattedData });
+  };
 
   useEffect(() => {
-    changeFormat();
-  }, [changeFormat, menuList]);
+    if (entity) setRootTree(arrayToTree(entity));
+  }, [entity]);
 
   const confirmDelete = () => {
-    setMenuList((prev: any) => [
-      ...prev.filter(
+    let menuArray: any[] = [];
+    if (rootMenuTree) treeToArray(rootMenuTree, { number: 0 }, menuArray, '0');
+    menuArray = [
+      ...menuArray.filter(
         (e: Menu) => e.menuId !== selectedMenu.id && e.upperMenuId !== selectedMenu.id
       ),
-    ]);
+    ];
+
+    setRootTree(arrayToTree(menuArray));
     confirm.onFalse();
   };
 
   const addGroup = () => {
-    setMenuList((prev: any) => [defaultGroup(uuidv4()), ...prev]);
+    const newId = uuidv4();
+    setSelectedMenu({ id: newId, name: 'New Group', type: 'group' });
+
+    let menuArray: any[] = [];
+    if (rootMenuTree) treeToArray(rootMenuTree, { number: 0 }, menuArray, '0');
+    menuArray = [defaultGroup(newId), ...menuArray];
+
+    setRootTree(arrayToTree(menuArray));
+  };
+
+  const addPage = () => {
+    const newId = uuidv4();
+    setSelectedMenu({ id: newId, name: 'New Page', type: 'page' });
+
+    let menuArray: any[] = [];
+    if (rootMenuTree) {
+      treeToArray(rootMenuTree, { number: 0 }, menuArray, '0');
+      menuArray = [defaultPage(rootMenuTree.id, uuidv4()), ...menuArray];
+    }
+
+    setRootTree(arrayToTree(menuArray));
   };
 
   const handleFilterName = useCallback(
     (field: string) => (event: ChangeEvent<HTMLInputElement>) => {
       setSelectedMenu({ ...selectedMenu, [field]: event.target.value });
-      setMenuList((menus) =>
-        menus
-          .map((menu) => {
-            if (menu.menuId === selectedMenu?.id) {
-              return { ...menu, [field]: event.target.value };
-            }
-            return menu;
-          })
-          .concat({ menuId: 'test', name: '테스트', type: 'group', index: -1 })
-      );
+
+      const menuArray: any[] = [];
+      if (rootMenuTree) treeToArray(rootMenuTree, { number: 0 }, menuArray, '0');
+
+      const setData = menuArray.map((menu) => {
+        if (menu.menuId === selectedMenu.id) {
+          return { ...menu, [field]: event.target.value };
+        }
+        return menu;
+      });
+
+      setRootTree(arrayToTree(setData));
     },
-    [selectedMenu]
+    [rootMenuTree, treeToArray, selectedMenu]
   );
+
+  const validate = () => {
+    try {
+      const menuArray: any[] = [];
+      if (rootMenuTree) treeToArray(rootMenuTree, { number: 0 }, menuArray, '0');
+
+      menuArray.forEach((e) => {
+        if (e.type === 'page' && !e.pageInfoId) throw new Error();
+      });
+      save();
+    } catch (error) {
+      toast.error('Page 타입의 메뉴에 page가 지정되지 않았습니다.');
+    }
+  };
+
   const save = () => {
     const seq = { number: 0 };
     const arr: any[] = [];
-    menuTree.forEach((e) => {
-      recursive(e, seq, arr);
-    });
 
-    const menus = menuList.map((menu) => {
-      menu.index = arr.find((e) => e.id === menu.menuId).index;
-      return menu;
-    });
+    if (rootMenuTree) treeToArray(rootMenuTree, seq, arr, '0');
 
-    saveMenu(menus).then(() => {
+    saveMenu(arr).then(() => {
       toast.success('저장되었습니다.');
     });
   };
-
-  function recursive(parent: MenuTree, seq: any, arr: any[]) {
-    parent.seq = seq.number;
-    arr.push({ id: parent.id, index: seq.number });
-    seq.number += 1;
-
-    parent.children?.forEach((child: MenuTree) => {
-      recursive(child, seq, arr);
-    });
-  }
-
-  console.log(rootMenuTree);
 
   return (
     <Grid container spacing={3} className="menu-edit-tree">
       <Grid item xs={12} md={6} lg={4}>
         <Card sx={{ p: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button
-              variant="text"
-              size="medium"
-              color="inherit"
-              onClick={addGroup}
-              startIcon={<Iconify icon="mingcute:add-line" />}
-              sx={{ mb: 2 }}
-            >
-              그룹 추가
-            </Button>
+            <Box>
+              <Button
+                variant="outlined"
+                size="medium"
+                color="inherit"
+                onClick={addGroup}
+                startIcon={<Iconify icon="mingcute:add-line" />}
+                sx={{ mb: 2 }}
+              >
+                그룹
+              </Button>
+              <Button
+                variant="outlined"
+                size="medium"
+                color="inherit"
+                onClick={addPage}
+                startIcon={<Iconify icon="mingcute:add-line" />}
+                sx={{ mb: 2 }}
+              >
+                페이지
+              </Button>
+            </Box>
             <Button
               size="medium"
               color="primary"
               variant="contained"
-              onClick={save}
+              onClick={validate}
               startIcon={<Iconify icon="mingcute:save-2-line" />}
               sx={{ mb: 2 }}
             >
@@ -191,31 +218,13 @@ export function MenuEditTree({ entity }: Props) {
           </Box>
           {rootMenuTree && setRootMenuTree && (
             <Container
-              menu={rootMenuTree}
+              rootMenuTree={rootMenuTree}
               setRootMenuTree={setRootMenuTree}
-              setMenuTree={setMenuTree}
-              menuIndex={[0]}
               confirm={confirm}
               selectedMenu={selectedMenu}
               setSelectedMenu={setSelectedMenu}
-              setMenuList={setMenuList}
             />
           )}
-
-          {/*          <ReactSortable list={menuTree} setList={setMenuTree} {...sortableOptions}>
-            {menuTree.map((menu, menuIndex) => (
-              <MenuTreeBlock
-                key={menu.id}
-                menu={menu}
-                menuIndex={[menuIndex]}
-                confirm={confirm}
-                setMenuTree={setMenuTree}
-                selectedMenu={selectedMenu}
-                setMenuList={setMenuList}
-                setSelectedMenu={setSelectedMenu}
-              />
-            ))}
-          </ReactSortable> */}
         </Card>
       </Grid>
       <Grid item xs={12} md={6} lg={8}>
@@ -239,6 +248,7 @@ export function MenuEditTree({ entity }: Props) {
                 onValueChange={handleFilterName('type')}
                 valueField="id"
                 textField="name"
+                readonly
               />
             </Grid>
             <Grid item xs={12} md={12} className="icon-select">
@@ -248,6 +258,7 @@ export function MenuEditTree({ entity }: Props) {
                 value={selectedMenu.icon || ''}
                 onValueChange={handleFilterName('icon')}
                 valueField="text"
+                readonly={selectedMenu.type === 'group'}
                 textField="icon"
               />
             </Grid>
@@ -257,6 +268,7 @@ export function MenuEditTree({ entity }: Props) {
                 items={pageInfos}
                 value={selectedMenu.pageInfoId || ''}
                 onValueChange={handleFilterName('pageInfoId')}
+                readonly={selectedMenu.type === 'group'}
                 valueField="id"
                 textField="name"
               />
