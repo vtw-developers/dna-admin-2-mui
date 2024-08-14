@@ -50,6 +50,22 @@ export const QnaListView = () => {
     [router]
   );
 
+  function replyLevel(board, level?) {
+    if (!level) {
+      level = 0;
+    }
+    if (board?.parentId) {
+      level += 1;
+      const parent = data.find((row) => row.id === board.parentId);
+      if (parent) {
+        console.log(parent);
+        level = replyLevel(parent, level);
+      }
+    }
+
+    return level;
+  }
+
   const columns: GridColDef[] = [
     {
       field: 'boardNo',
@@ -68,7 +84,11 @@ export const QnaListView = () => {
           onClick={() => handleViewRow(params.row.id)}
           sx={{ cursor: 'pointer' }}
         >
-          {params.row.title}
+          <div style={{ float: 'left' }}>&ensp;</div>
+          <div style={{ float: 'left' }}>
+            {replyLevel(params.row) ? `[R${replyLevel(params.row)}]  ` : ''}
+          </div>
+          <div style={{ float: 'left' }}> {params.row.title}</div>
         </Link>
       ),
     },

@@ -10,6 +10,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import CardHeader from '@mui/material/CardHeader';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -19,12 +20,13 @@ import { Form, Field } from 'src/components/hook-form';
 
 import { varAlpha } from '../../theme/styles';
 import { fDate } from '../../utils/format-time';
+import { Iconify } from '../../components/iconify';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
 import { createBoard, deleteBoard, updateBoard } from '../../actions/board';
-import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 
 import type { Board } from '../../types/board';
+import type { BoardEditModes } from '../../types/edit';
 
 // ----------------------------------------------------------------------
 
@@ -51,27 +53,36 @@ export const Schema = zod.object({
 // ----------------------------------------------------------------------
 
 type Props = {
-  editMode: string;
+  editMode: BoardEditModes;
   entity?: Board;
+  parent?: Board;
 };
 
-export function QnaEditForm({ editMode, entity }: Props) {
+export function QnaEditForm({ editMode, entity, parent }: Props) {
   const editing = editMode !== 'details';
   const router = useRouter();
   const confirm = useBoolean();
 
   const listPath = paths.boards.qna.root;
   const editPath = paths.boards.qna.edit(entity?.id);
+  const replyPath = paths.boards.qna.reply(entity?.id);
   const detailsPath = paths.boards.qna.details(entity?.id);
+
+  const getTitle = () => {
+    if (editMode === 'reply') {
+      return `RE: ${parent?.title}`;
+    }
+    return entity?.title || '';
+  };
 
   const defaultValues = useMemo(
     () => ({
       id: entity?.id,
       boardMasterId: entity?.boardMasterId || 3,
-      title: entity?.title || '',
+      title: getTitle(),
       content: entity?.content || '',
       boardNo: entity?.boardNo || 0,
-      parentId: entity?.parentId || 0,
+      parentId: parent?.id || undefined,
       viewCount: entity?.viewCount || 0,
       useYn: entity?.useYn || true,
       pinYn: entity?.pinYn || false,
@@ -110,7 +121,7 @@ export function QnaEditForm({ editMode, entity }: Props) {
     const format = new FormData();
     format.append('entity', new Blob([JSON.stringify(data)], { type: 'application/json' }));
     try {
-      if (editMode === 'create') {
+      if (editMode === 'create' || editMode === 'reply') {
         await createBoard(format).then(() => toast.success('저장되었습니다.'));
         router.push(listPath);
       } else if (editMode === 'update') {
@@ -179,14 +190,80 @@ export function QnaEditForm({ editMode, entity }: Props) {
       <Form methods={methods} onSubmit={onSubmit}>
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
-          <DnaBottomButtons
-            editing={editing}
-            listPath={listPath}
-            editPath={editPath}
-            confirm={confirm}
-            isSubmitting={isSubmitting}
-            cancelEdit={cancelEdit}
-          />
+          <Stack
+            spacing={3}
+            direction="row"
+            alignItems="center"
+            flexWrap="wrap"
+            justifyContent="center"
+          >
+            {!editing && (
+              <Button
+                variant="outlined"
+                size="medium"
+                color="primary"
+                href={editPath}
+                startIcon={<Iconify icon="mingcute:edit-line" />}
+              >
+                수정
+              </Button>
+            )}
+            {!editing && (
+              <Button
+                variant="outlined"
+                size="medium"
+                color="primary"
+                href={replyPath}
+                startIcon={<Iconify icon="mingcute:edit-line" />}
+              >
+                답글
+              </Button>
+            )}
+            {!editing && (
+              <Button
+                variant="outlined"
+                size="medium"
+                color="error"
+                onClick={confirm.onTrue}
+                startIcon={<Iconify icon="mingcute:delete-2-line" />}
+              >
+                삭제
+              </Button>
+            )}
+            {editing && (
+              <LoadingButton
+                type="submit"
+                variant="outlined"
+                size="medium"
+                color="primary"
+                loading={isSubmitting}
+                startIcon={<Iconify icon="mingcute:save-2-line" />}
+              >
+                저장
+              </LoadingButton>
+            )}
+            {editing && (
+              <LoadingButton
+                onClick={cancelEdit}
+                variant="outlined"
+                size="medium"
+                color="error"
+                loading={isSubmitting}
+                startIcon={<Iconify icon="mingcute:close-line" />}
+              >
+                취소
+              </LoadingButton>
+            )}
+            <Button
+              variant="outlined"
+              size="medium"
+              color="inherit"
+              href={listPath}
+              startIcon={<Iconify icon="mingcute:list-check-line" />}
+            >
+              목록
+            </Button>
+          </Stack>
         </Stack>
       </Form>
       <ConfirmDialog

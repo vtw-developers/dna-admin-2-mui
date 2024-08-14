@@ -93,6 +93,7 @@ export const paths = {
       new: `${ROOTS.BOARDS}/qna/new`,
       details: (id: string | number | undefined) => `${ROOTS.BOARDS}/qna/${id}`,
       edit: (id: string | number | undefined) => `${ROOTS.BOARDS}/qna/${id}/edit`,
+      reply: (id: string | number | undefined) => `${ROOTS.BOARDS}/qna/${id}/reply`,
     },
   },
   monitor: {

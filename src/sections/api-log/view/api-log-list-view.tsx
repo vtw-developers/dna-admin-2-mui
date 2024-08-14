@@ -68,7 +68,7 @@ export function ApiLogListView() {
           onClick={() => handleViewRow(params.row.id)}
           sx={{ cursor: 'pointer' }}
         >
-          {params.row.name}
+          {params.row.result}
         </Link>
       ),
     },
