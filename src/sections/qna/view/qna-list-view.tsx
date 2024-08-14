@@ -50,7 +50,17 @@ export const QnaListView = () => {
     [router]
   );
 
-  function replyLevel(board, level?) {
+  const replySpace = (board: Board) => {
+    const spaces = [];
+    const level = replyLevel(board);
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < level - 1; i++) {
+      spaces.push(<div style={{ float: 'left' }}>&ensp;&ensp;&ensp;</div>);
+    }
+    return spaces;
+  };
+
+  const replyLevel = (board: Board, level?: number): number => {
     if (!level) {
       level = 0;
     }
@@ -58,13 +68,12 @@ export const QnaListView = () => {
       level += 1;
       const parent = data.find((row) => row.id === board.parentId);
       if (parent) {
-        console.log(parent);
         level = replyLevel(parent, level);
       }
     }
 
     return level;
-  }
+  };
 
   const columns: GridColDef[] = [
     {
@@ -84,10 +93,14 @@ export const QnaListView = () => {
           onClick={() => handleViewRow(params.row.id)}
           sx={{ cursor: 'pointer' }}
         >
-          <div style={{ float: 'left' }}>&ensp;</div>
-          <div style={{ float: 'left' }}>
-            {replyLevel(params.row) ? `[R${replyLevel(params.row)}]  ` : ''}
-          </div>
+          {replySpace(params.row)}
+          {replyLevel(params.row) > 0 && (
+            <img
+              style={{ float: 'left', paddingRight: '8px' }}
+              src="/icons/board/reply.svg"
+              alt="reply"
+            />
+          )}
           <div style={{ float: 'left' }}> {params.row.title}</div>
         </Link>
       ),
