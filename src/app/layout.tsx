@@ -62,6 +62,7 @@ export default async function RootLayout({ children }: Props) {
                     <Snackbar />
                     <SettingsDrawer />
                     {children}
+                    {/*                    <NoticePopups /> */}
                   </MotionLazy>
                 </ThemeProvider>
               </SettingsProvider>

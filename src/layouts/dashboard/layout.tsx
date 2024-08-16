@@ -27,6 +27,7 @@ import { _account } from '../config-nav-account';
 import { HeaderBase } from '../core/header-base';
 import { _workspaces } from '../config-nav-workspace';
 import { LayoutSection } from '../core/layout-section';
+import { NoticePopups } from '../../sections/board/notice-popups';
 import { navData as dashboardNavData } from '../config-nav-dashboard';
 
 // ----------------------------------------------------------------------
@@ -60,6 +61,7 @@ export function DashboardLayout({ sx, children, data }: DashboardLayoutProps) {
 
   return (
     <>
+      <NoticePopups />
       <NavMobile
         data={navData}
         open={mobileNavOpen.value}
