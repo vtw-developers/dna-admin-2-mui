@@ -5,6 +5,8 @@ import 'src/styles/dashboard.scss';
 
 import { useState, useEffect } from 'react';
 
+import { getCookie } from 'src/utils/cookie';
+
 import { NoticePopup } from './notice-popup';
 import { getPopups } from '../../actions/board';
 
@@ -16,8 +18,15 @@ export function NoticePopups() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const cookies = getCookie('POPUP_EXPIRES');
         const result = await getPopups();
-        setPopups(result);
+
+        setPopups(
+          result.map((p) => {
+            const popup = { ...p, visible: !cookies?.includes(p.id) };
+            return popup;
+          })
+        );
       } catch (error) {
         console.error('Error fetching data:', error);
       }

@@ -12,12 +12,26 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
+import { getCookie, setCookie } from 'src/utils/cookie';
+
 import { useBoolean } from '../../hooks/use-boolean';
 
 // ----------------------------------------------------------------------
 
 export function NoticePopup({ popup }) {
-  const share = useBoolean(true);
+  const share = useBoolean(popup.visible);
+
+  const onHide7days = (e) => {
+    if (e.target.checked) {
+      const arr: number[] = [];
+      const cookies = getCookie('POPUP_EXPIRES');
+      if (cookies != null) {
+        arr.push(...JSON.parse(cookies));
+      }
+      arr.push(popup.id);
+      setCookie('POPUP_EXPIRES', JSON.stringify(arr), 7);
+    }
+  };
 
   return (
     <Dialog
@@ -34,7 +48,7 @@ export function NoticePopup({ popup }) {
       </Box>
       <DialogActions sx={{ justifyContent: 'space-between' }}>
         <FormGroup>
-          <FormControlLabel control={<Checkbox defaultChecked />} label="7일간 보지않기" />
+          <FormControlLabel control={<Checkbox onChange={onHide7days} />} label="7일간 보지않기" />
         </FormGroup>
         <Button
           variant="outlined"
