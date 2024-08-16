@@ -81,6 +81,7 @@ export function UserListView() {
     },
     {
       field: 'roleName',
+      flex: 1,
       headerName: '역할',
       width: 200,
     },
