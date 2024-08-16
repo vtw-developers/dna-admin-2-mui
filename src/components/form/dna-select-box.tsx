@@ -11,6 +11,7 @@ type SelectBoxProps = {
   valueField: string;
   textField: string;
   readonly?: boolean;
+  multiple?: boolean;
 };
 
 export const DnaSelectBox = ({
@@ -21,6 +22,7 @@ export const DnaSelectBox = ({
   valueField,
   textField,
   readonly = false,
+  multiple = false,
 }: PropsWithChildren<SelectBoxProps>) => (
   <FormControl fullWidth>
     <InputLabel id="simple-select-label">{label}</InputLabel>
@@ -31,6 +33,7 @@ export const DnaSelectBox = ({
       onChange={onValueChange}
       readOnly={readonly}
       variant="outlined"
+      multiple={multiple}
     >
       {items.map((e, index) => (
         <MenuItem key={index} value={e[valueField]}>

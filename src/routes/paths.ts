@@ -16,6 +16,7 @@ const ROOTS = {
   BOARD: '/manage/board',
   PAGE_INFO: '/manage/page-info',
   MENU: '/manage/menu',
+  USER: '/manage/user',
 };
 
 // ----------------------------------------------------------------------
@@ -70,9 +71,11 @@ export const paths = {
     },
     menu: {
       root: `${ROOTS.MENU}`,
-      new: `${ROOTS.MENU}/new`,
-      details: (id: string | number | undefined) => `${ROOTS.MENU}/${id}`,
-      edit: (id: string | number | undefined) => `${ROOTS.MENU}/${id}/edit`,
+    },
+    user: {
+      root: `${ROOTS.USER}`,
+      details: (id: string | undefined) => `${ROOTS.USER}/${id}`,
+      edit: (id: string | undefined) => `${ROOTS.USER}/${id}/edit`,
     },
   },
   boards: {
