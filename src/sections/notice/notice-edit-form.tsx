@@ -73,7 +73,7 @@ export function NoticeEditForm({ editMode, entity }: Props) {
       title: entity?.title || '',
       content: entity?.content || '',
       boardNo: entity?.boardNo || 0,
-      parentId: entity?.parentId || 0,
+      parentId: entity?.parentId || undefined,
       viewCount: entity?.viewCount || 0,
       useYn: entity?.useYn || true,
       pinYn: entity?.pinYn || false,

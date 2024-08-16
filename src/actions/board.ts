@@ -101,3 +101,6 @@ export const download = async (id: string | number) =>
       responseType: 'blob',
     })
   ).data;
+
+export const getPopups = async () =>
+  (await axiosInstance.get(`${PATH_PREFIX}/find-popup-list`)).data;
