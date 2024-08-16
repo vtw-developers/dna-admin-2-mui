@@ -4,6 +4,7 @@ import { DashboardContent } from 'src/layouts/dashboard';
 
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
+import { BoardComment } from '../board-comment';
 import { FreeEditForm } from '../free-edit-form';
 
 import type { Board } from '../../../types/board';
@@ -38,6 +39,7 @@ export function FreeEditView({ editMode, entity }: Props): JSX.Element {
       />
 
       <FreeEditForm editMode={editMode} entity={entity} />
+      {editMode === 'details' && entity && <BoardComment boardId={entity?.id} />}
     </DashboardContent>
   );
 }

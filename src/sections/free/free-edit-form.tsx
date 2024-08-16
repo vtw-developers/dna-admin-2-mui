@@ -8,8 +8,6 @@ import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import CardHeader from '@mui/material/CardHeader';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -71,7 +69,7 @@ export function FreeEditForm({ editMode, entity }: Props) {
       title: entity?.title || '',
       content: entity?.content || '',
       boardNo: entity?.boardNo || 0,
-      parentId: entity?.parentId || 0,
+      parentId: entity?.parentId || undefined,
       viewCount: entity?.viewCount || 0,
       useYn: entity?.useYn || true,
       pinYn: entity?.pinYn || false,
@@ -147,8 +145,8 @@ export function FreeEditForm({ editMode, entity }: Props) {
 
   const renderDetails = (
     <Card>
-      <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
-      <Divider />
+      {/*      <CardHeader title="" subheader="" sx={{ mb: 3 }} />
+      <Divider /> */}
       <Grid container spacing={3} sx={{ p: 3 }}>
         <Grid item xs={12} md={9}>
           <Field.Text name="title" label="제목" inputProps={{ readOnly: editMode === 'details' }} />
@@ -170,6 +168,11 @@ export function FreeEditForm({ editMode, entity }: Props) {
             </Box>
           )}
         </Grid>
+        {/*        {!editing && entity && (
+          <Grid item xs={12} md={12}>
+            <BoardComment boardId={entity?.id} />
+          </Grid>
+        )} */}
       </Grid>
     </Card>
   );

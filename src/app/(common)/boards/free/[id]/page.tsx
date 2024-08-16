@@ -13,7 +13,6 @@ type Props = {
 
 export default async function Page({ params }: Props) {
   const { id } = params;
-
   const entity = await getBoard(id);
   return <FreeEditView editMode="details" entity={entity} />;
 }
