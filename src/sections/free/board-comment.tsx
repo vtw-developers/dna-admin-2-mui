@@ -5,7 +5,7 @@ import { Divider, Typography } from '@mui/material';
 
 import { PostCommentForm } from './post-comment-form';
 import { PostCommentList } from './post-comment-list';
-import { getComments, createComment } from '../../actions/comment';
+import { getComments, createComment, deleteComment } from '../../actions/comment';
 
 // ----------------------------------------------------------------------
 
@@ -29,11 +29,34 @@ export function BoardComment({ boardId }: Props) {
     fetchData();
   }, [boardId]);
 
-  const onSave = async ({ comment }) => {
+  const save = async ({ comment }) => {
     console.log(comment);
     const result = await createComment({ content: comment, boardId, useYn: true });
     console.log(result);
+    reload();
 
+    // .then(() => {
+    //   notify('정상적으로 등록되었습니다.', 'success', 2000);
+    //   setComment({...initCommentData});
+    //   loadComment();
+    // })
+    // .catch(() => notify('예기치 못한 오류가 발생했습니다.', 'error', 2000));
+  };
+
+  const doDelete = async (id) => {
+    const result = await deleteComment({ id });
+    console.log(result);
+    reload();
+
+    // .then(() => {
+    //   notify('정상적으로 등록되었습니다.', 'success', 2000);
+    //   setComment({...initCommentData});
+    //   loadComment();
+    // })
+    // .catch(() => notify('예기치 못한 오류가 발생했습니다.', 'error', 2000));
+  };
+
+  const reload = () => {
     const fetchData = async () => {
       try {
         const result = await getComments(boardId);
@@ -44,12 +67,6 @@ export function BoardComment({ boardId }: Props) {
     };
 
     fetchData();
-    // .then(() => {
-    //   notify('정상적으로 등록되었습니다.', 'success', 2000);
-    //   setComment({...initCommentData});
-    //   loadComment();
-    // })
-    // .catch(() => notify('예기치 못한 오류가 발생했습니다.', 'error', 2000));
   };
 
   return (
@@ -62,11 +79,11 @@ export function BoardComment({ boardId }: Props) {
         </Typography>
       </Stack>
 
-      <PostCommentForm onSave={onSave} />
+      <PostCommentForm onSave={save} />
 
       <Divider sx={{ mt: 5, mb: 2 }} />
 
-      <PostCommentList comments={comments} />
+      <PostCommentList comments={comments} onDelete={doDelete} />
     </>
   );
 }
