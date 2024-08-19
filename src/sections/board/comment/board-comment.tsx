@@ -29,31 +29,14 @@ export function BoardComment({ boardId }: Props) {
     fetchData();
   }, [boardId]);
 
-  const save = async ({ comment }) => {
-    console.log(comment);
+  const save = async ({ comment }: any) => {
     const result = await createComment({ content: comment, boardId, useYn: true });
-    console.log(result);
     reload();
-
-    // .then(() => {
-    //   notify('정상적으로 등록되었습니다.', 'success', 2000);
-    //   setComment({...initCommentData});
-    //   loadComment();
-    // })
-    // .catch(() => notify('예기치 못한 오류가 발생했습니다.', 'error', 2000));
   };
 
-  const doDelete = async (id) => {
+  const doDelete = async (id: number) => {
     const result = await deleteComment({ id });
-    console.log(result);
     reload();
-
-    // .then(() => {
-    //   notify('정상적으로 등록되었습니다.', 'success', 2000);
-    //   setComment({...initCommentData});
-    //   loadComment();
-    // })
-    // .catch(() => notify('예기치 못한 오류가 발생했습니다.', 'error', 2000));
   };
 
   const reload = () => {
@@ -75,7 +58,7 @@ export function BoardComment({ boardId }: Props) {
         <Typography variant="h4">댓글</Typography>
 
         <Typography variant="subtitle2" sx={{ color: 'text.disabled' }}>
-          {/*           ({post?.comments.length}) */}(0)
+          ({comments.count})
         </Typography>
       </Stack>
 

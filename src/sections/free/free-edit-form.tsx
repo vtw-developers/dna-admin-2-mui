@@ -104,7 +104,7 @@ export function FreeEditForm({ editMode, entity }: Props) {
     }
   }, [entity, defaultValues, reset]);
 
-  const onSubmit = handleSubmit(async (data: Board) => {
+  const onSubmit = handleSubmit(async (data: any) => {
     const format = new FormData();
     format.append('entity', new Blob([JSON.stringify(data)], { type: 'application/json' }));
 
@@ -130,7 +130,7 @@ export function FreeEditForm({ editMode, entity }: Props) {
     }
   };
 
-  const confirmDelete = handleSubmit(async (data: Board) => {
+  const confirmDelete = handleSubmit(async (data: any) => {
     await deleteBoard(data);
     toast.success('삭제되었습니다.');
     router.push(listPath);
