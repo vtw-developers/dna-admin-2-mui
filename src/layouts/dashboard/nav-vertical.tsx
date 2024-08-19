@@ -39,6 +39,7 @@ export function NavVertical({
 }: NavVerticalProps) {
   const theme = useTheme();
   const [list, setList] = useState<NavSectionProps['data']>([]);
+  const nav = async () => getMenuView();
 
   useEffect(() => {
     nav().then((result) => {
@@ -54,7 +55,7 @@ export function NavVertical({
         .forEach((e: { upperMenuId: any; pageInfoPath: any; name: any; icon: string }) =>
           group
             .find((f: { id: any }) => f.id === e.upperMenuId)
-            .items.push({
+            ?.items.push({
               path: e.pageInfoPath,
               title: e.name,
               icon: icon(
@@ -65,8 +66,6 @@ export function NavVertical({
       setList([...group]);
     });
   }, []);
-
-  const nav = async () => getMenuView();
 
   const renderNavVertical = (
     <>
