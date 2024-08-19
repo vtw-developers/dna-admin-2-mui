@@ -6,6 +6,7 @@ export type Menu = {
   upperMenuId?: string;
   pageInfoPath?: string;
   pageInfoId?: number;
+  roleId?: number;
   index?: number;
 };
 
@@ -14,6 +15,7 @@ export type MenuTree = {
   name: string;
   icon?: string;
   pageInfoId?: number;
+  roleId?: number;
   pageInfoPath?: string;
   parentId?: string;
   type: string;

@@ -2,6 +2,7 @@ import axiosInstance from 'src/utils/axios';
 
 const PATH_PREFIX = '/menu';
 
+export const getMenuList = async () => (await axiosInstance.get(`${PATH_PREFIX}/list`, {})).data;
 export const getMenuView = async () => (await axiosInstance.get(`${PATH_PREFIX}/view`, {})).data;
 
 export const saveMenu = async (params: any) =>
