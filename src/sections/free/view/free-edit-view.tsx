@@ -4,8 +4,8 @@ import { DashboardContent } from 'src/layouts/dashboard';
 
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { BoardComment } from '../board-comment';
 import { FreeEditForm } from '../free-edit-form';
+import { BoardComment } from '../../board/comment/board-comment';
 
 import type { Board } from '../../../types/board';
 import type { EditModes } from '../../../types/edit';
