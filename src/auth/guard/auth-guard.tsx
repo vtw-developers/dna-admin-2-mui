@@ -2,10 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
-import { paths } from 'src/routes/paths';
 import { useRouter, usePathname, useSearchParams } from 'src/routes/hooks';
-
-import { CONFIG } from 'src/config-global';
 
 import { SplashScreen } from 'src/components/loading-screen';
 
@@ -43,17 +40,21 @@ export function AuthGuard({ children }: Props) {
       return;
     }
 
+    console.log(`pathname: ${pathname}`);
+    console.log(`로그인 여부: ${authenticated}`);
+
     if (!authenticated) {
-      const { method } = CONFIG.auth;
-
-      const signInPath = {
-        jwt: paths.auth.jwt.signIn,
-      }[method];
-
-      const href = `${signInPath}?${createQueryString('returnTo', pathname)}`;
-
-      router.replace(href);
-      return;
+      // TODO: 해당 페이지가 익명사용자가 접근 불가능한 페이지면 로그인 페이지로 이동
+      // const { method } = CONFIG.auth;
+      //
+      // const signInPath = {
+      //   jwt: paths.auth.jwt.signIn,
+      // }[method];
+      //
+      // const href = `${signInPath}?${createQueryString('returnTo', pathname)}`;
+      //
+      // router.replace(href);
+      // return;
     }
 
     setIsChecking(false);
