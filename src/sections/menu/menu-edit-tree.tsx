@@ -11,7 +11,6 @@ import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
 
 import { icons, types } from './items';
-import { getRoles } from '../../actions/user';
 import { saveMenu } from '../../actions/menu';
 import { Container } from './menu-tree-block';
 import { Iconify } from '../../components/iconify';
@@ -22,7 +21,6 @@ import { ConfirmDialog } from '../../components/custom-dialog';
 import { DnaSelectBox } from '../../components/form/dna-select-box';
 import { defaultPage, defaultTree, defaultGroup } from '../../types/menu';
 
-import type { Role } from '../../types/user';
 import type { Menu, MenuTree } from '../../types/menu';
 
 type Props = {
@@ -32,7 +30,6 @@ type Props = {
 export function MenuEditTree({ entity }: Props) {
   const [selectedMenu, setSelectedMenu] = useState<MenuTree>(defaultTree(uuidv4()));
   const [rootMenuTree, setRootMenuTree] = useState<MenuTree>();
-  const [roles, setRoles] = useState<Role[]>([]);
 
   const { data: pageInfos } = useGetPageInfos(
     { page: 0, pageSize: 100 },
@@ -47,7 +44,6 @@ export function MenuEditTree({ entity }: Props) {
       name: e.name,
       icon: e.icon,
       pageInfoId: e.pageInfoId,
-      roleId: e.roleId,
       pageInfoPath: e.pageInfoPath,
       parentId: e.upperMenuId === '0' ? undefined : e.upperMenuId,
       type: e.type,
@@ -85,19 +81,12 @@ export function MenuEditTree({ entity }: Props) {
         upperMenuId: parentId || 0,
         pageInfoPath: menu.pageInfoPath,
         pageInfoId: menu.pageInfoId,
-        roleId: menu.roleId || 3,
       });
       seq.number += 1;
     }
 
     menu.children?.forEach((child: MenuTree) => {
       treeToArray(child, seq, arr, menu.id);
-    });
-  }, []);
-
-  useEffect(() => {
-    getRoles().then((e) => {
-      setRoles([...e]);
     });
   }, []);
 
@@ -281,16 +270,6 @@ export function MenuEditTree({ entity }: Props) {
                 value={selectedMenu.pageInfoId || ''}
                 onValueChange={handleFilterName('pageInfoId')}
                 readonly={selectedMenu.type === 'group'}
-                valueField="id"
-                textField="name"
-              />
-            </Grid>
-            <Grid item xs={12} md={12}>
-              <DnaSelectBox
-                label="역할"
-                items={roles}
-                value={selectedMenu.roleId || 0}
-                onValueChange={handleFilterName('roleId')}
                 valueField="id"
                 textField="name"
               />

@@ -53,7 +53,7 @@ export function PageInfoListView() {
     {
       field: 'name',
       headerName: '페이지명',
-      width: 800,
+      width: 600,
       renderCell: (params) => (
         <Link
           noWrap
@@ -69,7 +69,13 @@ export function PageInfoListView() {
     {
       field: 'path',
       headerName: 'Path',
-      width: 200,
+      width: 600,
+    },
+    {
+      field: 'roleId',
+      headerName: '역할',
+      flex: 1,
+      renderCell: (params) => <div>{params.row.roleName}</div>,
     },
   ];
 

@@ -1,6 +1,6 @@
 import { z as zod } from 'zod';
 import { useForm } from 'react-hook-form';
-import { useMemo, useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Grid } from '@mui/material';
@@ -8,6 +8,7 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
 import CardHeader from '@mui/material/CardHeader';
 
 import { paths } from 'src/routes/paths';
@@ -16,11 +17,13 @@ import { useRouter } from 'src/routes/hooks';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
+import { getRoles } from '../../actions/user';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 import { createPageInfo, deletePageInfo, updatePageInfo } from '../../actions/page-info';
 
+import type { Role } from '../../types/user';
 import type { PageInfo } from '../../types/page-info';
 
 // ----------------------------------------------------------------------
@@ -31,6 +34,7 @@ export const Schema = zod.object({
   id: zod.number().optional(),
   name: zod.string().min(1, { message: 'Name is required!' }),
   path: zod.string(),
+  roleId: zod.number().optional(),
 });
 
 // ----------------------------------------------------------------------
@@ -49,11 +53,20 @@ export function PageInfoEditForm({ editMode, entity }: Props) {
   const editPath = paths.manage.pageInfo.edit(entity?.id);
   const detailsPath = paths.manage.pageInfo.details(entity?.id);
 
+  const [roles, setRoles] = useState<Role[]>([]);
+
+  useEffect(() => {
+    getRoles().then((e) => {
+      setRoles([...e]);
+    });
+  }, []);
+
   const defaultValues = useMemo(
     () => ({
       id: entity?.id,
       name: entity?.name || '',
       path: entity?.path || '',
+      roleId: entity?.roleId || 0,
     }),
     [entity]
   );
@@ -113,15 +126,35 @@ export function PageInfoEditForm({ editMode, entity }: Props) {
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
       <Divider />
       <Grid container spacing={3} sx={{ p: 3 }}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
           <Field.Text
+            variant="outlined"
             name="name"
             label="페이지명"
             inputProps={{ readOnly: editMode === 'details' }}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <Field.Text name="path" label="경로" inputProps={{ readOnly: editMode === 'details' }} />
+        <Grid item xs={12} md={12}>
+          <Field.Text
+            variant="outlined"
+            name="path"
+            label="경로"
+            inputProps={{ readOnly: editMode === 'details' }}
+          />
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <Field.Select
+            name="roleId"
+            label="역할"
+            inputProps={{ readOnly: editMode === 'details' }}
+            variant="outlined"
+          >
+            {roles.map((option) => (
+              <MenuItem key={option.id} value={option.id} sx={{ textTransform: 'capitalize' }}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </Field.Select>
         </Grid>
       </Grid>
     </Card>

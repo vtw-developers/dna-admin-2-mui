@@ -61,9 +61,14 @@ export function NavVertical({
               icon: icon(
                 `ic-${e.icon?.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase())}`
               ),
+              /* info: (
+                <Label color="info" variant="inverted">
+                  +3
+                </Label>
+              ), */
             })
         );
-      setList([...group]);
+      setList([...group.filter((e) => e.items.length > 0)]);
     });
   }, []);
 
