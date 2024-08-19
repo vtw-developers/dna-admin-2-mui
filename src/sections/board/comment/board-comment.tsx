@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 import Stack from '@mui/material/Stack';
 import { Divider, Typography } from '@mui/material';
 
-import { PostCommentForm } from './post-comment-form';
-import { PostCommentList } from './post-comment-list';
-import { getComments, createComment, deleteComment } from '../../actions/comment';
+import { BoardCommentForm } from './board-comment-form';
+import { BoardCommentList } from './board-comment-list';
+import { getComments, createComment, deleteComment } from '../../../actions/comment';
 
 // ----------------------------------------------------------------------
 
@@ -79,11 +79,11 @@ export function BoardComment({ boardId }: Props) {
         </Typography>
       </Stack>
 
-      <PostCommentForm onSave={save} />
+      <BoardCommentForm onSave={save} />
 
       <Divider sx={{ mt: 5, mb: 2 }} />
 
-      <PostCommentList comments={comments} onDelete={doDelete} />
+      <BoardCommentList comments={comments} onDelete={doDelete} />
     </>
   );
 }

@@ -3,7 +3,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-import { Iconify } from '../../components/iconify';
+import { Iconify } from '../../../components/iconify';
 
 // ----------------------------------------------------------------------
 export type IDateValue = string | number | null;
@@ -28,7 +28,7 @@ type Props = {
   onDelete: any;
 };
 
-export async function PostCommentList({ comments, onDelete }: Props) {
+export function BoardCommentList({ comments, onDelete }: Props) {
   const doDeleteComment = (e) => {
     console.log(e);
     const selectedComment = comments.list.find((comment) => comment.id === e);

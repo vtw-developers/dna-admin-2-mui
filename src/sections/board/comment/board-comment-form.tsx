@@ -19,7 +19,7 @@ export const CommentSchema = zod.object({
 
 // ----------------------------------------------------------------------
 
-export function PostCommentForm({ onSave }) {
+export function BoardCommentForm({ onSave }) {
   const defaultValues = { comment: '' };
 
   const methods = useForm<CommentSchemaType>({
