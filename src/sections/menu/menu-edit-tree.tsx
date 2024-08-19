@@ -192,7 +192,7 @@ export function MenuEditTree({ entity }: Props) {
 
   return (
     <Grid container spacing={3} className="menu-edit-tree">
-      <Grid item xs={12} md={6} lg={4}>
+      <Grid item xs={12} md={6} lg={6}>
         <Card sx={{ p: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box>
@@ -202,7 +202,7 @@ export function MenuEditTree({ entity }: Props) {
                 color="inherit"
                 onClick={addGroup}
                 startIcon={<Iconify icon="mingcute:add-line" />}
-                sx={{ mb: 2 }}
+                sx={{ mb: 2, mr: 1 }}
               >
                 그룹
               </Button>
@@ -239,7 +239,7 @@ export function MenuEditTree({ entity }: Props) {
           )}
         </Card>
       </Grid>
-      <Grid item xs={12} md={6} lg={8}>
+      <Grid item xs={12} md={6} lg={6}>
         <Card>
           <CardHeader title="상세 정보" subheader="상세 정보를 설정합니다." sx={{ mb: 3 }} />
           <Divider sx={{ borderStyle: 'dashed' }} />

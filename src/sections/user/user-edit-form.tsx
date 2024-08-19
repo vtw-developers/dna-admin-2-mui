@@ -53,7 +53,7 @@ export function UserEditForm({ editMode, entity }: Props) {
 
   useEffect(() => {
     getRoles().then((e) => {
-      setRoles([...e]);
+      setRoles([...e.filter((r: Role) => r.id !== 3)]);
     });
   }, []);
 
