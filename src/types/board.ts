@@ -4,12 +4,18 @@ export type BoardFilters = {
   boardMasterId: number | undefined;
 };
 
+export type Comments = {
+  count: number;
+  list: Comment[];
+};
+
 export type Comment = {
   id?: number;
   boardId: number;
   commentNo: number;
   content: string;
   useYn: boolean;
+  authorId: number;
   authorName: string;
   modifiedTime: string;
 };

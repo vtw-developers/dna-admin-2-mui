@@ -19,7 +19,11 @@ export const CommentSchema = zod.object({
 
 // ----------------------------------------------------------------------
 
-export function BoardCommentForm({ onSave }) {
+type Props = {
+  onSave: (e: any) => void;
+};
+
+export function BoardCommentForm({ onSave }: Props) {
   const defaultValues = { comment: '' };
 
   const methods = useForm<CommentSchemaType>({
@@ -36,7 +40,7 @@ export function BoardCommentForm({ onSave }) {
   const onSubmit = handleSubmit(async (data) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      onSave && onSave(data);
+      onSave(data);
       reset();
       console.info('DATA', data);
     } catch (error) {

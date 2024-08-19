@@ -18,10 +18,21 @@ import { useBoolean } from '../../hooks/use-boolean';
 
 // ----------------------------------------------------------------------
 
-export function NoticePopup({ popup }) {
+export interface INoticePopup {
+  id: number;
+  visible: boolean;
+  title: string;
+  content: string;
+}
+
+type Props = {
+  popup: INoticePopup;
+};
+
+export function NoticePopup({ popup }: Props) {
   const share = useBoolean(popup.visible);
 
-  const onHide7days = (e) => {
+  const onHide7days = (e: any) => {
     if (e.target.checked) {
       const arr: number[] = [];
       const cookies = getCookie('POPUP_EXPIRES');
