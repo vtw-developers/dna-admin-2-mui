@@ -28,7 +28,7 @@ type Props = {
   onDelete: any;
 };
 
-export async function BoardCommentList({ comments, onDelete }: Props) {
+export function BoardCommentList({ comments, onDelete }: Props) {
   const doDeleteComment = (e) => {
     console.log(e);
     const selectedComment = comments.list.find((comment) => comment.id === e);

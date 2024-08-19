@@ -13,7 +13,7 @@ type Props = {
   boardId: any;
 };
 
-export async function BoardComment({ boardId }: Props) {
+export function BoardComment({ boardId }: Props) {
   const [comments, setComments] = useState({ count: 0, list: [] });
 
   useEffect(() => {
