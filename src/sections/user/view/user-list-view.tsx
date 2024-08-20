@@ -106,7 +106,6 @@ export function UserListView() {
               variant="outlined"
               color="primary"
               size="small"
-              tabIndex={params.hasFocus ? 0 : -1}
               onClick={() => {
                 setApprovalId(params.row.id);
                 confirm.onTrue();

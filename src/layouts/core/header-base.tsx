@@ -6,6 +6,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import { Logo } from 'src/components/logo';
 
 import { HeaderSection } from './header-section';
+import { useAuthContext } from '../../auth/hooks';
 import { Searchbar } from '../components/searchbar';
 import { MenuButton } from '../components/menu-button';
 import { AccountTimer } from '../components/account-timer';
@@ -107,6 +108,7 @@ export function HeaderBase({
   ...other
 }: HeaderBaseProps) {
   const theme = useTheme();
+  const { user } = useAuthContext();
 
   return (
     <HeaderSection
@@ -167,16 +169,16 @@ export function HeaderBase({
               {contacts && <ContactsPopover data-slot="contacts" data={data?.contacts} />}
 
               {/* -- Account timer -- */}
-              {account && <AccountTimer data-slot="account" data={data?.account} />}
+              {user && <AccountTimer data-slot="account" data={data?.account} />}
 
               {/* -- Account drawer -- */}
-              {account && <AccountDrawer data-slot="account" data={data?.account} />}
+              {user && <AccountDrawer data-slot="account" data={data?.account} />}
+
+              {/* -- Sign in button -- */}
+              {!user && <SignInButton />}
 
               {/* -- Settings button -- */}
               {settings && <SettingsButton data-slot="settings" />}
-
-              {/* -- Sign in button -- */}
-              {signIn && <SignInButton />}
             </Box>
             {slots?.rightAreaEnd}
           </>
