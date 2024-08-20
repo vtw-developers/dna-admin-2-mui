@@ -74,6 +74,7 @@ export const paths = {
     },
     user: {
       root: `${ROOTS.USER}`,
+      new: `${ROOTS.USER}/new`,
       details: (id: string | undefined) => `${ROOTS.USER}/${id}`,
       edit: (id: string | undefined) => `${ROOTS.USER}/${id}/edit`,
     },

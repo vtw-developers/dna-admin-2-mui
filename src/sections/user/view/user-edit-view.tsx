@@ -19,6 +19,8 @@ type Props = {
 export function UserEditView({ editMode, entity }: Props): JSX.Element {
   const title = () => {
     switch (editMode) {
+      case 'create':
+        return '사용자 정보 등록';
       case 'update':
         return '사용자 정보 수정';
       case 'details':

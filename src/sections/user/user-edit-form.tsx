@@ -10,6 +10,7 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import CardHeader from '@mui/material/CardHeader';
+import Typography from '@mui/material/Typography';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -19,8 +20,8 @@ import { Form, Field } from 'src/components/hook-form';
 
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
-import { getRoles, deleteUser, updateUser } from '../../actions/user';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
+import { getRoles, deleteUser, updateUser, createUser } from '../../actions/user';
 
 import type { Role, User } from '../../types/user';
 
@@ -85,7 +86,10 @@ export function UserEditForm({ editMode, entity }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      if (editMode === 'update') {
+      if (editMode === 'create') {
+        await createUser(data).then(() => toast.success('저장되었습니다.'));
+        router.push(listPath);
+      } else if (editMode === 'update') {
         await updateUser(data).then(() => toast.success('수정되었습니다.'));
         router.push(detailsPath);
       }
@@ -112,10 +116,18 @@ export function UserEditForm({ editMode, entity }: Props) {
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
       <Divider />
       <Grid container spacing={3} sx={{ p: 3 }}>
+        <Grid item xs={12} md={12}>
+          <Field.Text
+            name="id"
+            label="Id"
+            inputProps={{ readOnly: editMode !== 'create' }}
+            variant="outlined"
+          />
+        </Grid>
         <Grid item xs={12} md={6}>
           <Field.Text
             name="name"
-            label="페이지명"
+            label="Name"
             inputProps={{ readOnly: editMode === 'details' }}
             variant="outlined"
           />
@@ -134,6 +146,13 @@ export function UserEditForm({ editMode, entity }: Props) {
             ))}
           </Field.Select>
         </Grid>
+        {editMode === 'create' && (
+          <Grid item xs={12} md={12}>
+            <Typography variant="subtitle2" color="red">
+              * 초기 비밀번호는 ID와 동일합니다
+            </Typography>
+          </Grid>
+        )}
       </Grid>
     </Card>
   );

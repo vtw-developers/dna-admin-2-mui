@@ -39,7 +39,7 @@ export function useGetUsers(
     return '';
   };
 
-  const { data, isLoading, error, isValidating } = useSWR<UserData>(
+  const { data, isLoading, error, isValidating, mutate } = useSWR<UserData>(
     [
       `${url}`,
       {
@@ -61,10 +61,11 @@ export function useGetUsers(
       loading: isLoading,
       error,
       isValidating,
+      mutate,
       empty: !isLoading && !data?.data.length,
       totalCount: data?.totalCount || 0,
     }),
-    [data?.data, data?.totalCount, isLoading, error, isValidating]
+    [data?.data, data?.totalCount, isLoading, error, isValidating, mutate]
   );
 
   return memoizedValue;
@@ -81,6 +82,12 @@ export const getRoles = async () => (await axiosInstance.get(`${ROLE_PATH_PREFIX
 
 export const updateUser = async (params: User) =>
   (await axiosInstance.post(`${PATH_PREFIX}/update`, params)).data;
+
+export const createUser = async (params: User) =>
+  (await axiosInstance.post(`${PATH_PREFIX}/create`, params)).data;
+
+export const approveUser = async (id: string) =>
+  (await axiosInstance.get(`${PATH_PREFIX}/approval`, { params: { id } })).data;
 
 export const deleteUser = async (id: string) =>
   (await axiosInstance.get(`${PATH_PREFIX}/delete`, { params: { id } })).data;
