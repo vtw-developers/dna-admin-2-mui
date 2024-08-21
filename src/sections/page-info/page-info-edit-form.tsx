@@ -35,6 +35,7 @@ export const Schema = zod.object({
   name: zod.string().min(1, { message: 'Name is required!' }),
   path: zod.string(),
   readRoleId: zod.number().optional(),
+  writeRoleId: zod.number().optional(),
 });
 
 // ----------------------------------------------------------------------
@@ -67,6 +68,7 @@ export function PageInfoEditForm({ editMode, entity }: Props) {
       name: entity?.name || '',
       path: entity?.path || '',
       readRoleId: entity?.readRoleId || 0,
+      writeRoleId: entity?.writeRoleId || 0,
     }),
     [entity]
   );
@@ -145,7 +147,21 @@ export function PageInfoEditForm({ editMode, entity }: Props) {
         <Grid item xs={12} md={12}>
           <Field.Select
             name="readRoleId"
-            label="역할"
+            label="읽기 역할"
+            inputProps={{ readOnly: editMode === 'details' }}
+            variant="outlined"
+          >
+            {roles.map((option) => (
+              <MenuItem key={option.id} value={option.id} sx={{ textTransform: 'capitalize' }}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </Field.Select>
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <Field.Select
+            name="writeRoleId"
+            label="쓰기 역할"
             inputProps={{ readOnly: editMode === 'details' }}
             variant="outlined"
           >

@@ -56,10 +56,20 @@ export function PageInfoFilter({ onSearch }: Props) {
       </Grid>
       <Grid item xs={12} md={4}>
         <DnaSelectBox
-          label="역할"
+          label="읽기 역할"
           items={roles}
           value={filters.readRoleId}
           onValueChange={handleFilterName('readRoleId')}
+          valueField="id"
+          textField="name"
+        />
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <DnaSelectBox
+          label="쓰기 역할"
+          items={roles}
+          value={filters.writeRoleId}
+          onValueChange={handleFilterName('writeRoleId')}
           valueField="id"
           textField="name"
         />

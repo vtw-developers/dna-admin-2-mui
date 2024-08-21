@@ -77,6 +77,12 @@ export function PageInfoListView() {
       flex: 1,
       renderCell: (params) => <div>{params.row.readRoleName}</div>,
     },
+    {
+      field: 'writeRoleId',
+      headerName: '쓰기 역할',
+      flex: 1,
+      renderCell: (params) => <div>{params.row.writeRoleName}</div>,
+    },
   ];
 
   return (
