@@ -58,8 +58,8 @@ export function PageInfoFilter({ onSearch }: Props) {
         <DnaSelectBox
           label="역할"
           items={roles}
-          value={filters.roleId}
-          onValueChange={handleFilterName('roleId')}
+          value={filters.readRoleId}
+          onValueChange={handleFilterName('readRoleId')}
           valueField="id"
           textField="name"
         />

@@ -72,10 +72,10 @@ export function PageInfoListView() {
       width: 600,
     },
     {
-      field: 'roleId',
-      headerName: '역할',
+      field: 'readRoleId',
+      headerName: '읽기 역할',
       flex: 1,
-      renderCell: (params) => <div>{params.row.roleName}</div>,
+      renderCell: (params) => <div>{params.row.readRoleName}</div>,
     },
   ];
 

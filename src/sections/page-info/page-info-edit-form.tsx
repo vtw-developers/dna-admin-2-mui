@@ -34,7 +34,7 @@ export const Schema = zod.object({
   id: zod.number().optional(),
   name: zod.string().min(1, { message: 'Name is required!' }),
   path: zod.string(),
-  roleId: zod.number().optional(),
+  readRoleId: zod.number().optional(),
 });
 
 // ----------------------------------------------------------------------
@@ -66,7 +66,7 @@ export function PageInfoEditForm({ editMode, entity }: Props) {
       id: entity?.id,
       name: entity?.name || '',
       path: entity?.path || '',
-      roleId: entity?.roleId || 0,
+      readRoleId: entity?.readRoleId || 0,
     }),
     [entity]
   );
@@ -144,7 +144,7 @@ export function PageInfoEditForm({ editMode, entity }: Props) {
         </Grid>
         <Grid item xs={12} md={12}>
           <Field.Select
-            name="roleId"
+            name="readRoleId"
             label="역할"
             inputProps={{ readOnly: editMode === 'details' }}
             variant="outlined"
