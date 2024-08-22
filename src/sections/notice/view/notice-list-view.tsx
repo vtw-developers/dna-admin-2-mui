@@ -4,6 +4,7 @@ import type { GridColDef } from '@mui/x-data-grid';
 import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
+import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 
 import Link from '@mui/material/Link';
@@ -12,7 +13,6 @@ import Button from '@mui/material/Button';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 
 import { paths } from '../../../routes/paths';
-import { useRouter } from '../../../routes/hooks';
 import { Iconify } from '../../../components/iconify';
 import { useGetBoards } from '../../../actions/board';
 import { RouterLink } from '../../../routes/components';
@@ -21,6 +21,7 @@ import { defaultPagination } from '../../../utils/pagination';
 import { DashboardContent } from '../../../layouts/dashboard';
 import { EmptyContent } from '../../../components/empty-content';
 import { DnaPagination } from '../../../components/dna-pagination';
+import { useRoleContext } from '../../../auth/hooks/use-role-context';
 import { CustomBreadcrumbs } from '../../../components/custom-breadcrumbs';
 
 import type { Board } from '../../../types/board';
@@ -29,6 +30,7 @@ const NOTICE_BOARD_MASTER_ID = 1;
 
 export const NoticeListView = () => {
   const router = useRouter();
+  const { writeRole, setCurrentPath } = useRoleContext();
 
   const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
@@ -40,8 +42,9 @@ export const NoticeListView = () => {
   const [tableData, setTableData] = useState<Board[]>([]);
 
   useEffect(() => {
+    setCurrentPath('/boards/notice');
     setTableData(data);
-  }, [data, sortModel, pagination]);
+  }, [data, sortModel, pagination, setCurrentPath]);
 
   const handleViewRow = useCallback(
     (id: string) => {
@@ -97,6 +100,7 @@ export const NoticeListView = () => {
       <CustomBreadcrumbs
         heading="공지사항"
         links={[{ name: '공지사항 목록' }]}
+        actionVisible={writeRole}
         action={
           <Button
             component={RouterLink}

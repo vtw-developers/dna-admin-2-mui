@@ -7,6 +7,7 @@ import { Iconify } from '../iconify';
 import type { UseBooleanReturn } from '../../hooks/use-boolean';
 
 type ButtonsProps = {
+  editRole?: boolean;
   editing: boolean;
   listPath: string;
   editPath: string;
@@ -15,6 +16,7 @@ type ButtonsProps = {
   cancelEdit: () => void;
 };
 export const DnaBottomButtons = ({
+  editRole = true,
   editing,
   listPath,
   editPath,
@@ -23,39 +25,43 @@ export const DnaBottomButtons = ({
   cancelEdit,
 }: ButtonsProps) => (
   <Stack spacing={3} direction="row" alignItems="center" flexWrap="wrap" justifyContent="center">
-    {!editing && (
-      <Button
-        variant="outlined"
-        size="medium"
-        color="primary"
-        href={editPath}
-        startIcon={<Iconify icon="mingcute:edit-line" />}
-      >
-        수정
-      </Button>
-    )}
-    {!editing && (
-      <Button
-        variant="outlined"
-        size="medium"
-        color="error"
-        onClick={confirm.onTrue}
-        startIcon={<Iconify icon="mingcute:delete-2-line" />}
-      >
-        삭제
-      </Button>
-    )}
-    {editing && (
-      <LoadingButton
-        type="submit"
-        variant="outlined"
-        size="medium"
-        color="primary"
-        loading={isSubmitting}
-        startIcon={<Iconify icon="mingcute:save-2-line" />}
-      >
-        저장
-      </LoadingButton>
+    {editRole && (
+      <>
+        {!editing && (
+          <Button
+            variant="outlined"
+            size="medium"
+            color="primary"
+            href={editPath}
+            startIcon={<Iconify icon="mingcute:edit-line" />}
+          >
+            수정
+          </Button>
+        )}
+        {!editing && (
+          <Button
+            variant="outlined"
+            size="medium"
+            color="error"
+            onClick={confirm.onTrue}
+            startIcon={<Iconify icon="mingcute:delete-2-line" />}
+          >
+            삭제
+          </Button>
+        )}
+        {editing && (
+          <LoadingButton
+            type="submit"
+            variant="outlined"
+            size="medium"
+            color="primary"
+            loading={isSubmitting}
+            startIcon={<Iconify icon="mingcute:save-2-line" />}
+          >
+            저장
+          </LoadingButton>
+        )}
+      </>
     )}
     {editing && (
       <LoadingButton

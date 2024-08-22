@@ -21,6 +21,7 @@ import { fDate } from '../../utils/format-time';
 import { Iconify } from '../../components/iconify';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
+import { useRoleContext } from '../../auth/hooks/use-role-context';
 import { DnaDateRangeBox } from '../../components/form/dna-date-range-box';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 import { download, createBoard, deleteBoard, updateBoard } from '../../actions/board';
@@ -61,6 +62,7 @@ export function NoticeEditForm({ editMode, entity }: Props) {
   const editing = editMode !== 'details';
   const router = useRouter();
   const confirm = useBoolean();
+  const { writeRole } = useRoleContext();
 
   const listPath = paths.boards.notice.root;
   const editPath = paths.boards.notice.edit(entity?.id);
@@ -180,48 +182,57 @@ export function NoticeEditForm({ editMode, entity }: Props) {
     <Card>
       <Grid container spacing={3} sx={{ p: 3 }}>
         <Grid item xs={12} md={12}>
-          <Field.Text name="title" label="제목" inputProps={{ readOnly: editMode === 'details' }} />
-        </Grid>
-        <Grid item xs={12} md={1}>
-          <Field.Switch
-            name="pinYn"
-            label="중요표기"
-            slotProps={{ switch: { disabled: editMode === 'details' } }}
+          <Field.Text
+            name="title"
+            label="제목"
+            inputProps={{ readOnly: editMode === 'details' }}
+            variant="outlined"
           />
         </Grid>
-        <Grid item xs={12} md={11}>
-          <DnaDateRangeBox
-            startValue={values.pinStartTime}
-            endValue={values.pinEndTime}
-            onValueChange={handleFilterDate}
-            startLabel="시작일시"
-            endLabel="종료일시"
-            startFieldName="pinStartTime"
-            endFieldName="pinEndTime"
-            format="YYYY-MM-DD HH:mm:ss"
-            readonly={editMode === 'details' || !values.pinYn}
-          />
-        </Grid>
-        <Grid item xs={12} md={1}>
-          <Field.Switch
-            name="popupYn"
-            label="팝업표기"
-            slotProps={{ switch: { disabled: editMode === 'details' } }}
-          />
-        </Grid>
-        <Grid item xs={12} md={11}>
-          <DnaDateRangeBox
-            startValue={values.popupStartTime}
-            endValue={values.popupEndTime}
-            onValueChange={handleFilterDate}
-            startLabel="시작일시"
-            endLabel="종료일시"
-            startFieldName="popupStartTime"
-            endFieldName="popupEndTime"
-            format="YYYY-MM-DD HH:mm:ss"
-            readonly={editMode === 'details' || !values.popupYn}
-          />
-        </Grid>
+        {writeRole && (
+          <>
+            <Grid item xs={12} md={1}>
+              <Field.Switch
+                name="pinYn"
+                label="중요표기"
+                slotProps={{ switch: { disabled: editMode === 'details' } }}
+              />
+            </Grid>
+            <Grid item xs={12} md={11}>
+              <DnaDateRangeBox
+                startValue={values.pinStartTime}
+                endValue={values.pinEndTime}
+                onValueChange={handleFilterDate}
+                startLabel="시작일시"
+                endLabel="종료일시"
+                startFieldName="pinStartTime"
+                endFieldName="pinEndTime"
+                format="YYYY-MM-DD HH:mm:ss"
+                readonly={editMode === 'details' || !values.pinYn}
+              />
+            </Grid>
+            <Grid item xs={12} md={1}>
+              <Field.Switch
+                name="popupYn"
+                label="팝업표기"
+                slotProps={{ switch: { disabled: editMode === 'details' } }}
+              />
+            </Grid>
+            <Grid item xs={12} md={11}>
+              <DnaDateRangeBox
+                startValue={values.popupStartTime}
+                endValue={values.popupEndTime}
+                onValueChange={handleFilterDate}
+                startLabel="시작일시"
+                endLabel="종료일시"
+                startFieldName="popupStartTime"
+                endFieldName="popupEndTime"
+                format="YYYY-MM-DD HH:mm:ss"
+                readonly={editMode === 'details' || !values.popupYn}
+              />
+            </Grid>
+          </>
+        )}
         <Grid item xs={12} md={12}>
           {editing && <Field.Editor name="content" sx={{ maxHeight: 480 }} />}
           {!editing && (
@@ -285,6 +296,7 @@ export function NoticeEditForm({ editMode, entity }: Props) {
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
           <DnaBottomButtons
+            editRole={writeRole}
             editing={editing}
             listPath={listPath}
             editPath={editPath}

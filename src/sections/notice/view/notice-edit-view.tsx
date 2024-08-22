@@ -1,10 +1,13 @@
 'use client';
 
+import { useEffect } from 'react';
+
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
 import { NoticeEditForm } from '../notice-edit-form';
+import { useRoleContext } from '../../../auth/hooks/use-role-context';
 
 import type { Board } from '../../../types/board';
 import type { EditModes } from '../../../types/edit';
@@ -17,6 +20,12 @@ type Props = {
 };
 
 export function NoticeEditView({ editMode, entity }: Props): JSX.Element {
+  const { setCurrentPath } = useRoleContext();
+
+  useEffect(() => {
+    setCurrentPath('/boards/notice');
+  }, [setCurrentPath]);
+
   const title = () => {
     switch (editMode) {
       case 'create':

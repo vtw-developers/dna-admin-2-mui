@@ -12,3 +12,16 @@ export type AuthContextValue = {
   unauthenticated: boolean;
   checkUserSession?: () => Promise<void>;
 };
+
+export type RoleState = {
+  userRoleLevel: number;
+  readRoleLevel: number;
+  writeRoleLevel: number;
+  loading: boolean;
+};
+
+export type RoleContextValue = {
+  readRole: boolean;
+  writeRole: boolean;
+  setCurrentPath: (path: string) => void;
+};

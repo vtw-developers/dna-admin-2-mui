@@ -20,8 +20,8 @@ import { AuthProvider } from 'src/auth/context/jwt';
 
 import { Snackbar } from '../components/snackbar';
 import { detectLanguage } from '../locales/server';
-import { I18nProvider } from '../locales/i18n-provider';
-import { LocalizationProvider } from '../locales/localization-provider';
+import { I18nProvider, LocalizationProvider } from '../locales';
+import { RoleProvider } from '../auth/context/jwt/role-provider';
 
 // ----------------------------------------------------------------------
 
@@ -57,13 +57,15 @@ export default async function RootLayout({ children }: Props) {
                 caches={CONFIG.isStaticExport ? 'localStorage' : 'cookie'}
               >
                 <ThemeProvider>
-                  <MotionLazy>
-                    <ProgressBar />
-                    <Snackbar />
-                    <SettingsDrawer />
-                    {children}
-                    {/*                    <NoticePopups /> */}
-                  </MotionLazy>
+                  <RoleProvider>
+                    <MotionLazy>
+                      <ProgressBar />
+                      <Snackbar />
+                      <SettingsDrawer />
+                      {children}
+                      {/*                    <NoticePopups /> */}
+                    </MotionLazy>
+                  </RoleProvider>
                 </ThemeProvider>
               </SettingsProvider>
             </AuthProvider>

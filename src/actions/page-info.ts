@@ -83,3 +83,6 @@ export const updatePageInfo = async (params: PageInfo) =>
 
 export const deletePageInfo = async (params: PageInfo) =>
   (await axiosInstance.post(`${PATH_PREFIX}/delete`, params)).data;
+
+export const pageRoleLevel = async (path: string) =>
+  (await axiosInstance.get(`${PATH_PREFIX}/pageLevel`, { params: { path } })).data;
