@@ -13,6 +13,7 @@ import type { CustomBreadcrumbsProps } from './types';
 export function CustomBreadcrumbs({
   links,
   action,
+  actionVisible = true,
   heading,
   moreLink,
   activeLast,
@@ -63,8 +64,7 @@ export function CustomBreadcrumbs({
 
           {!!links.length && renderLinks}
         </Box>
-
-        {action && renderAction}
+        {actionVisible && <>{action && renderAction}</>}
       </Stack>
 
       {!!moreLink && renderMoreLink}

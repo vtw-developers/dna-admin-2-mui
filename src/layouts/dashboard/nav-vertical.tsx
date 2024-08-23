@@ -13,6 +13,7 @@ import { Scrollbar } from 'src/components/scrollbar';
 import { NavSectionMini, NavSectionVertical } from 'src/components/nav-section';
 
 import { icon } from '../config-nav-dashboard';
+import { useAuthContext } from '../../auth/hooks';
 import { getMenuView } from '../../actions/menu';
 import { NavToggleButton } from '../components/nav-toggle-button';
 
@@ -40,6 +41,7 @@ export function NavVertical({
   const theme = useTheme();
   const [list, setList] = useState<NavSectionProps['data']>([]);
   const nav = async () => getMenuView();
+  const { user } = useAuthContext();
 
   useEffect(() => {
     nav().then((result) => {
@@ -70,7 +72,7 @@ export function NavVertical({
         );
       setList([...group.filter((e) => e.items.length > 0)]);
     });
-  }, []);
+  }, [user]);
 
   const renderNavVertical = (
     <>

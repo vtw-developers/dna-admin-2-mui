@@ -27,16 +27,11 @@ export function RoleProvider({ children }: Props) {
 
   const [currentPath, setCurrentPath] = useState<string>('/dashboard');
 
-  useEffect(() => {
-    console.log(currentPath);
-  }, [currentPath]);
-
   const { user } = useAuthContext();
 
   const checkUserRole = useCallback(async () => {
     try {
       const page = await pageRoleLevel(currentPath);
-      console.log(page);
 
       if (user != null) {
         const entity = await getUser(user.id);
