@@ -32,10 +32,10 @@ export type SchemaType = zod.infer<typeof Schema>;
 
 export const Schema = zod.object({
   id: zod.number().optional(),
-  name: zod.string().min(1, { message: 'Name is required!' }),
-  path: zod.string(),
-  readRoleId: zod.number().optional(),
-  writeRoleId: zod.number().optional(),
+  name: zod.string().min(1, { message: '페이지명을 입력하세요.' }),
+  path: zod.string().min(1, { message: '경로를 입력하세요.' }),
+  readRoleId: zod.number().min(1, { message: '읽기 역할을 선택하세요.' }),
+  writeRoleId: zod.number().min(1, { message: '쓰기 역할을 선택하세요.' }),
 });
 
 // ----------------------------------------------------------------------

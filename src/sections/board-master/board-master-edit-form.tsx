@@ -33,7 +33,7 @@ export type SchemaType = zod.infer<typeof Schema>;
 
 export const Schema = zod.object({
   id: zod.number().optional(),
-  name: zod.string().min(1, { message: 'Name is required!' }),
+  name: zod.string().min(1, { message: '게시판 이름를 입력하세요.' }),
   instruction: zod.string(),
   fileAttachYn: zod.boolean(),
   replyYn: zod.boolean(),

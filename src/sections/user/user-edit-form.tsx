@@ -30,9 +30,9 @@ import type { Role, User } from '../../types/user';
 export type SchemaType = zod.infer<typeof Schema>;
 
 export const Schema = zod.object({
-  id: zod.string(),
-  name: zod.string().min(1, { message: 'Name is required!' }),
-  roleId: zod.number().optional(),
+  id: zod.string().min(1, { message: 'ID를 입력하세요.' }),
+  name: zod.string().min(1, { message: '이름을 입력하세요.' }),
+  roleId: zod.number().min(1, { message: '역할을 선택하세요.' }),
 });
 
 // ----------------------------------------------------------------------
@@ -100,7 +100,9 @@ export function UserEditForm({ editMode, entity }: Props) {
   });
 
   const cancelEdit = () => {
-    if (editMode === 'update') {
+    if (editMode === 'create') {
+      router.push(listPath);
+    } else if (editMode === 'update') {
       router.push(detailsPath);
     }
   };
