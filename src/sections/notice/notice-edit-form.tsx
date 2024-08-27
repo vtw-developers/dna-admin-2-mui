@@ -35,8 +35,8 @@ export type SchemaType = zod.infer<typeof Schema>;
 export const Schema = zod.object({
   id: zod.number().optional(),
   boardMasterId: zod.number(),
-  title: zod.string().min(1, { message: 'Name is required!' }),
-  content: zod.string(),
+  title: zod.string().min(1, { message: '제목을 입력하세요.' }),
+  content: zod.string().min(1, { message: '게시글을 입력하세요.' }),
   boardNo: zod.number().optional(),
   parentId: zod.number().optional(),
   viewCount: zod.number().optional(),

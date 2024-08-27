@@ -35,8 +35,8 @@ export type SchemaType = zod.infer<typeof Schema>;
 export const Schema = zod.object({
   id: zod.number().optional(),
   boardMasterId: zod.number(),
-  title: zod.string().min(1, { message: 'Name is required!' }),
-  content: zod.string(),
+  title: zod.string().min(1, { message: '제목을 입력하세요.' }),
+  content: zod.string().min(1, { message: '게시글을 입력하세요.' }),
   boardNo: zod.number().optional(),
   parentId: zod.number().optional(),
   viewCount: zod.number().optional(),
@@ -117,7 +117,7 @@ export function QnaEditForm({ editMode, entity, parent }: Props) {
     }
   }, [entity, defaultValues, reset]);
 
-  const onSubmit = handleSubmit(async (data: Board) => {
+  const onSubmit = handleSubmit(async (data: any) => {
     const format = new FormData();
     format.append('entity', new Blob([JSON.stringify(data)], { type: 'application/json' }));
     try {
@@ -142,7 +142,7 @@ export function QnaEditForm({ editMode, entity, parent }: Props) {
     }
   };
 
-  const confirmDelete = handleSubmit(async (data: Board) => {
+  const confirmDelete = handleSubmit(async (data: any) => {
     await deleteBoard(data);
     toast.success('삭제되었습니다.');
     router.push(listPath);

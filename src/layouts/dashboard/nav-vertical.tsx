@@ -13,8 +13,8 @@ import { Scrollbar } from 'src/components/scrollbar';
 import { NavSectionMini, NavSectionVertical } from 'src/components/nav-section';
 
 import { icon } from '../config-nav-dashboard';
-import { useAuthContext } from '../../auth/hooks';
 import { getMenuView } from '../../actions/menu';
+import { useAuthContext } from '../../auth/hooks';
 import { NavToggleButton } from '../components/nav-toggle-button';
 
 // ----------------------------------------------------------------------
@@ -70,7 +70,7 @@ export function NavVertical({
               ), */
             })
         );
-      setList([...group.filter((e) => e.items.length > 0)]);
+      setList([...group.filter((e: any) => e.items.length > 0)]);
     });
   }, [user]);
 
