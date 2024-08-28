@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useMemo, useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import Box from '@mui/material/Box';
 import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -21,7 +22,7 @@ import { Form, Field } from 'src/components/hook-form';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
-import { getRoles, deleteUser, updateUser, createUser } from '../../actions/user';
+import { getRoles, createUser, deleteUser, updateUser } from '../../actions/user';
 
 import type { Role, User } from '../../types/user';
 
@@ -30,8 +31,14 @@ import type { Role, User } from '../../types/user';
 export type SchemaType = zod.infer<typeof Schema>;
 
 export const Schema = zod.object({
-  id: zod.string().min(1, { message: 'ID를 입력하세요.' }),
-  name: zod.string().min(1, { message: '이름을 입력하세요.' }),
+  id: zod
+    .string()
+    .min(1, { message: 'ID를 입력하세요.' })
+    .max(50, { message: '50자 이내로 입력하세요.' }),
+  name: zod
+    .string()
+    .min(1, { message: '이름을 입력하세요.' })
+    .max(50, { message: '50자 이내로 입력하세요.' }),
   roleId: zod.number().min(1, { message: '역할을 선택하세요.' }),
 });
 
@@ -118,7 +125,7 @@ export function UserEditForm({ editMode, entity }: Props) {
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
       <Divider />
       <Grid container spacing={3} sx={{ p: 3 }}>
-        <Grid item xs={12} md={12}>
+        <Grid item xs={12} md={6}>
           <Field.Text
             name="id"
             label="Id"
@@ -160,7 +167,7 @@ export function UserEditForm({ editMode, entity }: Props) {
   );
 
   return (
-    <>
+    <Box className="dna-edit-form">
       <Form methods={methods} onSubmit={onSubmit}>
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
@@ -193,6 +200,6 @@ export function UserEditForm({ editMode, entity }: Props) {
           </Button>
         }
       />
-    </>
+    </Box>
   );
 }

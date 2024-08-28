@@ -4,6 +4,7 @@ import type { GridColDef } from '@mui/x-data-grid';
 import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
+import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 
@@ -19,7 +20,6 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
 import { UserFilter } from '../user-filter';
 import { paths } from '../../../routes/paths';
-import { toast } from '../../../components/snackbar';
 import { Iconify } from '../../../components/iconify';
 import { RouterLink } from '../../../routes/components';
 import { useBoolean } from '../../../hooks/use-boolean';
@@ -58,7 +58,8 @@ export function UserListView() {
     {
       field: 'id',
       headerName: 'ID',
-      width: 400,
+      flex: 1,
+      minWidth: 100,
       renderCell: (params) => (
         <Link
           noWrap
@@ -74,7 +75,8 @@ export function UserListView() {
     {
       field: 'name',
       headerName: '이름',
-      width: 400,
+      flex: 1,
+      minWidth: 100,
       renderCell: (params) => (
         <Link
           noWrap
