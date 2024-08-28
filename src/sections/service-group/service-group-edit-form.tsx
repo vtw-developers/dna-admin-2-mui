@@ -34,7 +34,10 @@ export type SchemaType = zod.infer<typeof Schema>;
 
 export const Schema = zod.object({
   id: zod.number().optional(),
-  name: zod.string().min(1, { message: 'Name is required!' }),
+  name: zod
+    .string()
+    .min(1, { message: '그룹명을 입력하세요.' })
+    .max(100, { message: '100자 이내로 입력하세요.' }),
   description: zod.string(),
 });
 
@@ -71,12 +74,9 @@ export function ServiceGroupEditForm({ editMode, entity }: Props) {
   const {
     reset,
     watch,
-    setValue,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
-
-  const values = watch();
 
   useEffect(() => {
     if (entity) {
@@ -123,6 +123,7 @@ export function ServiceGroupEditForm({ editMode, entity }: Props) {
           <Field.Text
             name="name"
             label="그룹명"
+            variant="outlined"
             inputProps={{ readOnly: editMode === 'details' }}
           />
         </Grid>

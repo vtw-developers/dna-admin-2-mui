@@ -4,6 +4,7 @@ import type { GridColDef } from '@mui/x-data-grid';
 import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
+import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 
 import Card from '@mui/material/Card';
@@ -20,7 +21,6 @@ import { EmptyContent } from 'src/components/empty-content';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
 import { paths } from '../../../routes/paths';
-import { useRouter } from '../../../routes/hooks';
 import { ServiceGroupFilter } from '../service-group-filter';
 import { defaultPagination } from '../../../utils/pagination';
 import { DnaPagination } from '../../../components/dna-pagination';
@@ -53,7 +53,8 @@ export function ServiceGroupListView() {
     {
       field: 'name',
       headerName: '서비스그룹명',
-      width: 800,
+      minWidth: 200,
+      flex: 1,
       renderCell: (params) => (
         <Link
           noWrap
