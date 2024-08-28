@@ -2,7 +2,6 @@ import type {
   GridSlots,
   GridRowId,
   GridColDef,
-  GridRowsProp,
   GridRowModel,
   GridRowModesModel,
   GridEventListener,
@@ -23,6 +22,8 @@ import {
   GridToolbarContainer,
   GridRowEditStopReasons,
 } from '@mui/x-data-grid';
+
+import { Iconify } from '../../components/iconify';
 
 const yaml = require('js-yaml');
 
@@ -46,18 +47,13 @@ export const Schema = zod.object({
   responseElements: zod.any().array(),
 });
 
-interface EditToolbarProps {
-  setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
-  setRowModesModel: (newModel: (oldModel: GridRowModesModel) => GridRowModesModel) => void;
-}
-
 // ----------------------------------------------------------------------
 
 type Props = {
   title: string;
   editing: boolean;
   initialRows: any[];
-  onChange: (rows) => void;
+  onChange: (rows: any[]) => void;
 };
 
 export function ParametersEditGrid({ title, editing, initialRows, onChange }: Props) {
@@ -66,6 +62,7 @@ export function ParametersEditGrid({ title, editing, initialRows, onChange }: Pr
 
   useEffect(() => {
     onChange(rows);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows]);
 
   const columnVisibilityModel = useMemo(() => {
@@ -88,35 +85,47 @@ export function ParametersEditGrid({ title, editing, initialRows, onChange }: Pr
       field: 'name',
       headerName: '이름',
       minWidth: 300,
-      editable: true,
+      editable: editing,
     },
     {
       field: 'type',
       headerName: '유형',
       flex: 1,
+      editable: editing,
     },
     {
       field: 'actions',
       type: 'actions',
-      headerName: 'Actions',
+      headerName: '',
       width: 100,
       cellClassName: 'actions',
       renderCell: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-        console.log(isInEditMode);
         if (isInEditMode) {
           return (
             <>
-              <Button onClick={handleSaveClick(id)}>Save</Button>
-              <Button onClick={handleCancelClick(id)}>Cancel</Button>
+              <Button
+                onClick={handleSaveClick(id)}
+                startIcon={<Iconify icon="mingcute:save-2-line" />}
+              />
+              <Button
+                onClick={handleCancelClick(id)}
+                startIcon={<Iconify icon="mingcute:close-line" />}
+              />
             </>
           );
         }
 
         return (
           <>
-            <Button onClick={handleEditClick(id)}>Edit</Button>
-            <Button onClick={handleDeleteClick(id)}>Delete</Button>
+            <Button
+              onClick={handleEditClick(id)}
+              startIcon={<Iconify icon="mingcute:edit-line" />}
+            />
+            <Button
+              onClick={handleDeleteClick(id)}
+              startIcon={<Iconify icon="mingcute:delete-2-line" />}
+            />
           </>
         );
       },
@@ -163,9 +172,7 @@ export function ParametersEditGrid({ title, editing, initialRows, onChange }: Pr
     setRowModesModel(newRowModesModel);
   };
 
-  function EditToolbar(props: EditToolbarProps) {
-    const { setRows, setRowModesModel } = props;
-
+  const EditToolbar = () => {
     const handleClick = () => {
       const id = uuidv4();
       setRows((oldRows) => [...oldRows, { id, name: '', type: 'String', isNew: true }]);
@@ -177,12 +184,16 @@ export function ParametersEditGrid({ title, editing, initialRows, onChange }: Pr
 
     return (
       <GridToolbarContainer>
-        <Button color="primary" onClick={handleClick}>
-          Add record
+        <Button
+          color="primary"
+          onClick={handleClick}
+          startIcon={<Iconify icon="mingcute:add-line" />}
+        >
+          추가
         </Button>
       </GridToolbarContainer>
     );
-  }
+  };
 
   return (
     <Card>
@@ -190,7 +201,6 @@ export function ParametersEditGrid({ title, editing, initialRows, onChange }: Pr
       <Divider />
       <Stack spacing={3} sx={{ p: 3 }}>
         <DataGrid
-          /*          getRowId={(row) => row.name} */
           columns={columns}
           rows={rows}
           editMode="row"
@@ -203,12 +213,20 @@ export function ParametersEditGrid({ title, editing, initialRows, onChange }: Pr
           disableColumnSorting
           autoHeight
           localeText={{ noRowsLabel: '데이터 없음' }}
-          slots={{
-            toolbar: EditToolbar as GridSlots['toolbar'],
-          }}
-          slotProps={{
-            toolbar: { setRows, setRowModesModel },
-          }}
+          slots={
+            editing
+              ? {
+                  toolbar: EditToolbar as GridSlots['toolbar'],
+                }
+              : {}
+          }
+          slotProps={
+            editing
+              ? {
+                  toolbar: { setRows, setRowModesModel },
+                }
+              : {}
+          }
         />
       </Stack>
     </Card>
