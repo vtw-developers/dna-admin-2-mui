@@ -57,7 +57,7 @@ export const NoticeListView = () => {
     {
       field: 'boardNo',
       headerName: '번호',
-      width: 200,
+      flex: 1,
       renderCell: (params) => {
         if (params.row.pinYn) return <Iconify icon="mingcute:pin-line" />;
         return <>{params.row.boardNo}</>;
@@ -68,6 +68,7 @@ export const NoticeListView = () => {
       field: 'title',
       headerName: '제목',
       flex: 1,
+      minWidth: 200,
       renderCell: (params) => (
         <Link
           noWrap
@@ -84,13 +85,15 @@ export const NoticeListView = () => {
     {
       field: 'authorName',
       headerName: '작성자',
-      width: 200,
+      flex: 1,
+      minWidth: 100,
       cellClassName: (params) => (params.row.pinYn ? 'highlight-row' : ''),
     },
     {
       field: 'modifiedTime',
       headerName: '작성일',
-      width: 200,
+      flex: 1,
+      minWidth: 100,
       cellClassName: (params) => (params.row.pinYn ? 'highlight-row' : ''),
     },
   ];

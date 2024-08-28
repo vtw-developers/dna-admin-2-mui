@@ -6,6 +6,7 @@ import 'src/styles/dashboard.scss';
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
 import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -15,6 +16,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { getCookie, setCookie } from 'src/utils/cookie';
 
 import { useBoolean } from '../../hooks/use-boolean';
+import { Scrollbar } from '../../components/scrollbar';
 
 // ----------------------------------------------------------------------
 
@@ -47,16 +49,25 @@ export function NoticePopup({ popup }: Props) {
   return (
     <Dialog
       fullWidth
-      maxWidth="xs"
+      maxWidth="md"
       open={share.value}
       onClose={() => {
         share.onFalse();
       }}
     >
       <DialogTitle>{popup.title} </DialogTitle>
+      <Divider sx={{ my: 2 }} />
       <Box sx={{ px: 3 }}>
-        <div dangerouslySetInnerHTML={{ __html: popup.content }} />
+        <Scrollbar
+          sx={{
+            p: 3,
+            height: '50vh',
+          }}
+        >
+          <div dangerouslySetInnerHTML={{ __html: popup.content }} />
+        </Scrollbar>
       </Box>
+      <Divider sx={{ my: 2 }} />
       <DialogActions sx={{ justifyContent: 'space-between' }}>
         <FormGroup>
           <FormControlLabel control={<Checkbox onChange={onHide7days} />} label="7일간 보지않기" />

@@ -16,7 +16,6 @@ import { useRouter } from 'src/routes/hooks';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
-import { varAlpha } from '../../theme/styles';
 import { fDate } from '../../utils/format-time';
 import { Iconify } from '../../components/iconify';
 import { useBoolean } from '../../hooks/use-boolean';
@@ -35,7 +34,10 @@ export type SchemaType = zod.infer<typeof Schema>;
 export const Schema = zod.object({
   id: zod.number().optional(),
   boardMasterId: zod.number(),
-  title: zod.string().min(1, { message: '제목을 입력하세요.' }),
+  title: zod
+    .string()
+    .min(1, { message: '제목을 입력하세요.' })
+    .max(100, { message: '100자 이내로 입력하세요.' }),
   content: zod.string().min(1, { message: '게시글을 입력하세요.' }),
   boardNo: zod.number().optional(),
   parentId: zod.number().optional(),
@@ -111,10 +113,10 @@ export function NoticeEditForm({ editMode, entity }: Props) {
     }
   }, [entity, defaultValues, reset]);
 
-  const onSubmit = handleSubmit(async (data: Board) => {
+  const onSubmit = handleSubmit(async (data: any) => {
     const format = new FormData();
     if (data.files?.length > 0) {
-      data.files.forEach((file) => {
+      data.files.forEach((file: any) => {
         format.append('files', file);
       });
     }
@@ -141,7 +143,7 @@ export function NoticeEditForm({ editMode, entity }: Props) {
     }
   };
 
-  const confirmDelete = handleSubmit(async (data: Board) => {
+  const confirmDelete = handleSubmit(async (data: any) => {
     await deleteBoard(data);
     toast.success('삭제되었습니다.');
     router.push(listPath);
@@ -191,14 +193,14 @@ export function NoticeEditForm({ editMode, entity }: Props) {
         </Grid>
         {writeRole && (
           <>
-            <Grid item xs={12} md={1}>
+            <Grid item xs={12} md={2}>
               <Field.Switch
                 name="pinYn"
                 label="중요표기"
                 slotProps={{ switch: { disabled: editMode === 'details' } }}
               />
             </Grid>
-            <Grid item xs={12} md={11}>
+            <Grid item xs={12} md={10}>
               <DnaDateRangeBox
                 startValue={values.pinStartTime}
                 endValue={values.pinEndTime}
@@ -211,14 +213,14 @@ export function NoticeEditForm({ editMode, entity }: Props) {
                 readonly={editMode === 'details' || !values.pinYn}
               />
             </Grid>
-            <Grid item xs={12} md={1}>
+            <Grid item xs={12} md={2}>
               <Field.Switch
                 name="popupYn"
                 label="팝업표기"
                 slotProps={{ switch: { disabled: editMode === 'details' } }}
               />
             </Grid>
-            <Grid item xs={12} md={11}>
+            <Grid item xs={12} md={10}>
               <DnaDateRangeBox
                 startValue={values.popupStartTime}
                 endValue={values.popupEndTime}
@@ -236,13 +238,7 @@ export function NoticeEditForm({ editMode, entity }: Props) {
         <Grid item xs={12} md={12}>
           {editing && <Field.Editor name="content" sx={{ maxHeight: 480 }} />}
           {!editing && (
-            <Box
-              sx={{
-                px: 2,
-                border: (theme) =>
-                  `solid 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.2)}`,
-              }}
-            >
+            <Box className="html-content">
               <div dangerouslySetInnerHTML={{ __html: values.content }} />
             </Box>
           )}
@@ -264,20 +260,10 @@ export function NoticeEditForm({ editMode, entity }: Props) {
               const { originalFileName } = file;
               return (
                 <Box
+                  className="file-box"
                   onClick={() => downloadFile(file.id)}
                   component="li"
                   key={index}
-                  sx={{
-                    py: 1,
-                    pr: 1,
-                    pl: 1.5,
-                    gap: 1.5,
-                    display: 'flex',
-                    borderRadius: 1,
-                    alignItems: 'center',
-                    border: (theme) =>
-                      `solid 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.16)}`,
-                  }}
                 >
                   <Iconify icon="mingcute:download-2-line" width={16} />
                   {originalFileName}
@@ -291,7 +277,7 @@ export function NoticeEditForm({ editMode, entity }: Props) {
   );
 
   return (
-    <>
+    <Box className="dna-edit-form">
       <Form methods={methods} onSubmit={onSubmit}>
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
@@ -325,6 +311,6 @@ export function NoticeEditForm({ editMode, entity }: Props) {
           </Button>
         }
       />
-    </>
+    </Box>
   );
 }

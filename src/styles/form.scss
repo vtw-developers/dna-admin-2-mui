@@ -74,4 +74,21 @@
   .Mui-disabled {
     color: var(--palette-text-primary) !important
   }
+  .html-content {
+    padding: 0 10px;
+    border-radius: var(--shape-borderRadius);
+    //border: 1px solid  rgba(var(--palette-grey-500Channel) / 0.2);
+    min-height: 200px;
+  }
+
+  .file-box {
+    padding: 8px 8px 8px 12px;
+    gap: 12px;
+    display: flex;
+    border-radius: var(--shape-borderRadius);
+    margin-bottom: 8px;
+    align-items: center;
+    border: 1px solid  rgba(var(--palette-grey-500Channel) / 0.2);
+    cursor: pointer;
+  }
 }

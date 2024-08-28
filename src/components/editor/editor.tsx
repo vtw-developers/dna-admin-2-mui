@@ -34,7 +34,7 @@ export const Editor = forwardRef<HTMLDivElement, EditorProps>(
       editable = true,
       fullItem = false,
       value: content = '',
-      placeholder = 'Write something awesome...',
+      placeholder = '텍스트를 입력하세요...',
       ...other
     },
     ref
