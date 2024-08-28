@@ -1,11 +1,11 @@
 import { CONFIG } from 'src/config-global';
 
-import { BlankView } from 'src/sections/blank/view';
+import { ApiStatsView } from 'src/sections/api-stats/view/api-stats-view';
 
 // ----------------------------------------------------------------------
 
 export const metadata = { title: `Blank | Dashboard - ${CONFIG.site.name}` };
 
 export default function Page() {
-  return <BlankView />;
+  return <ApiStatsView />;
 }

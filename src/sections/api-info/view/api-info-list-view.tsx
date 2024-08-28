@@ -35,7 +35,7 @@ export function ApiInfoListView() {
   const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
   const [filters, setFilters] = useState<ApiInfoFilters>(defaultApiInfoFilters);
-  const { data, loading, totalCount } = useGetApiInfos(pagination, sortModel, filters);
+  const { data, loading, totalCount, mutate } = useGetApiInfos(pagination, sortModel, filters);
   const [tableData, setTableData] = useState<ApiInfo[]>([]);
 
   useEffect(() => {
@@ -110,7 +110,7 @@ export function ApiInfoListView() {
         sx={{ mb: { xs: 3, md: 5 } }}
       />
       <Card className="list-filter" sx={{ mb: { xs: 3, md: 5 } }}>
-        <ApiInfoFilter onSearch={(f) => setFilters(f)} />
+        <ApiInfoFilter onSearch={(f) => mutate()} />
       </Card>
       <Card
         className="list-grid"
