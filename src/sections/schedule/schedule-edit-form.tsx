@@ -42,8 +42,6 @@ type Props = {
 };
 
 export function ScheduleEditForm({ editMode, entity }: Props) {
-  console.log(entity);
-
   const editing = editMode !== 'details';
   const router = useRouter();
   const confirm = useBoolean();

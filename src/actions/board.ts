@@ -53,7 +53,6 @@ export function useGetBoards(
     fetcher,
     swrOptions
   );
-  console.log(data);
 
   const memoizedValue = useMemo(
     () => ({

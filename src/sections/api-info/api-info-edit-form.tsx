@@ -195,7 +195,6 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
       const flowMeta = yaml.load(flowMetaYaml);
       const pack = flowMeta.package ? `${flowMeta.package}.` : '';
       const flowId = pack + flowMeta.name;
-      console.log(flowMeta);
       setValue('flowId', flowId);
       setValue('flowMetaYaml', flowMetaYaml);
     };

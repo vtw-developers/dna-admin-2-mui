@@ -19,7 +19,7 @@ export const DashboardStateView = ({ totalCount }: Props) => {
           <Typography variant="h6" sx={{ mt: 1 }}>
             연계상태
           </Typography>
-          <Typography variant="h2" sx={{ color: 'info.main' }}>
+          <Typography variant="h3" sx={{ color: 'info.main' }}>
             정상
           </Typography>
         </Box>
@@ -27,7 +27,7 @@ export const DashboardStateView = ({ totalCount }: Props) => {
           <Typography variant="h6" sx={{ mt: 1 }}>
             오류건수
           </Typography>
-          <Typography variant="h2" sx={{ color: 'error.main' }}>
+          <Typography variant="h3" sx={{ color: 'error.main' }}>
             0
           </Typography>
         </Box>

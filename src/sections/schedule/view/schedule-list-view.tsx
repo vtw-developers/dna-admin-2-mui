@@ -36,7 +36,6 @@ export function ScheduleListView() {
   const [tableData, setTableData] = useState<ApiInfo[]>([]);
 
   useEffect(() => {
-    console.log(data);
     setTableData(data);
   }, [data, sortModel, pagination, filters]);
 
@@ -51,17 +50,20 @@ export function ScheduleListView() {
     {
       field: 'serviceGroupName',
       headerName: '서비스그룹',
-      width: 400,
+      minWidth: 200,
+      flex: 1,
     },
     {
       field: 'ctiInfoName',
       headerName: 'CTI명',
-      width: 800,
+      minWidth: 200,
+      flex: 1,
     },
     {
       field: 'cronExpr',
       headerName: '스케줄',
-      width: 400,
+      minWidth: 200,
+      flex: 1,
       renderCell: (params) => {
         const { cronExpr } = params.row;
         const cronExprString = cronExpr ? cronstrue.toString(cronExpr, { locale: 'ko' }) : '미설정';

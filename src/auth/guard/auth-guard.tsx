@@ -40,9 +40,6 @@ export function AuthGuard({ children }: Props) {
       return;
     }
 
-    console.log(`pathname: ${pathname}`);
-    console.log(`로그인 여부: ${authenticated}`);
-
     if (!authenticated) {
       // TODO: 해당 페이지가 익명사용자가 접근 불가능한 페이지면 로그인 페이지로 이동
       // const { method } = CONFIG.auth;
