@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import Table from '@mui/material/Table';
 import Paper from '@mui/material/Paper';
@@ -10,117 +11,55 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableContainer from '@mui/material/TableContainer';
 
-const TAX_RATE = 0.07;
-
-function ccyFormat(num: number) {
-  return `${num.toFixed(2)}`;
-}
-
-function priceRow(qty: number, unit: number) {
-  return qty * unit;
-}
-
-function createRow(desc: string, qty: number, unit: number) {
-  const price = priceRow(qty, unit);
-  return { desc, qty, unit, price };
-}
-
-const data = [
-  {
-    year: 2023,
-    month: 1,
-    group: '산업인력공단',
-    object: '산인공API1',
-    value: 123,
-  },
-  {
-    year: 2023,
-    month: 2,
-    group: '산업인력공단',
-    object: '산인공API2',
-    value: 4241223,
-  },
-  {
-    year: 2024,
-    month: 2,
-    group: '산업인력공단',
-    object: '산인공API2',
-    value: 4241223,
-  },
-];
-
-// const years = data
-//   .filter((thing, i, arr) => arr.findIndex((t) => t.year === thing.year) === i)
-//   .map((t) => t.year);
-//
-// const test = data.filter((thing, i, arr) => arr.findIndex((t) => t.year === 2023) === i);
-//
-// const numbers: number[] = data
-//   .filter((thing, i, arr) => arr.findIndex((t) => t.year === thing.year) === i)
-//   .map((t) => t.month);
-// console.log(numbers);
-// const min = Math.min(...numbers);
-// console.log(min);
-
-const years = [2023, 2024];
-const months = [10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
-const yearMonths = [
-  { year: 2023, months: [10, 11, 12] },
-  { year: 2024, months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
-];
-
-const sample = [
-  {
-    group: '산업인력공단',
-    objects: [
-      {
-        name: '산인공API1',
-        values: [numberWithCommas(123), numberWithCommas(123), numberWithCommas(121223)],
-      },
-      {
-        name: '산인공API1',
-        values: [numberWithCommas(56645665), numberWithCommas(66666), numberWithCommas(12223233)],
-      },
-    ],
-  },
-  {
-    group: '산업인력공단',
-    objects: [
-      {
-        name: '산인공API1',
-        values: [numberWithCommas(123), numberWithCommas(123), numberWithCommas(123)],
-      },
-      {
-        name: '산인공API1',
-        values: [numberWithCommas(123), numberWithCommas(23232323), numberWithCommas(123)],
-      },
-    ],
-  },
-];
-
-interface Row {
-  desc: string;
-  qty: number;
-  unit: number;
-  price: number;
-}
-
-function subtotal(items: readonly Row[]) {
-  return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
-}
-
-const rows = [createRow('a', 100, 1.15), createRow('b', 10, 45.99), createRow('c', 2, 17.99)];
-
-const invoiceSubtotal = subtotal(rows);
-const invoiceTaxes = TAX_RATE * invoiceSubtotal;
-const invoiceTotal = invoiceTaxes + invoiceSubtotal;
+import { useGetApiStats } from '../../../actions/api-stats';
 
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 export function ApiStatsView() {
+  const { data, loading, mutate } = useGetApiStats({});
+
+  const [groups, setGroups] = useState([]);
+  const [yearMonths, setYearMonths] = useState([]);
+  const [yearMonthGroups, setYearMonthGroups] = useState([]);
+
+  useEffect(() => {
+    const groups = data
+      .map((item) => item.serviceGroup)
+      .filter((value, index, self) => self.indexOf(value) === index);
+    setGroups(groups);
+
+    const years = data
+      .map((item) => item.year)
+      .filter((value, index, self) => self.indexOf(value) === index);
+
+    const yearMonthGroups = [];
+    years.forEach((year) => {
+      const months = data
+        .filter((row) => row.year === year)
+        .map((item) => item.month)
+        .filter((value, index, self) => self.indexOf(value) === index);
+      yearMonthGroups.push({ year, months });
+    });
+    setYearMonthGroups(yearMonthGroups);
+
+    const yearMonths = [];
+    yearMonthGroups.forEach((yearMonthGroup) => {
+      yearMonthGroup.months.forEach((month) => {
+        yearMonths.push({ year: yearMonthGroup.year, month });
+      });
+    });
+    setYearMonths(yearMonths);
+  }, [data]);
+
+  function getApis(group) {
+    return data
+      .filter((row) => row.serviceGroup === group)
+      .map((item) => item.api)
+      .filter((value, index, self) => self.indexOf(value) === index);
+  }
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ width: '1000px' }} aria-label="spanning table">
@@ -132,14 +71,14 @@ export function ApiStatsView() {
             <TableCell align="center" rowSpan={2} width="500px" sx={{ width: '200px' }}>
               API
             </TableCell>
-            {yearMonths.map((year) => (
+            {yearMonthGroups.map((year) => (
               <TableCell key={year.year} align="center" colSpan={year.months.length}>
                 {year.year}
               </TableCell>
             ))}
           </TableRow>
           <TableRow>
-            {yearMonths.map((year) =>
+            {yearMonthGroups.map((year) =>
               year.months.map((month) => (
                 <TableCell key={`${year}-${month}`} align="center" width={100}>
                   {month}
@@ -149,18 +88,30 @@ export function ApiStatsView() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {sample.map((item, i) => (
+          {groups.map((group, i) => (
             <React.Fragment key={`${i}`}>
               <TableRow sx={{ backgroundColor: 'bisque' }}>
-                <TableCell rowSpan={item.objects.length + 1}>{item.group}</TableCell>
+                <TableCell rowSpan={getApis(group).length + 1}>{group}</TableCell>
               </TableRow>
-              {item.objects.map((object, j) => (
+              {getApis(group).map((api, j) => (
                 <React.Fragment key={`${j}`}>
                   <TableRow>
-                    <TableCell sx={{ backgroundColor: 'beige' }}>{object.name}</TableCell>
-                    {object.values.map((value, k) => (
+                    <TableCell sx={{ backgroundColor: 'beige' }}>{api}</TableCell>
+                    {yearMonths.map((ym, k) => {
+                      // console.log(api);
+                      // console.log(ym);
+                      // console.log(data);
+                      const row = data.find(
+                        (row) => row.api === api && row.year === ym.year && row.month === ym.month
+                      );
+                      // console.log(row);
+                      return (
+                        <TableCell key={`${k}`}>{row ? numberWithCommas(row.count) : 0}</TableCell>
+                      );
+                    })}
+                    {/*                    {object.values.map((value, k) => (
                       <TableCell key={`${k}`}>{value}</TableCell>
-                    ))}
+                    ))} */}
                   </TableRow>
                 </React.Fragment>
               ))}
