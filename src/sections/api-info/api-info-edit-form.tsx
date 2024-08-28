@@ -34,15 +34,18 @@ export type SchemaType = zod.infer<typeof Schema>;
 
 export const Schema = zod.object({
   id: zod.number().optional(),
-  name: zod.string().min(1, { message: 'Name is required!' }),
-  httpMethod: zod.string(),
-  url: zod.string(),
+  name: zod
+    .string()
+    .min(1, { message: '게시판 이름를 입력하세요.' })
+    .max(50, { message: '50자 이내로 입력하세요.' }),
+  httpMethod: zod.string().min(1, { message: 'HTTP Method 를 입력하세요.' }),
+  url: zod.string().min(1, { message: 'URL을 입력하세요.' }),
   serviceGroupId: zod.number(),
   enabled: zod.boolean(),
   flowId: zod.string(),
   flowMetaYaml: zod.string(),
-  requestParameters: zod.unknown(),
-  responseElements: zod.unknown(),
+  requestParameters: zod.any().array(),
+  responseElements: zod.any().array(),
 });
 
 // ----------------------------------------------------------------------
@@ -133,7 +136,12 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
       <Divider />
       <Grid container spacing={3} sx={{ p: 3 }}>
         <Grid item xs={12} md={6}>
-          <Field.Text name="name" label="API명" inputProps={{ readOnly: editMode === 'details' }} />
+          <Field.Text
+            name="name"
+            label="API명"
+            variant="outlined"
+            inputProps={{ readOnly: editMode === 'details' }}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           <ServiceGroupSearchBox
@@ -143,6 +151,7 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
         </Grid>
         <Grid item xs={12} md={6}>
           <Field.Select
+            variant="outlined"
             name="httpMethod"
             label="HTTP Method"
             inputProps={{ readOnly: editMode === 'details' }}
@@ -155,7 +164,12 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
           </Field.Select>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Field.Text name="url" label="URL" inputProps={{ readOnly: editMode === 'details' }} />
+          <Field.Text
+            name="url"
+            label="URL"
+            variant="outlined"
+            inputProps={{ readOnly: editMode === 'details' }}
+          />
         </Grid>
         <Grid item xs={12} md={12}>
           <Field.Switch
@@ -169,15 +183,15 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
     </Card>
   );
 
-  const onUploaded = (e) => {
+  const onUploaded = (e: { target: { files: any } }) => {
     const { files } = e.target;
     if (files.length < 1) {
       return;
     }
     const file = files[0];
     const fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      const flowMetaYaml = e.target?.result as string;
+    fileReader.onload = (f) => {
+      const flowMetaYaml = f.target?.result as string;
       const flowMeta = yaml.load(flowMetaYaml);
       const pack = flowMeta.package ? `${flowMeta.package}.` : '';
       const flowId = pack + flowMeta.name;
@@ -189,46 +203,50 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
   };
 
   const syncFormData = () => {
-    console.log('syncFormData');
-    console.log(watch());
-
     const { flowMetaYaml } = values;
     const flowMeta = yaml.load(flowMetaYaml);
-    console.log(flowMeta);
 
     const { nodes } = flowMeta.diagram;
-    const restNode = nodes.find((node) => node.data.component === 'Rest');
-    const { httpMethod } = restNode.data;
-    const url = restNode.data.path;
-    const { requestParameters } = restNode.data;
-    const { responseElements } = restNode.data;
+    const restNode = nodes.find(
+      (node: { data: { component: string } }) => node.data.component === 'Rest'
+    );
 
-    console.log(requestParameters);
+    if (restNode) {
+      const { httpMethod } = restNode.data;
+      const url = restNode.data.path;
+      const { requestParameters } = restNode.data;
+      const { responseElements } = restNode.data;
 
-    setValue('httpMethod', httpMethod);
-    setValue('url', url);
-    setValue('requestParameters', requestParameters);
-    setValue('responseElements', responseElements);
+      setValue('httpMethod', httpMethod);
+      setValue('url', url);
+      setValue('requestParameters', requestParameters);
+      setValue('responseElements', responseElements);
+    }
   };
 
   const renderDna = (
     <Card>
       <CardHeader title="DnA 플로우" subheader="" sx={{ mb: 3 }} />
       <Divider />
-      <Stack direction="row" spacing={2} sx={{ p: 3 }}>
-        <Button variant="contained" color="primary" component="label">
+      <Stack direction="row" spacing={2} sx={{ px: 3, pt: 3 }}>
+        <Button variant="soft" color="primary" component="label">
           메타 파일 선택...
           <input type="file" hidden onChange={onUploaded} />
         </Button>
-        <Button variant="contained" color="info" component="label">
+        <Button variant="soft" color="info" component="label">
           메타정보 보기
         </Button>
-        <Button variant="contained" color="success" component="label" onClick={syncFormData}>
+        <Button variant="soft" color="success" component="label" onClick={syncFormData}>
           동기화
         </Button>
       </Stack>
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Field.Text name="flowId" label="플로우 ID" inputProps={{ readOnly: false }} />
+        <Field.Text
+          name="flowId"
+          label="플로우 ID"
+          variant="outlined"
+          inputProps={{ readOnly: false }}
+        />
       </Stack>
     </Card>
   );
@@ -242,6 +260,7 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
     {
       field: 'type',
       headerName: '유형',
+      flex: 1,
     },
   ];
 
@@ -256,6 +275,8 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
           rows={values?.requestParameters || []}
           hideFooterPagination
           disableColumnSorting
+          autoHeight
+          localeText={{ noRowsLabel: '데이터 없음' }}
         />
       </Stack>
     </Card>
@@ -272,6 +293,8 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
           rows={values?.responseElements || []}
           hideFooterPagination
           disableColumnSorting
+          autoHeight
+          localeText={{ noRowsLabel: '데이터 없음' }}
         />
       </Stack>
     </Card>

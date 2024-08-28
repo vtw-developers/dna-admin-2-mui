@@ -5,6 +5,7 @@ import type { ApiInfo, ApiInfoFilters } from 'src/types/api-info';
 import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
+import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 
 import Link from '@mui/material/Link';
@@ -24,7 +25,6 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { defaultApiInfoFilters } from 'src/types/api-info';
 
 import { paths } from '../../../routes/paths';
-import { useRouter } from '../../../routes/hooks';
 import { ApiInfoFilter } from '../api-info-filter';
 import { defaultPagination } from '../../../utils/pagination';
 import { DnaPagination } from '../../../components/dna-pagination';
@@ -53,12 +53,14 @@ export function ApiInfoListView() {
     {
       field: 'serviceGroupName',
       headerName: '서비스그룹',
-      width: 400,
+      flex: 1,
+      minWidth: 200,
     },
     {
       field: 'name',
       headerName: 'API명',
-      width: 800,
+      flex: 1,
+      minWidth: 200,
       renderCell: (params) => (
         <Link
           noWrap
@@ -74,12 +76,14 @@ export function ApiInfoListView() {
     {
       field: 'httpMethod',
       headerName: 'Method',
-      width: 200,
+      flex: 1,
+      minWidth: 100,
     },
     {
       field: 'url',
       headerName: 'URL',
-      width: 400,
+      flex: 1,
+      minWidth: 200,
     },
     {
       field: 'enabled',

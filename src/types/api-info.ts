@@ -18,6 +18,9 @@ export type ApiInfo = {
   serviceGroupId: number;
   enabled: boolean;
   flowId: string;
+  flowMetaYaml: string;
+  requestParameters: any;
+  responseElements: any;
 };
 
 export const defaultApiInfoFilters: ApiInfoFilters = {
