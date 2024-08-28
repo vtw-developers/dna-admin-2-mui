@@ -1,9 +1,7 @@
-import type { GridRowsProp, GridRowModesModel } from '@mui/x-data-grid';
-
 import { z as zod } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import { useForm } from 'react-hook-form';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Grid } from '@mui/material';
@@ -50,11 +48,6 @@ export const Schema = zod.object({
   requestParameters: zod.any().array(),
   responseElements: zod.any().array(),
 });
-
-interface EditToolbarProps {
-  setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
-  setRowModesModel: (newModel: (oldModel: GridRowModesModel) => GridRowModesModel) => void;
-}
 
 // ----------------------------------------------------------------------
 
@@ -110,9 +103,6 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
   } = methods;
 
   const values = watch();
-
-  const [rows, setRows] = useState(defaultValues.requestParameters);
-  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
   useEffect(() => {
     if (entity) {
@@ -270,11 +260,8 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
     </Card>
   );
 
-  const test = (e) => {
-    console.log(e);
-  };
-
-  const onParametersChanged = (rows, key) => {
+  const onParametersChanged = (rows: any[], key: string) => {
+    // @ts-ignore
     setValue(key, [...rows]);
   };
 
@@ -288,13 +275,13 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
             title="요청 파라미터"
             editing={editing}
             initialRows={defaultValues.requestParameters}
-            onChange={(rows) => onParametersChanged(rows, 'requestParameters')}
+            onChange={(rows: any[]) => onParametersChanged(rows, 'requestParameters')}
           />
           <ParametersEditGrid
             title="응답 파라미터"
             editing={editing}
             initialRows={defaultValues.responseElements}
-            onChange={(rows) => onParametersChanged(rows, 'responseElements')}
+            onChange={(rows: any[]) => onParametersChanged(rows, 'responseElements')}
           />
           <DnaBottomButtons
             editing={editing}
@@ -316,7 +303,7 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
             variant="contained"
             color="error"
             onClick={() => {
-              confirmDelete().then((e) => {
+              confirmDelete().then(() => {
                 confirm.onFalse();
               });
             }}
