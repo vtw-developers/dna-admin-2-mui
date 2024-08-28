@@ -5,6 +5,7 @@ import type { PageInfo, PageInfoFilters } from 'src/types/page-info';
 import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
+import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 
 import Link from '@mui/material/Link';
@@ -24,7 +25,6 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { defaultPageInfoFilters } from 'src/types/page-info';
 
 import { paths } from '../../../routes/paths';
-import { useRouter } from '../../../routes/hooks';
 import { PageInfoFilter } from '../page-info-filter';
 import { defaultPagination } from '../../../utils/pagination';
 import { DnaPagination } from '../../../components/dna-pagination';
@@ -53,7 +53,8 @@ export function PageInfoListView() {
     {
       field: 'name',
       headerName: '페이지명',
-      width: 600,
+      minWidth: 200,
+      flex: 1,
       renderCell: (params) => (
         <Link
           noWrap
@@ -69,7 +70,8 @@ export function PageInfoListView() {
     {
       field: 'path',
       headerName: 'Path',
-      width: 600,
+      minWidth: 200,
+      flex: 1,
     },
     {
       field: 'readRoleId',

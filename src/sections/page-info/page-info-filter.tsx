@@ -38,7 +38,7 @@ export function PageInfoFilter({ onSearch }: Props) {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={6}>
         <TextField
           label="페이지명"
           value={filters.name}
@@ -46,7 +46,7 @@ export function PageInfoFilter({ onSearch }: Props) {
           onChange={handleFilterName('name')}
         />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={6}>
         <TextField
           label="경로"
           value={filters.path}
@@ -54,7 +54,7 @@ export function PageInfoFilter({ onSearch }: Props) {
           onChange={handleFilterName('path')}
         />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={6}>
         <DnaSelectBox
           label="읽기 역할"
           items={roles}
@@ -64,7 +64,7 @@ export function PageInfoFilter({ onSearch }: Props) {
           textField="name"
         />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={6}>
         <DnaSelectBox
           label="쓰기 역할"
           items={roles}
