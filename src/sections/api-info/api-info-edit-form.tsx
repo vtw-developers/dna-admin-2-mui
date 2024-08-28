@@ -1,12 +1,4 @@
-import type {
-  GridSlots,
-  GridRowId,
-  GridColDef,
-  GridRowsProp,
-  GridRowModel,
-  GridRowModesModel,
-  GridEventListener,
-} from '@mui/x-data-grid';
+import type { GridRowsProp, GridRowModesModel } from '@mui/x-data-grid';
 
 import { z as zod } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
@@ -21,12 +13,6 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import CardHeader from '@mui/material/CardHeader';
-import {
-  DataGrid,
-  GridRowModes,
-  GridToolbarContainer,
-  GridRowEditStopReasons,
-} from '@mui/x-data-grid';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -35,6 +21,7 @@ import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
 import { useBoolean } from '../../hooks/use-boolean';
+import { ParametersEditGrid } from './parameters-edit-grid';
 import { ConfirmDialog } from '../../components/custom-dialog';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 import { createApiInfo, deleteApiInfo, updateApiInfo } from '../../actions/api-info';
@@ -100,7 +87,11 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
           p.id = uuidv4();
           return p;
         }) || [],
-      responseElements: entity?.responseElements || [],
+      responseElements:
+        entity?.responseElements.map((p) => {
+          p.id = uuidv4();
+          return p;
+        }) || [],
     }),
     [entity]
   );
@@ -130,7 +121,7 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
   }, [entity, defaultValues, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
-    data.requestParameters = rows;
+    // data.requestParameters = rows;
     try {
       if (editMode === 'create') {
         await createApiInfo(data).then(() => toast.success('저장되었습니다.'));
@@ -283,169 +274,9 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
     console.log(e);
   };
 
-  const columnVisibilityModel = useMemo(() => {
-    if (editing) {
-      return {
-        name: true,
-        type: true,
-        actions: true,
-      };
-    }
-    return {
-      name: true,
-      type: true,
-      actions: false,
-    };
-  }, [editing]);
-
-  const columns: GridColDef[] = [
-    {
-      field: 'name',
-      headerName: '이름',
-      minWidth: 300,
-      editable: true,
-    },
-    {
-      field: 'type',
-      headerName: '유형',
-      flex: 1,
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'Actions',
-      width: 100,
-      cellClassName: 'actions',
-      renderCell: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-        console.log(isInEditMode);
-        if (isInEditMode) {
-          return (
-            <>
-              <Button onClick={handleSaveClick(id)}>Save</Button>
-              <Button onClick={handleCancelClick(id)}>Cancel</Button>
-            </>
-          );
-        }
-
-        return (
-          <>
-            <Button onClick={handleEditClick(id)}>Edit</Button>
-            <Button onClick={handleDeleteClick(id)}>Delete</Button>
-          </>
-        );
-      },
-    },
-  ];
-
-  const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
-    }
+  const onParametersChanged = (rows, key) => {
+    setValue(key, [...rows]);
   };
-
-  const handleEditClick = (id: GridRowId) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-  };
-
-  const handleSaveClick = (id: GridRowId) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
-
-  const handleDeleteClick = (id: GridRowId) => () => {
-    setRows(rows.filter((row) => row.id !== id));
-  };
-
-  const handleCancelClick = (id: GridRowId) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
-
-    const editedRow = rows.find((row) => row.id === id);
-    if (editedRow!.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
-    }
-  };
-
-  const processRowUpdate = (newRow: GridRowModel) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
-  };
-
-  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
-  function EditToolbar(props: EditToolbarProps) {
-    const { setRows, setRowModesModel } = props;
-
-    const handleClick = () => {
-      const id = uuidv4();
-      setRows((oldRows) => [...oldRows, { id, name: '', type: 'String', isNew: true }]);
-      setRowModesModel((oldModel) => ({
-        ...oldModel,
-        [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-      }));
-    };
-
-    return (
-      <GridToolbarContainer>
-        <Button color="primary" onClick={handleClick}>
-          Add record
-        </Button>
-      </GridToolbarContainer>
-    );
-  }
-
-  const renderRequestParameters = (
-    <Card>
-      <CardHeader title="요청 파라미터" subheader="" sx={{ mb: 3 }} />
-      <Divider />
-      <Stack spacing={3} sx={{ p: 3 }}>
-        <DataGrid
-          /*          getRowId={(row) => row.name} */
-          columns={columns}
-          rows={rows}
-          editMode="row"
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStop={handleRowEditStop}
-          processRowUpdate={processRowUpdate}
-          columnVisibilityModel={columnVisibilityModel}
-          hideFooterPagination
-          disableColumnSorting
-          autoHeight
-          localeText={{ noRowsLabel: '데이터 없음' }}
-          slots={{
-            toolbar: EditToolbar as GridSlots['toolbar'],
-          }}
-          slotProps={{
-            toolbar: { setRows, setRowModesModel },
-          }}
-        />
-      </Stack>
-    </Card>
-  );
-
-  const renderResponseElements = (
-    <Card>
-      <CardHeader title="응답 항목" subheader="" sx={{ mb: 3 }} />
-      <Divider />
-      <Stack spacing={3} sx={{ p: 3 }}>
-        <DataGrid
-          getRowId={(row) => row.name}
-          columns={columns}
-          rows={values?.responseElements || []}
-          hideFooterPagination
-          disableColumnSorting
-          autoHeight
-          localeText={{ noRowsLabel: '데이터 없음' }}
-        />
-      </Stack>
-    </Card>
-  );
 
   return (
     <>
@@ -453,8 +284,18 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
           {renderDna}
-          {renderRequestParameters}
-          {renderResponseElements}
+          <ParametersEditGrid
+            title="요청 파라미터"
+            editing={editing}
+            initialRows={defaultValues.requestParameters}
+            onChange={(rows) => onParametersChanged(rows, 'requestParameters')}
+          />
+          <ParametersEditGrid
+            title="응답 파라미터"
+            editing={editing}
+            initialRows={defaultValues.responseElements}
+            onChange={(rows) => onParametersChanged(rows, 'responseElements')}
+          />
           <DnaBottomButtons
             editing={editing}
             listPath={listPath}
