@@ -30,12 +30,12 @@ export function BoardComment({ boardId }: Props) {
   }, [boardId]);
 
   const save = async ({ comment }: any) => {
-    const result = await createComment({ content: comment, boardId, useYn: true });
+    await createComment({ content: comment, boardId, useYn: true });
     reload();
   };
 
   const doDelete = async (id: number) => {
-    const result = await deleteComment({ id });
+    await deleteComment({ id });
     reload();
   };
 

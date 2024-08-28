@@ -1,7 +1,7 @@
 import { z as zod } from 'zod';
 import { useForm } from 'react-hook-form';
+import { useMemo, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMemo, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import { Grid } from '@mui/material';
@@ -15,8 +15,6 @@ import { useRouter } from 'src/routes/hooks';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
-import { varAlpha } from '../../theme/styles';
-import { fDate } from '../../utils/format-time';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
 import { createBoard, deleteBoard, updateBoard } from '../../actions/board';
@@ -31,7 +29,10 @@ export type SchemaType = zod.infer<typeof Schema>;
 export const Schema = zod.object({
   id: zod.number().optional(),
   boardMasterId: zod.number(),
-  title: zod.string().min(1, { message: '제목을 입력하세요.' }),
+  title: zod
+    .string()
+    .min(1, { message: '제목을 입력하세요.' })
+    .max(100, { message: '100자 이내로 입력하세요.' }),
   content: zod.string().min(1, { message: '게시글을 입력하세요.' }),
   boardNo: zod.number().optional(),
   parentId: zod.number().optional(),
@@ -136,49 +137,42 @@ export function FreeEditForm({ editMode, entity }: Props) {
     router.push(listPath);
   });
 
-  const handleFilterDate = useCallback(
-    (field: any) => (e: any) => {
-      setValue(field, fDate(e, 'YYYY-MM-DD hh:mm:ss'));
-    },
-    [setValue]
-  );
-
   const renderDetails = (
     <Card>
       {/*      <CardHeader title="" subheader="" sx={{ mb: 3 }} />
       <Divider /> */}
       <Grid container spacing={3} sx={{ p: 3 }}>
         <Grid item xs={12} md={9}>
-          <Field.Text name="title" label="제목" inputProps={{ readOnly: editMode === 'details' }} />
+          <Field.Text
+            name="title"
+            variant="outlined"
+            label="제목"
+            inputProps={{ readOnly: editMode === 'details' }}
+          />
         </Grid>
         <Grid item xs={12} md={3}>
-          <Field.Text name="viewCount" label="조회수" inputProps={{ readOnly: true }} />
+          <Field.Text
+            name="viewCount"
+            variant="outlined"
+            type="number"
+            label="조회수"
+            inputProps={{ readOnly: true }}
+          />
         </Grid>
         <Grid item xs={12} md={12}>
-          {editMode !== 'details' && <Field.Editor name="content" sx={{ maxHeight: 480 }} />}
+          {editMode !== 'details' && <Field.Editor name="content" sx={{ maxHeight: 800 }} />}
           {editMode === 'details' && (
-            <Box
-              sx={{
-                px: 2,
-                border: (theme) =>
-                  `solid 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.2)}`,
-              }}
-            >
+            <Box className="html-content">
               <div dangerouslySetInnerHTML={{ __html: values.content }} />
             </Box>
           )}
         </Grid>
-        {/*        {!editing && entity && (
-          <Grid item xs={12} md={12}>
-            <BoardComment boardId={entity?.id} />
-          </Grid>
-        )} */}
       </Grid>
     </Card>
   );
 
   return (
-    <>
+    <Box className="dna-edit-form">
       <Form methods={methods} onSubmit={onSubmit}>
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
@@ -211,6 +205,6 @@ export function FreeEditForm({ editMode, entity }: Props) {
           </Button>
         }
       />
-    </>
+    </Box>
   );
 }

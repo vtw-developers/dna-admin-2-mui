@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 import { Iconify } from '../../../components/iconify';
@@ -47,12 +46,10 @@ export function BoardCommentList({ comments, onDelete }: Props) {
                 {comment.content}
               </Typography>
             </Stack>
-            <Button
-              size="small"
-              color="primary"
-              startIcon={<Iconify icon="mingcute:delete-2-line" width={16} />}
+            <Iconify
+              icon="mingcute:delete-2-line"
+              width={16}
               onClick={(e) => doDeleteComment(comment.id)}
-              sx={{ right: 0, position: 'absolute' }}
             />
           </Box>
         </Box>

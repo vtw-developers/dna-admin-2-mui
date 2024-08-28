@@ -54,12 +54,13 @@ export const FreeListView = () => {
     {
       field: 'boardNo',
       headerName: '번호',
-      width: 200,
+      minWidth: 150,
     },
     {
       field: 'title',
       headerName: '제목',
       flex: 1,
+      minWidth: 200,
       renderCell: (params) => (
         <Link
           noWrap
