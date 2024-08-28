@@ -48,7 +48,7 @@ export function SettingsDrawer({
   const renderHead = (
     <Box display="flex" alignItems="center" sx={{ py: 2, pr: 1, pl: 2.5 }}>
       <Typography variant="h6" sx={{ flexGrow: 1 }}>
-        Settings
+        설정
       </Typography>
 
       <FullScreenButton />
@@ -76,7 +76,7 @@ export function SettingsDrawer({
 
   const renderMode = (
     <BaseOption
-      label="Dark mode"
+      label="다크 모드"
       icon="moon"
       selected={settings.colorScheme === 'dark'}
       onClick={() => {

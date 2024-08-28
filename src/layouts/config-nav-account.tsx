@@ -1,6 +1,4 @@
-import SvgIcon from '@mui/material/SvgIcon';
-
-import { Iconify } from 'src/components/iconify';
+import { icon } from './config-nav-dashboard';
 
 // ----------------------------------------------------------------------
 
@@ -8,9 +6,14 @@ export const _account = [
   {
     label: 'Home',
     href: '/',
-    icon: <Iconify icon="solar:home-angle-bold-duotone" />,
+    icon: icon('ic-dashboard'),
   },
   {
+    label: '공지사항',
+    href: '/',
+    icon: icon('ic-calendar'),
+  },
+  /* {
     label: 'Profile',
     href: '#',
     icon: (
@@ -65,5 +68,5 @@ export const _account = [
     label: 'Account settings',
     href: '#',
     icon: <Iconify icon="solar:settings-bold-duotone" />,
-  },
+  }, */
 ];
