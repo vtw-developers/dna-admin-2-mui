@@ -37,7 +37,7 @@ export function useGetApiInfos(
     return '';
   };
 
-  const { data, isLoading, error, isValidating } = useSWR<ApiInfosData>(
+  const { data, isLoading, error, isValidating, mutate } = useSWR<ApiInfosData>(
     [
       `${url}`,
       {
@@ -61,8 +61,9 @@ export function useGetApiInfos(
       isValidating,
       empty: !isLoading && !data?.data.length,
       totalCount: data?.totalCount || 0,
+      mutate,
     }),
-    [data?.data, error, isLoading, isValidating, pagination, filters]
+    [data?.data, data?.totalCount, isLoading, error, isValidating, mutate]
   );
 
   return memoizedValue;

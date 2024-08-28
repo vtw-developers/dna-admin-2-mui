@@ -40,7 +40,7 @@ export function ApiInfoListView() {
 
   useEffect(() => {
     setTableData(data);
-  }, [data, sortModel, pagination, filters]);
+  }, [data, sortModel, pagination]);
 
   const handleViewRow = useCallback(
     (id: string) => {
@@ -110,7 +110,12 @@ export function ApiInfoListView() {
         sx={{ mb: { xs: 3, md: 5 } }}
       />
       <Card className="list-filter" sx={{ mb: { xs: 3, md: 5 } }}>
-        <ApiInfoFilter onSearch={(f) => mutate()} />
+        <ApiInfoFilter
+          onSearch={(f) => {
+            setFilters(f);
+            mutate();
+          }}
+        />
       </Card>
       <Card
         className="list-grid"
