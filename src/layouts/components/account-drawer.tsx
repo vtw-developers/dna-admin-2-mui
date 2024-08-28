@@ -126,6 +126,9 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
               borderBottom: `dashed 1px ${theme.vars.palette.divider}`,
             }}
           >
+            <Typography variant="subtitle1" noWrap sx={{ mb: 2 }}>
+              빠른메뉴
+            </Typography>
             {data.map((option) => {
               const rootLabel = '대시보드';
 

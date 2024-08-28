@@ -10,7 +10,7 @@ export const _account = [
   },
   {
     label: '공지사항',
-    href: '/',
+    href: '/boards/notice',
     icon: icon('ic-calendar'),
   },
   /* {
