@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useMemo, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import Box from '@mui/material/Box';
 import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -32,9 +33,12 @@ import type { BoardMaster } from '../../types/board-master';
 export type SchemaType = zod.infer<typeof Schema>;
 
 export const Schema = zod.object({
-  id: zod.number().optional(),
-  name: zod.string().min(1, { message: '게시판 이름를 입력하세요.' }),
-  instruction: zod.string(),
+  id: zod.number().min(1, { message: 'id를 입력하세요.' }),
+  name: zod
+    .string()
+    .min(1, { message: '게시판 이름를 입력하세요.' })
+    .max(50, { message: '50자 이내로 입력하세요.' }),
+  instruction: zod.string().max(10, { message: '10자 이내로 입력하세요.' }),
   fileAttachYn: zod.boolean(),
   replyYn: zod.boolean(),
   commentYn: zod.boolean(),
@@ -132,9 +136,10 @@ export function BoardMasterEditForm({ editMode, entity }: Props) {
         <Grid item xs={12} md={12}>
           <Field.Text
             name="id"
-            label="ID"
+            label="Id"
             type="number"
-            inputProps={{ readOnly: editMode === 'details' }}
+            inputProps={{ readOnly: editMode !== 'create' }}
+            variant="outlined"
           />
         </Grid>
         <Grid item xs={12} md={12}>
@@ -142,28 +147,40 @@ export function BoardMasterEditForm({ editMode, entity }: Props) {
             name="name"
             label="게시판명"
             inputProps={{ readOnly: editMode === 'details' }}
+            variant="outlined"
           />
         </Grid>
         <Grid item xs={12} md={12}>
           <Field.Text
             name="instruction"
             label="게시판소개내용"
+            variant="outlined"
             inputProps={{ readOnly: editMode === 'details' }}
           />
         </Grid>
         <Grid item xs={12} md={12}>
-          <Field.Switch name="fileAttachYn" label="파일첨부가능여부" />
+          <Field.Switch
+            name="fileAttachYn"
+            label="파일첨부가능여부"
+            slotProps={{ switch: { disabled: editMode === 'details' } }}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           <Field.Text
             name="fileCount"
             label="첨부가능파일숫자"
+            variant="outlined"
             type="number"
             disabled={!values.fileAttachYn}
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <Field.Text name="fileMaxSize" label="첨부가능최대용량" disabled={!values.fileAttachYn} />
+          <Field.Text
+            name="fileMaxSize"
+            label="첨부가능최대용량"
+            variant="outlined"
+            disabled={!values.fileAttachYn}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           <Field.Switch
@@ -205,7 +222,7 @@ export function BoardMasterEditForm({ editMode, entity }: Props) {
   );
 
   return (
-    <>
+    <Box className="dna-edit-form">
       <Form methods={methods} onSubmit={onSubmit}>
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
@@ -238,6 +255,6 @@ export function BoardMasterEditForm({ editMode, entity }: Props) {
           </Button>
         }
       />
-    </>
+    </Box>
   );
 }

@@ -58,7 +58,8 @@
 
   .selected {
     background-color: rgba(var(--palette-primary-mainChannel) / 0.08);
-    &.group .header, &.page{
+
+    &.group .header, &.page {
       color: var(--palette-primary-main);
       font-weight: bold;
     }
@@ -66,5 +67,11 @@
 
   .ghost {
     background: var(--palette-grey-200);
+  }
+}
+
+.dna-edit-form {
+  .Mui-disabled {
+    color: var(--palette-text-primary) !important
   }
 }

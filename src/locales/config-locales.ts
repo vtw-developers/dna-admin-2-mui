@@ -28,9 +28,9 @@ export const changeLangMessages: Record<
   { success: string; error: string; loading: string }
 > = {
   ko: {
-    success: 'Language has been changed!',
-    error: 'Error changing language!',
-    loading: 'Loading...',
+    success: '언어가 변경되었습니다!',
+    error: '언어 변경 중에 오류가 발생했습니다!',
+    loading: '로딩중...',
   },
   en: {
     success: 'Language has been changed!',
