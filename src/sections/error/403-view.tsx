@@ -21,14 +21,13 @@ export function View403() {
       <Container component={MotionContainer}>
         <m.div variants={varBounce().in}>
           <Typography variant="h3" sx={{ mb: 2 }}>
-            No permission
+            허가받지 못한 사용자
           </Typography>
         </m.div>
 
         <m.div variants={varBounce().in}>
           <Typography sx={{ color: 'text.secondary' }}>
-            The page you’re trying to access has restricted access. Please refer to your system
-            administrator.
+            접근하려는 페이지에는 접근이 제한되어 있습니다. 시스템 관리자에게 문의하세요.
           </Typography>
         </m.div>
 
@@ -37,7 +36,7 @@ export function View403() {
         </m.div>
 
         <Button component={RouterLink} href="/" size="large" variant="contained">
-          Go to home
+          홈으로 돌아가기
         </Button>
       </Container>
     </SimpleLayout>

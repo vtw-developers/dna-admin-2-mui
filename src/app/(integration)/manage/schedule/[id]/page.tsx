@@ -5,7 +5,7 @@ import { ScheduleEditView } from '../../../../../sections/schedule/view/schedule
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Create a new product | Dashboard - ${CONFIG.site.name}` };
+export const metadata = { title: `스케줄 관리 - ${CONFIG.site.name}` };
 
 type Props = {
   params: { id: string };

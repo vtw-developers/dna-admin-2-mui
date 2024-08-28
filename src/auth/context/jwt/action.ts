@@ -9,7 +9,7 @@ import { STORAGE_KEY } from './constant';
 // ----------------------------------------------------------------------
 
 export type SignInParams = {
-  email: string;
+  id: string;
   password: string;
 };
 
@@ -22,9 +22,9 @@ export type SignUpParams = {
 /** **************************************
  * Sign in
  *************************************** */
-export const signInWithPassword = async ({ email, password }: SignInParams): Promise<void> => {
+export const signInWithPassword = async ({ id, password }: SignInParams): Promise<void> => {
   try {
-    const params = { id: email, password };
+    const params = { id, password };
 
     const res = await axios.post(endpoints.auth.signIn, params);
 

@@ -4,7 +4,7 @@ import { BoardMasterEditView } from '../../../../../sections/board-master/view/b
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Page - ${CONFIG.site.name}` };
+export const metadata = { title: `게시판 관리 - ${CONFIG.site.name}` };
 
 export default function Page() {
   return <BoardMasterEditView editMode="create" />;

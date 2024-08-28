@@ -5,7 +5,7 @@ import { PageInfoEditView } from '../../../../../sections/page-info/view/page-in
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Page - ${CONFIG.site.name}` };
+export const metadata = { title: `페이지 관리 - ${CONFIG.site.name}` };
 
 type Props = {
   params: { id: string };

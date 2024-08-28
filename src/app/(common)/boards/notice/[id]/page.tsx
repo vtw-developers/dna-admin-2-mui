@@ -5,7 +5,7 @@ import { NoticeEditView } from '../../../../../sections/notice/view/notice-edit-
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Notice - ${CONFIG.site.name}` };
+export const metadata = { title: `공지사항 - ${CONFIG.site.name}` };
 
 type Props = {
   params: { id: string };
@@ -15,6 +15,5 @@ export default async function Page({ params }: Props) {
   const { id } = params;
 
   const entity = await getBoard(id);
-  console.log(entity);
   return <NoticeEditView editMode="details" entity={entity} />;
 }

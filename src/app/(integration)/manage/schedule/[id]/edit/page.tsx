@@ -1,12 +1,11 @@
 import { CONFIG } from 'src/config-global';
 
 import { getSchedule } from '../../../../../../actions/schedule';
-import { ApiInfoEditView } from '../../../../../../sections/api-info/view/api-info-edit-view';
 import { ScheduleEditView } from '../../../../../../sections/schedule/view/schedule-edit-view';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Create a new product | Dashboard - ${CONFIG.site.name}` };
+export const metadata = { title: `스케줄 관리 - ${CONFIG.site.name}` };
 
 type Props = {
   params: { id: string };

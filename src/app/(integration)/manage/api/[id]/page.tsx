@@ -5,7 +5,7 @@ import { ApiInfoEditView } from '../../../../../sections/api-info/view/api-info-
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Create a new product | Dashboard - ${CONFIG.site.name}` };
+export const metadata = { title: `API 관리- ${CONFIG.site.name}` };
 
 type Props = {
   params: { id: string };

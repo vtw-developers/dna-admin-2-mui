@@ -4,7 +4,7 @@ import { CtiInfoEditView } from '../../../../../sections/cti-info/view/cti-info-
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Create a new product | Dashboard - ${CONFIG.site.name}` };
+export const metadata = { title: `CTI 관리 - ${CONFIG.site.name}` };
 
 export default function Page() {
   return <CtiInfoEditView editMode="create" />;

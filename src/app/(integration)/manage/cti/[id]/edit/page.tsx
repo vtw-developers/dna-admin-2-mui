@@ -5,7 +5,7 @@ import { CtiInfoEditView } from '../../../../../../sections/cti-info/view/cti-in
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Create a new product | Dashboard - ${CONFIG.site.name}` };
+export const metadata = { title: `CTI 관리 - ${CONFIG.site.name}` };
 
 type Props = {
   params: { id: string };

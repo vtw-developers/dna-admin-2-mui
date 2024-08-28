@@ -5,7 +5,7 @@ import { MenuEditView } from '../../../../sections/menu/menu-edit-view';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Menu - ${CONFIG.site.name}` };
+export const metadata = { title: `메뉴 관리 - ${CONFIG.site.name}` };
 
 export default async function Page() {
   const entity = await getMenuList();

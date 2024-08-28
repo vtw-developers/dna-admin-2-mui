@@ -17,7 +17,7 @@ export function SignInButton({ sx, ...other }: ButtonProps) {
       sx={sx}
       {...other}
     >
-      Sign in
+      로그인
     </Button>
   );
 }

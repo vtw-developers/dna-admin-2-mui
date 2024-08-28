@@ -21,13 +21,13 @@ export function View500() {
       <Container component={MotionContainer}>
         <m.div variants={varBounce().in}>
           <Typography variant="h3" sx={{ mb: 2 }}>
-            500 Internal server error
+            500 내부 서버 오류
           </Typography>
         </m.div>
 
         <m.div variants={varBounce().in}>
           <Typography sx={{ color: 'text.secondary' }}>
-            There was an error, please try again later.
+            오류가 발생했습니다. 나중에 다시 시도하세요.{' '}
           </Typography>
         </m.div>
 
@@ -36,7 +36,7 @@ export function View500() {
         </m.div>
 
         <Button component={RouterLink} href="/" size="large" variant="contained">
-          Go to home
+          홈으로 돌아가기
         </Button>
       </Container>
     </SimpleLayout>

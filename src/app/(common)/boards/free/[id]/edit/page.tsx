@@ -5,7 +5,7 @@ import { FreeEditView } from '../../../../../../sections/free/view/free-edit-vie
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `FreeBoard - ${CONFIG.site.name}` };
+export const metadata = { title: `자유게시판 - ${CONFIG.site.name}` };
 
 type Props = {
   params: { id: string };

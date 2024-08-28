@@ -54,9 +54,9 @@ export function JwtSignUpView() {
   const [errorMsg, setErrorMsg] = useState('');
 
   const defaultValues = {
-    name: 'dna',
-    id: 'hello',
-    password: '@demo1',
+    name: '',
+    id: '',
+    password: '',
   };
 
   const methods = useForm<SignUpSchemaType>({
@@ -128,7 +128,12 @@ export function JwtSignUpView() {
     <Stack spacing={3}>
       <Field.Text name="name" label="이름" InputLabelProps={{ shrink: true }} variant="outlined" />
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <Field.Text name="id" label="ID" InputLabelProps={{ shrink: true }} variant="outlined" />
+        <Field.Text
+          name="id"
+          label="아이디"
+          InputLabelProps={{ shrink: true }}
+          variant="outlined"
+        />
         <Button
           variant="contained"
           color="primary"
@@ -165,7 +170,7 @@ export function JwtSignUpView() {
         variant="contained"
         loading={isSubmitting}
         disabled={duplicated}
-        loadingIndicator="Create account..."
+        loadingIndicator="계정 생성..."
       >
         계정 생성
       </LoadingButton>
@@ -185,7 +190,7 @@ export function JwtSignUpView() {
       <Link underline="always" color="text.primary">
         서비스 약관
       </Link>
-      {' 및 '}
+      및
       <Link underline="always" color="text.primary">
         개인정보 처리 방침
       </Link>

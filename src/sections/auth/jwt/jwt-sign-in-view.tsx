@@ -30,11 +30,8 @@ import { signInWithPassword } from 'src/auth/context/jwt';
 export type SignInSchemaType = zod.infer<typeof SignInSchema>;
 
 export const SignInSchema = zod.object({
-  email: zod.string(),
-  /* .min(1, { message: 'Email is required!' })
-    .email({ message: 'Email must be a valid email address!' }) */ password: zod.string(),
-  /* .min(1, { message: 'Password is required!' })
-    .min(6, { message: 'Password must be at least 6 characters!' }) */
+  id: zod.string().min(1, { message: '아이디를 입력하세요.' }),
+  password: zod.string().min(1, { message: '비밀번호를 입력하세요.' }),
 });
 
 // ----------------------------------------------------------------------
@@ -49,8 +46,8 @@ export function JwtSignInView() {
   const password = useBoolean();
 
   const defaultValues = {
-    email: 'test',
-    password: '1234',
+    id: '',
+    password: '',
   };
 
   const methods = useForm<SignInSchemaType>({
@@ -65,7 +62,7 @@ export function JwtSignInView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await signInWithPassword({ email: data.email, password: data.password });
+      await signInWithPassword({ id: data.id, password: data.password });
       await checkUserSession?.();
 
       router.refresh();
@@ -93,12 +90,7 @@ export function JwtSignInView() {
 
   const renderForm = (
     <Stack spacing={3}>
-      <Field.Text
-        name="email"
-        label="Email"
-        InputLabelProps={{ shrink: true }}
-        variant="outlined"
-      />
+      <Field.Text name="id" label="아이디" InputLabelProps={{ shrink: true }} variant="outlined" />
 
       <Stack spacing={1.5}>
         <Link
@@ -113,8 +105,7 @@ export function JwtSignInView() {
 
         <Field.Text
           name="password"
-          label="Password"
-          placeholder="6+ characters"
+          label="비밀번호"
           type={password.value ? 'text' : 'password'}
           variant="outlined"
           InputLabelProps={{ shrink: true }}
@@ -147,12 +138,14 @@ export function JwtSignInView() {
   return (
     <>
       {renderHead}
+      {/*
 
       <Alert severity="info" sx={{ mb: 3 }}>
         아이디 <strong>{defaultValues.email}</strong>
         {' 비밀번호 '}
         <strong>{defaultValues.password}</strong>
       </Alert>
+*/}
 
       {!!errorMsg && (
         <Alert severity="error" sx={{ mb: 3 }}>

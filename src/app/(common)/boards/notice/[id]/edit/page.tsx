@@ -5,7 +5,7 @@ import { NoticeEditView } from '../../../../../../sections/notice/view/notice-ed
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Notice - ${CONFIG.site.name}` };
+export const metadata = { title: `공지사항 - ${CONFIG.site.name}` };
 
 type Props = {
   params: { id: string };

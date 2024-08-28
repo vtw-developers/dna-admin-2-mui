@@ -4,7 +4,7 @@ import { OverviewAnalyticsView } from '../../sections/analysics/view/overview-an
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Dashboard - ${CONFIG.site.name}` };
+export const metadata = { title: `대시보드 - ${CONFIG.site.name}` };
 
 export default function Page() {
   return <OverviewAnalyticsView />;
