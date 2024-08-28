@@ -1,7 +1,7 @@
 import { z as zod } from 'zod';
 import { useForm } from 'react-hook-form';
+import { useMemo, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMemo, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import { Grid } from '@mui/material';
@@ -18,8 +18,6 @@ import { useRouter } from 'src/routes/hooks';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
-import { varAlpha } from '../../theme/styles';
-import { fDate } from '../../utils/format-time';
 import { Iconify } from '../../components/iconify';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
@@ -148,34 +146,31 @@ export function QnaEditForm({ editMode, entity, parent }: Props) {
     router.push(listPath);
   });
 
-  const handleFilterDate = useCallback(
-    (field: any) => (e: any) => {
-      setValue(field, fDate(e, 'YYYY-MM-DD hh:mm:ss'));
-    },
-    [setValue]
-  );
-
   const renderDetails = (
     <Card>
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
       <Divider />
       <Grid container spacing={3} sx={{ p: 3 }}>
         <Grid item xs={12} md={9}>
-          <Field.Text name="title" label="제목" inputProps={{ readOnly: editMode === 'details' }} />
+          <Field.Text
+            name="title"
+            label="제목"
+            variant="outlined"
+            inputProps={{ readOnly: editMode === 'details' }}
+          />
         </Grid>
         <Grid item xs={12} md={3}>
-          <Field.Text name="viewCount" label="조회수" inputProps={{ readOnly: true }} />
+          <Field.Text
+            name="viewCount"
+            label="조회수"
+            variant="outlined"
+            inputProps={{ readOnly: true }}
+          />
         </Grid>
         <Grid item xs={12} md={12}>
           {editMode !== 'details' && <Field.Editor name="content" sx={{ maxHeight: 480 }} />}
           {editMode === 'details' && (
-            <Box
-              sx={{
-                px: 2,
-                border: (theme) =>
-                  `solid 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.2)}`,
-              }}
-            >
+            <Box className="html-content">
               <div dangerouslySetInnerHTML={{ __html: values.content }} />
             </Box>
           )}
@@ -186,7 +181,7 @@ export function QnaEditForm({ editMode, entity, parent }: Props) {
   );
 
   return (
-    <>
+    <Box className="dna-edit-form">
       <Form methods={methods} onSubmit={onSubmit}>
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
@@ -285,6 +280,6 @@ export function QnaEditForm({ editMode, entity, parent }: Props) {
           </Button>
         }
       />
-    </>
+    </Box>
   );
 }

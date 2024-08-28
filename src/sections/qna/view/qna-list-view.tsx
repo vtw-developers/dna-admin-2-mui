@@ -4,6 +4,7 @@ import type { GridColDef } from '@mui/x-data-grid';
 import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
+import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 
 import Link from '@mui/material/Link';
@@ -12,7 +13,6 @@ import Button from '@mui/material/Button';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 
 import { paths } from '../../../routes/paths';
-import { useRouter } from '../../../routes/hooks';
 import { Iconify } from '../../../components/iconify';
 import { useGetBoards } from '../../../actions/board';
 import { RouterLink } from '../../../routes/components';
@@ -41,7 +41,7 @@ export const QnaListView = () => {
 
   useEffect(() => {
     setTableData(data);
-  }, [data, sortModel, pagination, defaultBoardFilters]);
+  }, [data, sortModel, pagination]);
 
   const handleViewRow = useCallback(
     (id: string) => {
@@ -53,8 +53,7 @@ export const QnaListView = () => {
   const replySpace = (board: Board) => {
     const spaces = [];
     const level = replyLevel(board);
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < level - 1; i++) {
+    for (let i = 0; i < level - 1; i + 1) {
       spaces.push(<div style={{ float: 'left' }}>&ensp;&ensp;&ensp;</div>);
     }
     return spaces;
@@ -79,12 +78,13 @@ export const QnaListView = () => {
     {
       field: 'boardNo',
       headerName: '번호',
-      width: 200,
+      minWidth: 150,
     },
     {
       field: 'title',
       headerName: '제목',
-      width: 1200,
+      minWidth: 200,
+      flex: 1,
       renderCell: (params) => (
         <Link
           noWrap

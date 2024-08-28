@@ -4,6 +4,7 @@ import type { GridColDef } from '@mui/x-data-grid';
 import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
+import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 
 import Link from '@mui/material/Link';
@@ -12,7 +13,6 @@ import Button from '@mui/material/Button';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 
 import { paths } from '../../../routes/paths';
-import { useRouter } from '../../../routes/hooks';
 import { Iconify } from '../../../components/iconify';
 import { useGetBoards } from '../../../actions/board';
 import { RouterLink } from '../../../routes/components';
@@ -41,7 +41,7 @@ export const FreeListView = () => {
 
   useEffect(() => {
     setTableData(data);
-  }, [data, sortModel, pagination, defaultBoardFilters]);
+  }, [data, sortModel, pagination]);
 
   const handleViewRow = useCallback(
     (id: string) => {
