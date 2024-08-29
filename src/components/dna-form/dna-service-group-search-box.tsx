@@ -24,6 +24,7 @@ export const ServiceGroupSearchBox = ({ label, onChange }: Props) => {
       <TextField
         label={label}
         sx={{ width: '100%' }}
+        placeholder="서비스 그룹"
         value={serviceGroup?.name}
         InputProps={{
           readOnly: true,

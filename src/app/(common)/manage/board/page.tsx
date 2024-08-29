@@ -4,7 +4,7 @@ import { BoardMasterListView } from '../../../../sections/board-master/view/boar
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Page | ${CONFIG.site.name}` };
+export const metadata = { title: `페이지 | ${CONFIG.site.name}` };
 
 export default function Page() {
   return <BoardMasterListView />;

@@ -90,8 +90,8 @@ export function PageInfoListView() {
   return (
     <DashboardContent className="dna-common-list">
       <CustomBreadcrumbs
-        heading="Page 관리"
-        links={[{ name: 'Page 관리' }]}
+        heading="페이지 관리"
+        links={[{ name: '페이지 관리' }]}
         action={
           <Button
             component={RouterLink}
@@ -100,7 +100,7 @@ export function PageInfoListView() {
             color="primary"
             startIcon={<Iconify icon="mingcute:add-line" />}
           >
-            Page 등록
+            페이지 등록
           </Button>
         }
         sx={{ mb: { xs: 3, md: 5 } }}
