@@ -2,11 +2,8 @@
 import moment from 'moment';
 
 export type ApiLogFilters = {
-  result: string;
-  fromTime: undefined | string;
-  toTime: undefined | string;
-  serviceGroupId: undefined | number;
-  apiId: undefined | number;
+  startDate: undefined | string;
+  endDate: undefined | string;
 };
 
 export type ApiLog = {

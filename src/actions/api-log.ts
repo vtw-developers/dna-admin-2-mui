@@ -5,7 +5,7 @@ import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPagination
 import useSWR from 'swr';
 import { useMemo } from 'react';
 
-import axiosInstance, { fetcher } from 'src/utils/axios';
+import { fetcher } from 'src/utils/axios';
 
 // ----------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ export function useGetApiLogs(
     return '';
   };
 
-  const { data, isLoading, error, isValidating } = useSWR<ApiLogsData>(
+  const { data, isLoading, error, isValidating, mutate } = useSWR<ApiLogsData>(
     [
       `${url}`,
       {
@@ -61,25 +61,10 @@ export function useGetApiLogs(
       isValidating,
       empty: !isLoading && !data?.data.length,
       totalCount: data?.totalCount || 0,
+      mutate,
     }),
-    [data?.data, error, isLoading, isValidating, pagination, filters]
+    [data, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;
 }
-
-export const getApiLog = async (id: string | number) =>
-  (
-    await axiosInstance.get(`${PATH_PREFIX}/find`, {
-      params: { id },
-    })
-  ).data;
-
-export const createApiLog = async (params: ApiLog) =>
-  (await axiosInstance.post(`${PATH_PREFIX}/create`, params)).data;
-
-export const updateApiLog = async (params: ApiLog) =>
-  (await axiosInstance.post(`${PATH_PREFIX}/update`, params)).data;
-
-export const deleteApiLog = async (params: ApiLog) =>
-  (await axiosInstance.post(`${PATH_PREFIX}/delete`, params)).data;

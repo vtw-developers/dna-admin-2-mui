@@ -8,9 +8,7 @@ import Button from '@mui/material/Button';
 import { fDate } from '../../utils/format-time';
 import { Iconify } from '../../components/iconify';
 import { defaultApiLogFilters } from '../../types/api-log';
-import { DnaSelectBox } from '../../components/form/dna-select-box';
 import { DnaDateRangeBox } from '../../components/form/dna-date-range-box';
-import { ServiceGroupSearchBox } from '../../components/dna-form/dna-service-group-search-box';
 
 import type { ApiLogFilters } from '../../types/api-log';
 
@@ -32,7 +30,7 @@ export const selectEnabled = [
   { id: false, text: '미사용' },
 ];
 
-export function ApiLogFilter({ onSearch }: Props) {
+export function ApiStatsFilter({ onSearch }: Props) {
   const [filters, setFilters] = useState<ApiLogFilters>(defaultApiLogFilters);
 
   const handleFilterName = useCallback(
@@ -50,37 +48,24 @@ export function ApiLogFilter({ onSearch }: Props) {
   );
 
   const handleFilterDate = useCallback(
-    (field: string) => (e: any) => {
-      setFilters({ ...filters, [field]: fDate(e, 'YYYY-MM-DD hh:mm:ss') });
+    (field: string, format: string) => (e: any) => {
+      setFilters({ ...filters, [field]: fDate(e, format) });
     },
     [filters]
   );
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={3}>
-        <DnaSelectBox
-          label="결과"
-          items={selectResult}
-          value={filters.result}
-          onValueChange={handleFilterName('result')}
-          valueField="id"
-          textField="text"
-        />
-      </Grid>
-      <Grid item xs={12} md={3}>
-        <ServiceGroupSearchBox onChange={handleFilter('serviceGroupId')} />
-      </Grid>
       <Grid item xs={12} md={6}>
         <DnaDateRangeBox
-          startValue={filters.fromTime}
-          endValue={filters.toTime}
+          startValue={filters.startDate}
+          endValue={filters.endDate}
           onValueChange={handleFilterDate}
           startLabel="시작일시"
           endLabel="종료일시"
-          startFieldName="fromTime"
-          endFieldName="toTime"
-          format="YYYY-MM-DD HH:mm:ss"
+          startFieldName="startDate"
+          endFieldName="endDate"
+          format="YYYY-MM-DD"
         />
       </Grid>
       <Grid item xs={12} md={12} textAlign="center">

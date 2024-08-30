@@ -11,6 +11,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
+import { isDeepEqual } from '@mui/x-data-grid/internals';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 
 import { RouterLink } from 'src/routes/components';
@@ -113,7 +114,9 @@ export function ApiInfoListView() {
         <ApiInfoFilter
           onSearch={(f) => {
             setFilters(f);
-            mutate();
+            if (isDeepEqual(filters, f)) {
+              mutate();
+            }
           }}
         />
       </Card>

@@ -9,6 +9,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
+import { isDeepEqual } from '@mui/x-data-grid/internals';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 
 import { useGetApiLogs } from 'src/actions/api-log';
@@ -31,7 +32,7 @@ export function ApiLogListView() {
   const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
   const [filters, setFilters] = useState<ApiLogFilters>(defaultApiLogFilters);
-  const { data, loading, totalCount } = useGetApiLogs(pagination, sortModel, filters);
+  const { data, loading, totalCount, mutate } = useGetApiLogs(pagination, sortModel, filters);
   const [tableData, setTableData] = useState<ApiLog[]>([]);
 
   useEffect(() => {
@@ -95,7 +96,14 @@ export function ApiLogListView() {
         sx={{ mb: { xs: 3, md: 5 } }}
       />
       <Card className="list-filter" sx={{ mb: { xs: 3, md: 5 } }}>
-        <ApiLogFilter onSearch={(f) => setFilters(f)} />
+        <ApiLogFilter
+          onSearch={(f) => {
+            setFilters(f);
+            if (isDeepEqual(filters, f)) {
+              mutate();
+            }
+          }}
+        />
       </Card>
       <Card
         className="list-grid"
