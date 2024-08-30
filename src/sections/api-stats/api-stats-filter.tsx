@@ -1,5 +1,3 @@
-import type { ChangeEvent } from 'react';
-
 import { useState, useCallback } from 'react';
 
 import { Grid } from '@mui/material';
@@ -7,45 +5,19 @@ import Button from '@mui/material/Button';
 
 import { fDate } from '../../utils/format-time';
 import { Iconify } from '../../components/iconify';
-import { defaultApiLogFilters } from '../../types/api-log';
+import { defaultApiStatsFilters } from '../../types/api-stats';
 import { DnaDateRangeBox } from '../../components/form/dna-date-range-box';
 
-import type { ApiLogFilters } from '../../types/api-log';
+import type { ApiStatsFilters } from '../../types/api-stats';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  onSearch: (filters: ApiLogFilters) => void;
+  onSearch: (filters: ApiStatsFilters) => void;
 };
 
-const selectResult = [
-  { id: undefined, text: '[ 전체 ]' },
-  { id: 'ERROR', text: '오류' },
-  { id: 'SUCCESS', text: '성공' },
-];
-
-export const selectEnabled = [
-  { id: undefined, text: '[ 전체 ]' },
-  { id: true, text: '사용' },
-  { id: false, text: '미사용' },
-];
-
 export function ApiStatsFilter({ onSearch }: Props) {
-  const [filters, setFilters] = useState<ApiLogFilters>(defaultApiLogFilters);
-
-  const handleFilterName = useCallback(
-    (field: string) => (event: ChangeEvent<HTMLInputElement>) => {
-      setFilters({ ...filters, [field]: event.target.value });
-    },
-    [filters]
-  );
-
-  const handleFilter = useCallback(
-    (field: string) => (e: any) => {
-      setFilters({ ...filters, [field]: e });
-    },
-    [filters]
-  );
+  const [filters, setFilters] = useState<ApiStatsFilters>(defaultApiStatsFilters);
 
   const handleFilterDate = useCallback(
     (field: string, format: string) => (e: any) => {
@@ -70,7 +42,7 @@ export function ApiStatsFilter({ onSearch }: Props) {
       </Grid>
       <Grid item xs={12} md={12} textAlign="center">
         <Button
-          onClick={(e) => onSearch(filters)}
+          onClick={() => onSearch(filters)}
           variant="outlined"
           startIcon={<Iconify icon="mingcute:search-line" />}
         >
