@@ -72,7 +72,7 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
       httpMethod: entity?.httpMethod || 'GET',
       url: entity?.url || '',
       serviceGroupId: entity?.serviceGroupId || 0,
-      enabled: entity?.enabled || false,
+      enabled: entity?.enabled || true,
       flowId: entity?.flowId || '',
       flowMetaYaml: entity?.flowMetaYaml || '',
       requestParameters:
