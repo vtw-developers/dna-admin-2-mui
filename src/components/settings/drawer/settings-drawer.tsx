@@ -53,7 +53,7 @@ export function SettingsDrawer({
 
       <FullScreenButton />
 
-      <Tooltip title="Reset">
+      <Tooltip title="초기화">
         <IconButton
           onClick={() => {
             settings.onReset();
@@ -66,7 +66,7 @@ export function SettingsDrawer({
         </IconButton>
       </Tooltip>
 
-      <Tooltip title="Close">
+      <Tooltip title="닫기">
         <IconButton onClick={settings.onCloseDrawer}>
           <Iconify icon="mingcute:close-line" />
         </IconButton>

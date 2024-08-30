@@ -14,9 +14,9 @@ export const ServiceGroupSearchBox = ({ label, onChange }: Props) => {
 
   const [serviceGroup, setServiceGroup] = useState({ id: undefined, name: '' });
 
-  const onChangeServiceGroup = (serviceGroup: any) => {
-    setServiceGroup(serviceGroup);
-    onChange(serviceGroup.id);
+  const onChangeServiceGroup = (group: any) => {
+    setServiceGroup(group);
+    onChange(group.id);
   };
 
   return (

@@ -20,7 +20,7 @@
 .menu-edit-tree {
   .block {
     position: relative;
-    background: white;
+    background: var(--palette-background-paper);
     padding: 10px 20px;
     margin-bottom: 10px;
     cursor: move;
@@ -57,8 +57,6 @@
   }
 
   .selected {
-    background-color: rgba(var(--palette-primary-mainChannel) / 0.08);
-
     &.group .header, &.page {
       color: var(--palette-primary-main);
       font-weight: bold;
@@ -66,7 +64,7 @@
   }
 
   .ghost {
-    background: var(--palette-grey-200);
+    background: var(--palette-background-neutral);
   }
 }
 

@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
 import { Iconify } from '../../../components/iconify';
@@ -46,11 +47,13 @@ export function BoardCommentList({ comments, onDelete }: Props) {
                 {comment.content}
               </Typography>
             </Stack>
-            <Iconify
-              icon="mingcute:delete-2-line"
-              width={16}
-              onClick={(e) => doDeleteComment(comment.id)}
-            />
+            <Tooltip title="삭제">
+              <Iconify
+                icon="mingcute:delete-2-line"
+                width={16}
+                onClick={(e) => doDeleteComment(comment.id)}
+              />
+            </Tooltip>
           </Box>
         </Box>
       ))}
