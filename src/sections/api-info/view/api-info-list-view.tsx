@@ -11,6 +11,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
+import { isDeepEqual } from '@mui/x-data-grid/internals';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 
 import { RouterLink } from 'src/routes/components';
@@ -53,7 +54,6 @@ export function ApiInfoListView() {
     {
       field: 'serviceGroupName',
       headerName: '서비스그룹',
-      flex: 1,
       minWidth: 200,
     },
     {
@@ -76,18 +76,18 @@ export function ApiInfoListView() {
     {
       field: 'httpMethod',
       headerName: 'Method',
-      flex: 1,
       minWidth: 100,
     },
     {
       field: 'url',
       headerName: 'URL',
-      flex: 1,
       minWidth: 200,
     },
     {
       field: 'enabled',
       headerName: '사용여부',
+      renderCell: (params) => (params.row.enabled ? 'O' : 'X'),
+      align: 'center',
     },
   ];
 
@@ -113,7 +113,9 @@ export function ApiInfoListView() {
         <ApiInfoFilter
           onSearch={(f) => {
             setFilters(f);
-            mutate();
+            if (isDeepEqual(filters, f)) {
+              mutate();
+            }
           }}
         />
       </Card>

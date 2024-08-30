@@ -32,7 +32,7 @@ export const DnaDateRangeBox = ({
       className="datetimebox"
       label={startLabel}
       defaultValue={startValue === undefined ? undefined : dayjs(startValue)}
-      onChange={onValueChange(startFieldName)}
+      onChange={onValueChange(startFieldName, format)}
       format={format}
       slotProps={{
         actionBar: {
@@ -46,7 +46,7 @@ export const DnaDateRangeBox = ({
       className="datetimebox"
       label={endLabel}
       defaultValue={endValue === undefined ? undefined : dayjs(endValue)}
-      onChange={onValueChange(endFieldName)}
+      onChange={onValueChange(endFieldName, format)}
       format={format}
       slotProps={{
         actionBar: {

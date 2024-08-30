@@ -1,34 +1,19 @@
 // ----------------------------------------------------------------------
 
 export type ApiStatsFilters = {
-  name: string;
-  httpMethod: string | undefined;
-  author: string;
-  startModifiedTime: undefined | string;
-  endModifiedTime: undefined | string;
-  enabled: undefined | boolean;
-  serviceGroupId: undefined | number;
+  startDate: undefined | string;
+  endDate: undefined | string;
 };
 
 export type ApiStats = {
-  id?: number;
-  name: string;
-  httpMethod: string;
-  url: string;
-  serviceGroupId: number;
-  enabled: boolean;
-  flowId: string;
-  flowMetaYaml: string;
-  requestParameters: any[];
-  responseElements: any[];
+  serviceGroup: string;
+  api: string;
+  year: number;
+  month: number;
+  count: number;
 };
 
 export const defaultApiStatsFilters: ApiStatsFilters = {
-  name: '',
-  httpMethod: undefined,
-  author: '',
-  startModifiedTime: undefined,
-  endModifiedTime: undefined,
-  enabled: undefined,
-  serviceGroupId: undefined,
+  startDate: undefined,
+  endDate: undefined,
 };
