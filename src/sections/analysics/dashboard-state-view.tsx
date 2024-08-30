@@ -14,7 +14,7 @@ export const DashboardStateView = ({ totalCount }: Props) => {
   return (
     <Card className="dashboard-state">
       <CardHeader title="API 현황" />
-      <Box display="grid" gap={2} gridTemplateColumns="repeat(2, 1fr)" sx={{ p: 3, my: 6 }}>
+      <Box display="grid" gap={2} gridTemplateRows="repeat(2, 1fr)" sx={{ p: 2, my: 2 }}>
         <Box className="item">
           <Typography variant="h6" sx={{ mt: 1 }}>
             연계상태
