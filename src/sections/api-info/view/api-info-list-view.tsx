@@ -54,7 +54,6 @@ export function ApiInfoListView() {
     {
       field: 'serviceGroupName',
       headerName: '서비스그룹',
-      flex: 1,
       minWidth: 200,
     },
     {
@@ -77,18 +76,18 @@ export function ApiInfoListView() {
     {
       field: 'httpMethod',
       headerName: 'Method',
-      flex: 1,
       minWidth: 100,
     },
     {
       field: 'url',
       headerName: 'URL',
-      flex: 1,
       minWidth: 200,
     },
     {
       field: 'enabled',
       headerName: '사용여부',
+      renderCell: (params) => (params.row.enabled ? 'O' : 'X'),
+      align: 'center',
     },
   ];
 
