@@ -25,7 +25,7 @@ export function FullScreenButton() {
   }, []);
 
   return (
-    <Tooltip title={fullscreen ? 'Exit' : 'Full Screen'}>
+    <Tooltip title={fullscreen ? '닫기' : '전체화면'}>
       <IconButton
         onClick={onToggleFullScreen}
         sx={{

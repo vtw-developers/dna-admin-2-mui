@@ -9,6 +9,7 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import Tooltip from '@mui/material/Tooltip';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -265,8 +266,12 @@ export function NoticeEditForm({ editMode, entity }: Props) {
                   component="li"
                   key={index}
                 >
-                  <Iconify icon="mingcute:download-2-line" width={16} />
-                  {originalFileName}
+                  <Tooltip title="다운로드">
+                    <Box>
+                      <Iconify icon="mingcute:download-2-line" width={16} />
+                      {originalFileName}
+                    </Box>
+                  </Tooltip>
                 </Box>
               );
             })}

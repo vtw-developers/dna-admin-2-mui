@@ -1,6 +1,7 @@
 import { ReactSortable } from 'react-sortablejs';
 
 import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
 
 import { Iconify } from '../../components/iconify';
 import { icon } from '../../layouts/config-nav-dashboard';
@@ -84,9 +85,9 @@ export const MenuTreeBlock = ({
       >
         <div className="header">
           {rootMenuTree.name}
-          <div>
+          <Tooltip title="삭제">
             <Iconify icon="mingcute:delete-2-line" onClick={confirm.onTrue} />
-          </div>
+          </Tooltip>
         </div>
         <Container
           rootMenuTree={rootMenuTree}
@@ -120,7 +121,9 @@ export const MenuTreeBlock = ({
           <i>{rootMenuTree?.pageInfoPath}</i>
         </Box>
       </Box>
-      <Iconify icon="mingcute:delete-2-line" onClick={confirm.onTrue} />
+      <Tooltip title="삭제">
+        <Iconify icon="mingcute:delete-2-line" onClick={confirm.onTrue} />
+      </Tooltip>
     </Box>
   );
 };

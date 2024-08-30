@@ -7,6 +7,7 @@ import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import Tooltip from '@mui/material/Tooltip';
 import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
 
@@ -185,26 +186,30 @@ export function MenuEditTree({ entity }: Props) {
         <Card sx={{ p: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box>
-              <Button
-                variant="outlined"
-                size="medium"
-                color="inherit"
-                onClick={addGroup}
-                startIcon={<Iconify icon="mingcute:add-line" />}
-                sx={{ mb: 2, mr: 1 }}
-              >
-                그룹
-              </Button>
-              <Button
-                variant="outlined"
-                size="medium"
-                color="inherit"
-                onClick={addPage}
-                startIcon={<Iconify icon="mingcute:add-line" />}
-                sx={{ mb: 2 }}
-              >
-                페이지
-              </Button>
+              <Tooltip title="그룹 추가">
+                <Button
+                  variant="outlined"
+                  size="medium"
+                  color="inherit"
+                  onClick={addGroup}
+                  startIcon={<Iconify icon="mingcute:folder-line" />}
+                  sx={{ mb: 2, mr: 1 }}
+                >
+                  그룹
+                </Button>
+              </Tooltip>
+              <Tooltip title="페이지 추가">
+                <Button
+                  variant="outlined"
+                  size="medium"
+                  color="inherit"
+                  onClick={addPage}
+                  startIcon={<Iconify icon="mingcute:file-line" />}
+                  sx={{ mb: 2 }}
+                >
+                  페이지
+                </Button>
+              </Tooltip>
             </Box>
             <Button
               size="medium"
