@@ -1,15 +1,15 @@
 import { useState } from 'react';
 
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 
+import { Field } from '../hook-form';
 import { Iconify } from '../iconify';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ServiceGroupSelectionPopup } from '../popup/selection/service-group-selection-popup';
 
-type Props = { label?: string; onChange: any };
+type Props = { label?: string; onChange: any; name: string };
 
-export const ServiceGroupSearchBox = ({ label, onChange }: Props) => {
+export const ServiceGroupSearchBox = ({ label, onChange, name }: Props) => {
   const confirm = useBoolean();
 
   const [serviceGroup, setServiceGroup] = useState({ id: undefined, name: '' });
@@ -21,8 +21,9 @@ export const ServiceGroupSearchBox = ({ label, onChange }: Props) => {
 
   return (
     <>
-      <TextField
+      <Field.Text
         label={label}
+        name={name}
         sx={{ width: '100%' }}
         placeholder="서비스 그룹"
         value={serviceGroup?.name}
@@ -37,6 +38,7 @@ export const ServiceGroupSearchBox = ({ label, onChange }: Props) => {
             />
           ),
         }}
+        variant="outlined"
       />
       <ServiceGroupSelectionPopup
         onChange={onChangeServiceGroup}

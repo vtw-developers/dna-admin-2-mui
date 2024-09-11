@@ -41,7 +41,7 @@ export const Schema = zod.object({
     .max(50, { message: '50자 이내로 입력하세요.' }),
   httpMethod: zod.string().min(1, { message: 'HTTP Method 를 입력하세요.' }),
   url: zod.string().min(1, { message: 'URL을 입력하세요.' }),
-  serviceGroupId: zod.number(),
+  serviceGroupId: zod.number().min(1, { message: '서비스 그룹을 선택하세요.' }),
   enabled: zod.boolean(),
   flowId: zod.string(),
   flowMetaYaml: zod.string(),
@@ -156,6 +156,7 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
         <Grid item xs={12} md={6}>
           <ServiceGroupSearchBox
             label="서비스그룹"
+            name="serviceGroupId"
             onChange={(e: number) => setValue('serviceGroupId', e)}
           />
         </Grid>

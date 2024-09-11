@@ -69,7 +69,7 @@ export function CtiLogFilter({ onSearch }: Props) {
         />
       </Grid>
       <Grid item xs={12} md={3}>
-        <ServiceGroupSearchBox onChange={handleFilter('serviceGroupId')} />
+        <ServiceGroupSearchBox name="serviceGroupId" onChange={handleFilter('serviceGroupId')} />
       </Grid>
       <Grid item xs={12} md={6}>
         <DnaDateRangeBox
