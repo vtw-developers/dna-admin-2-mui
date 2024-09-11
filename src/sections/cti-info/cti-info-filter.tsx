@@ -75,7 +75,7 @@ export function CtiInfoFilter({ onSearch }: Props) {
         />
       </Grid>
       <Grid item xs={12} md={3}>
-        <ServiceGroupSearchBox name="serviceGroupId" onChange={handleFilter('httpMethod')} />
+        <ServiceGroupSearchBox onChange={handleFilter('httpMethod')} />
       </Grid>
       <Grid item xs={12} md={12} textAlign="center">
         <Button
