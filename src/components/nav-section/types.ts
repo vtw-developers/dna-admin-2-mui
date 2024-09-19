@@ -75,7 +75,7 @@ export type NavSectionProps = Omit<NavListProps, 'data' | 'depth'> & {
     subheader?: string;
     items: NavItemBaseProps[];
   }[];
-  list: {
+  list?: {
     id?: string;
     subheader?: string;
     items: NavItemBaseProps[];

@@ -34,7 +34,7 @@ export function NavSectionVertical({
   return (
     <Stack component="nav" className={navSectionClasses.vertical.root} sx={{ ...cssVars, ...sx }}>
       <NavUl sx={{ flex: '1 1 auto', gap: 'var(--nav-item-gap)' }}>
-        {list.map((group) => (
+        {list?.map((group) => (
           <Group
             key={group.subheader ?? group.items[0].title}
             subheader={group.subheader}
