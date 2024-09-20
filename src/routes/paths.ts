@@ -17,6 +17,8 @@ const ROOTS = {
   PAGE_INFO: '/manage/page-info',
   MENU: '/manage/menu',
   USER: '/manage/user',
+  FLOW_TEMPLATE: '/flow/template',
+  TEMPLATED_FLOW: '/flow/templated-flow',
 };
 
 // ----------------------------------------------------------------------
@@ -31,6 +33,20 @@ export const paths = {
   // DASHBOARD
   dashboard: {
     root: ROOTS.DASHBOARD,
+  },
+  flow: {
+    template: {
+      root: `${ROOTS.FLOW_TEMPLATE}`,
+      new: `${ROOTS.FLOW_TEMPLATE}/new`,
+      details: (id: string | number | undefined) => `${ROOTS.FLOW_TEMPLATE}/${id}`,
+      edit: (id: string | number | undefined) => `${ROOTS.FLOW_TEMPLATE}/${id}/edit`,
+    },
+    templatedFlow: {
+      root: `${ROOTS.TEMPLATED_FLOW}`,
+      new: `${ROOTS.TEMPLATED_FLOW}/new`,
+      details: (id: string | number | undefined) => `${ROOTS.TEMPLATED_FLOW}/${id}`,
+      edit: (id: string | number | undefined) => `${ROOTS.TEMPLATED_FLOW}/${id}/edit`,
+    },
   },
   manage: {
     api: {
