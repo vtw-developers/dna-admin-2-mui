@@ -7,7 +7,7 @@ export type TemplatedFlowFilters = {
 export type TemplatedFlow = {
   id?: number;
   name: string;
-  templateId: number;
+  templateSid: number;
 };
 
 export const defaultTemplatedFlowFilters: TemplatedFlowFilters = {

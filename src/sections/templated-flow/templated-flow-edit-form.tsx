@@ -40,7 +40,7 @@ export const Schema = zod.object({
     .string()
     .min(1, { message: '게시판 이름를 입력하세요.' })
     .max(50, { message: '50자 이내로 입력하세요.' }),
-  templateId: zod.number().min(1, { message: '템플릿을 선택하세요.' }),
+  templateSid: zod.number().min(1, { message: '템플릿을 선택하세요.' }),
 });
 
 // ----------------------------------------------------------------------
@@ -70,7 +70,7 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
     () => ({
       id: entity?.id,
       name: entity?.name || '',
-      templateId: entity?.templateId || 0,
+      templateSid: entity?.templateSid || 0,
     }),
     [entity]
   );
@@ -142,12 +142,12 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
         <Grid item xs={12} md={6}>
           <Field.Select
             variant="outlined"
-            name="templateId"
+            name="templateSid"
             label="템플릿 선택"
             inputProps={{ readOnly: editMode === 'details' }}
           >
             {templates.map((option) => (
-              <MenuItem key={option.id} value={option.id} sx={{ textTransform: 'capitalize' }}>
+              <MenuItem key={option.sid} value={option.sid} sx={{ textTransform: 'capitalize' }}>
                 {option.name}
               </MenuItem>
             ))}

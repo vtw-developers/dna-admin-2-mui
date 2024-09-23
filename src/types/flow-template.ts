@@ -5,7 +5,7 @@ export type FlowTemplateFilters = {
 };
 
 export type FlowTemplate = {
-  id?: number;
+  sid?: number;
   name: string;
 };
 

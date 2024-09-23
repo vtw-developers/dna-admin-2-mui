@@ -32,7 +32,7 @@ import type { FlowTemplate } from '../../types/flow-template';
 export type SchemaType = zod.infer<typeof Schema>;
 
 export const Schema = zod.object({
-  id: zod.number().optional(),
+  sid: zod.number().optional(),
   name: zod
     .string()
     .min(1, { message: '게시판 이름를 입력하세요.' })
@@ -52,12 +52,12 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
   const confirm = useBoolean();
 
   const listPath = paths.flow.template.root;
-  const editPath = paths.flow.template.edit(entity?.id);
-  const detailsPath = paths.flow.template.details(entity?.id);
+  const editPath = paths.flow.template.edit(entity?.sid);
+  const detailsPath = paths.flow.template.details(entity?.sid);
 
   const defaultValues = useMemo(
     () => ({
-      id: entity?.id,
+      sid: entity?.sid,
       name: entity?.name || '',
     }),
     [entity]

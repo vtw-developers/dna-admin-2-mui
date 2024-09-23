@@ -45,14 +45,17 @@ export function FlowTemplateListView() {
 
   const handleViewRow = useCallback(
     (id: string) => {
+      console.log(id);
       router.push(paths.flow.template.details(id));
     },
     [router]
   );
 
+  const getRowId = (row: FlowTemplate) => row.sid || 0;
+
   const columns: GridColDef[] = [
     {
-      field: 'id',
+      field: 'sid',
       headerName: 'ID',
       minWidth: 200,
     },
@@ -66,7 +69,7 @@ export function FlowTemplateListView() {
           noWrap
           color="inherit"
           variant="subtitle2"
-          onClick={() => handleViewRow(params.row.id)}
+          onClick={() => handleViewRow(params.row.sid)}
           sx={{ cursor: 'pointer' }}
         >
           {params.row.name}
@@ -116,6 +119,7 @@ export function FlowTemplateListView() {
         <DataGrid
           disableRowSelectionOnClick
           rows={tableData}
+          getRowId={getRowId}
           columns={columns}
           loading={loading}
           pageSizeOptions={[5, 10, 25]}
