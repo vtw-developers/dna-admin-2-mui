@@ -12,6 +12,8 @@ type DialogProps = {
   onChange: any;
 };
 
+const NAME_WIDTH = 300;
+
 export const SchemaEditor = () => {
   const [data, setData] = useState({
     name: 'root',
@@ -70,7 +72,7 @@ export const SchemaEditor = () => {
             <TextField
               value={child.name}
               size="small"
-              style={{ width: 200 - child.depth * 12 }}
+              style={{ width: NAME_WIDTH - child.depth * 24 }}
               onChange={(e) => onChange(e, child)}
             />
             <FormControl style={{ width: 200 }}>
@@ -117,7 +119,7 @@ export const SchemaEditor = () => {
         <TextField
           value={data.name}
           size="small"
-          style={{ width: 200 }}
+          style={{ width: NAME_WIDTH - 24 }}
           onChange={(e) => onChange(e, data)}
           disabled
         />
