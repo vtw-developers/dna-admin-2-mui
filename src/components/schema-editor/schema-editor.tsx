@@ -62,33 +62,9 @@ export const SchemaEditor = () => {
     setData({ ...data });
   };
 
-  return (
-    <div>
-      <Stack direction="row" spacing={2} sx={{ px: 3, pt: 1 }}>
-        <TextField
-          value={data.name}
-          size="small"
-          style={{ width: 200 }}
-          onChange={(e) => onChange(e, data)}
-          disabled
-        />
-        <FormControl style={{ width: 200 }}>
-          {/* <InputLabel id="demo-simple-select-label">Type</InputLabel> */}
-          <Select
-            defaultValue="String"
-            size="small"
-            displayEmpty
-            onChange={(e) => onChangeType(e, data)}
-          >
-            <MenuItem value="String">String</MenuItem>
-            <MenuItem value="Integer">Integer</MenuItem>
-            <MenuItem value="Object">Object</MenuItem>
-            <MenuItem value="Array">Array</MenuItem>
-          </Select>
-        </FormControl>
-        {data.type === 'Object' && <Button onClick={() => addRow(data)}>추가</Button>}
-      </Stack>
-      {data.children.map((child) => (
+  const recursive = (row) => (
+    <>
+      {row.children.map((child) => (
         <>
           <Stack direction="row" spacing={2} sx={{ px: 3 * child.depth, pt: 1 }}>
             <TextField
@@ -129,51 +105,39 @@ export const SchemaEditor = () => {
               <Button onClick={() => addRow(child)}>추가</Button>
             )}
           </Stack>
-          {child.children.map((grandChild) => (
-            <Stack direction="row" spacing={2} sx={{ px: 3 * grandChild.depth, pt: 1 }}>
-              <TextField
-                value={grandChild.name}
-                size="small"
-                style={{ width: 200 - grandChild.depth * 16 }}
-                onChange={(e) => onChange(e, grandChild)}
-              />
-              <FormControl style={{ width: 200 }}>
-                {/* <InputLabel id="demo-simple-select-label">Type</InputLabel> */}
-                <Select
-                  defaultValue="String"
-                  size="small"
-                  displayEmpty
-                  onChange={(e) => onChangeType(e, grandChild)}
-                >
-                  <MenuItem value="String">String</MenuItem>
-                  <MenuItem value="Integer">Integer</MenuItem>
-                  <MenuItem value="Object">Object</MenuItem>
-                  <MenuItem value="Array">Array</MenuItem>
-                </Select>
-              </FormControl>
-              {grandChild.type === 'Object' && (
-                <Button onClick={() => addRow(grandChild)}>추가</Button>
-              )}
-            </Stack>
-            /*                <Stack direction="row" spacing={2} sx={{ px: 6, pt: 1 }}>
-              <TextField
-                value={child.name}
-                size="small"
-                style={{ width: 176 }}
-                onChange={(e) => onChange(e, child)}
-              />
-            </Stack> */
-          ))}
+          {recursive(child)}
         </>
-        /*                <Stack direction="row" spacing={2} sx={{ px: 6, pt: 1 }}>
-          <TextField
-            value={child.name}
-            size="small"
-            style={{ width: 176 }}
-            onChange={(e) => onChange(e, child)}
-          />
-        </Stack> */
       ))}
+    </>
+  );
+
+  return (
+    <div>
+      <Stack direction="row" spacing={2} sx={{ px: 3, pt: 1 }}>
+        <TextField
+          value={data.name}
+          size="small"
+          style={{ width: 200 }}
+          onChange={(e) => onChange(e, data)}
+          disabled
+        />
+        <FormControl style={{ width: 200 }}>
+          {/* <InputLabel id="demo-simple-select-label">Type</InputLabel> */}
+          <Select
+            defaultValue="String"
+            size="small"
+            displayEmpty
+            onChange={(e) => onChangeType(e, data)}
+          >
+            <MenuItem value="String">String</MenuItem>
+            <MenuItem value="Integer">Integer</MenuItem>
+            <MenuItem value="Object">Object</MenuItem>
+            <MenuItem value="Array">Array</MenuItem>
+          </Select>
+        </FormControl>
+        {data.type === 'Object' && <Button onClick={() => addRow(data)}>추가</Button>}
+      </Stack>
+      {recursive(data)}
     </div>
   );
 };
