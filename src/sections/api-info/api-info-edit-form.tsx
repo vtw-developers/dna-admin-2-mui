@@ -21,6 +21,7 @@ import { Form, Field } from 'src/components/hook-form';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ParametersEditGrid } from './parameters-edit-grid';
 import { ConfirmDialog } from '../../components/custom-dialog';
+import { SchemaEditor } from '../../components/schema-editor/schema-editor';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 import { createApiInfo, deleteApiInfo, updateApiInfo } from '../../actions/api-info';
 import { ServiceGroupSearchBox } from '../../components/dna-form/dna-service-group-search-box';
@@ -284,6 +285,9 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
             initialRows={defaultValues.responseElements}
             onChange={(rows: any[]) => onParametersChanged(rows, 'responseElements')}
           />
+
+          <SchemaEditor />
+
           <DnaBottomButtons
             editing={editing}
             listPath={listPath}
