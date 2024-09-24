@@ -1,4 +1,5 @@
 import { z as zod } from 'zod';
+import { v4 as uuidv4 } from 'uuid';
 import { useForm } from 'react-hook-form';
 import { useMemo, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,6 +19,7 @@ import { Form, Field } from 'src/components/hook-form';
 
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
+import { ParametersEditGrid } from '../api-info/parameters-edit-grid';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 import {
   createFlowTemplate,
@@ -37,6 +39,7 @@ export const Schema = zod.object({
     .string()
     .min(1, { message: '게시판 이름를 입력하세요.' })
     .max(50, { message: '50자 이내로 입력하세요.' }),
+  parameters: zod.any().array(),
 });
 
 // ----------------------------------------------------------------------
@@ -59,6 +62,11 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
     () => ({
       sid: entity?.sid,
       name: entity?.name || '',
+      parameters:
+        entity?.parameters.map((p) => {
+          p.id = uuidv4();
+          return p;
+        }) || [],
     }),
     [entity]
   );
@@ -131,11 +139,22 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
     </Card>
   );
 
+  const onParametersChanged = (rows: any[], key: string) => {
+    // @ts-ignore
+    setValue(key, [...rows]);
+  };
+
   return (
     <>
       <Form methods={methods} onSubmit={onSubmit}>
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
+          <ParametersEditGrid
+            title="요청 파라미터"
+            editing={editing}
+            initialRows={defaultValues.parameters}
+            onChange={(rows: any[]) => onParametersChanged(rows, 'parameters')}
+          />
           <DnaBottomButtons
             editing={editing}
             listPath={listPath}

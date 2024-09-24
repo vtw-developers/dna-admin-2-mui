@@ -1,10 +1,9 @@
 import type {
-  GridSlots,
   GridRowId,
   GridColDef,
   GridRowModel,
-  GridRowModesModel,
   GridEventListener,
+  GridRowModesModel,
 } from '@mui/x-data-grid';
 
 import { z as zod } from 'zod';
@@ -12,22 +11,21 @@ import { v4 as uuidv4 } from 'uuid';
 import { useMemo, useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
+import { Select } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
 import CardHeader from '@mui/material/CardHeader';
-import {
-  DataGrid,
-  GridRowModes,
-  GridToolbarContainer,
-  GridRowEditStopReasons,
-} from '@mui/x-data-grid';
+import IconButton from '@mui/material/IconButton';
+import { DataGrid, GridRowModes, GridRowEditStopReasons } from '@mui/x-data-grid';
 
 import { Iconify } from '../../components/iconify';
 
 const yaml = require('js-yaml');
 
 // ----------------------------------------------------------------------
+const types = ['String', 'Integer', 'Number', 'Object', 'Array', 'Boolean'];
 
 export type SchemaType = zod.infer<typeof Schema>;
 
@@ -91,6 +89,38 @@ export function ParametersEditGrid({ title, editing, initialRows, onChange }: Pr
       field: 'type',
       headerName: '유형',
       flex: 1,
+      renderCell: (params) => {
+        const isInEditMode = rowModesModel[params.row.id]?.mode === GridRowModes.Edit;
+        if (isInEditMode) {
+          return (
+            <Select
+              value={params.row.type}
+              onChange={handleRow('type', params.row.id)}
+              readOnly={!editing}
+              variant="standard"
+              sx={{ width: '100%', border: 'none' }}
+            >
+              {types.map((e, index) => (
+                <MenuItem key={index} value={e}>
+                  {e}
+                </MenuItem>
+              ))}
+            </Select>
+          );
+        }
+        return <>{params.row.type}</>;
+      },
+    },
+    {
+      field: 'description',
+      headerName: '설명',
+      flex: 1,
+      editable: editing,
+    },
+    {
+      field: 'defaultValue',
+      headerName: '기본값',
+      flex: 1,
       editable: editing,
     },
     {
@@ -104,33 +134,39 @@ export function ParametersEditGrid({ title, editing, initialRows, onChange }: Pr
         if (isInEditMode) {
           return (
             <>
-              <Button
-                onClick={handleSaveClick(id)}
-                startIcon={<Iconify icon="mingcute:save-2-line" />}
-              />
-              <Button
-                onClick={handleCancelClick(id)}
-                startIcon={<Iconify icon="mingcute:close-line" />}
-              />
+              <IconButton onClick={handleSaveClick(id)}>
+                <Iconify icon="mingcute:save-2-line" />
+              </IconButton>
+              <IconButton onClick={handleCancelClick(id)}>
+                <Iconify icon="mingcute:close-line" />
+              </IconButton>
             </>
           );
         }
 
         return (
           <>
-            <Button
-              onClick={handleEditClick(id)}
-              startIcon={<Iconify icon="mingcute:edit-line" />}
-            />
-            <Button
-              onClick={handleDeleteClick(id)}
-              startIcon={<Iconify icon="mingcute:delete-2-line" />}
-            />
+            <IconButton onClick={handleEditClick(id)}>
+              <Iconify icon="mingcute:edit-line" />
+            </IconButton>
+            <IconButton onClick={handleDeleteClick(id)}>
+              <Iconify icon="mingcute:delete-2-line" />
+            </IconButton>
           </>
         );
       },
     },
   ];
+  const handleRow = (field: string, id: string) => (event: any) => {
+    setRows(
+      rows.map((row) => {
+        if (row.id === id) {
+          return { ...row, [field]: event.target.value };
+        }
+        return row;
+      })
+    );
+  };
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -172,27 +208,13 @@ export function ParametersEditGrid({ title, editing, initialRows, onChange }: Pr
     setRowModesModel(newRowModesModel);
   };
 
-  const EditToolbar = () => {
-    const handleClick = () => {
-      const id = uuidv4();
-      setRows((oldRows) => [...oldRows, { id, name: '', type: 'String', isNew: true }]);
-      setRowModesModel((oldModel) => ({
-        ...oldModel,
-        [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-      }));
-    };
-
-    return (
-      <GridToolbarContainer>
-        <Button
-          color="primary"
-          onClick={handleClick}
-          startIcon={<Iconify icon="mingcute:add-line" />}
-        >
-          추가
-        </Button>
-      </GridToolbarContainer>
-    );
+  const handleClick = () => {
+    const id = uuidv4();
+    setRows((oldRows) => [...oldRows, { id, name: '', type: 'String', isNew: true }]);
+    setRowModesModel((oldModel) => ({
+      ...oldModel,
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+    }));
   };
 
   return (
@@ -200,6 +222,17 @@ export function ParametersEditGrid({ title, editing, initialRows, onChange }: Pr
       <CardHeader title={title} subheader="" sx={{ mb: 3 }} />
       <Divider />
       <Stack spacing={3} sx={{ p: 3 }}>
+        {editing && (
+          <Button
+            color="primary"
+            variant="outlined"
+            onClick={handleClick}
+            startIcon={<Iconify icon="mingcute:add-line" />}
+            sx={{ width: '100px' }}
+          >
+            추가
+          </Button>
+        )}
         <DataGrid
           columns={columns}
           rows={rows}
@@ -213,13 +246,6 @@ export function ParametersEditGrid({ title, editing, initialRows, onChange }: Pr
           disableColumnSorting
           autoHeight
           localeText={{ noRowsLabel: '데이터 없음' }}
-          slots={
-            editing
-              ? {
-                  toolbar: EditToolbar as GridSlots['toolbar'],
-                }
-              : {}
-          }
           slotProps={
             editing
               ? {
