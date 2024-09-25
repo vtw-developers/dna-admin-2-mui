@@ -1,14 +1,18 @@
+import type { ChangeEvent } from 'react';
+
 import { z as zod } from 'zod';
 import { useForm } from 'react-hook-form';
 import { useMemo, useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import Box from '@mui/material/Box';
 import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
 
 import { paths } from 'src/routes/paths';
@@ -18,8 +22,8 @@ import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
 import { useBoolean } from '../../hooks/use-boolean';
-import { getFlowTemplates } from '../../actions/flow-template';
 import { ConfirmDialog } from '../../components/custom-dialog';
+import { getFlowTemplate, getFlowTemplates } from '../../actions/flow-template';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 import {
   createTemplatedFlow,
@@ -40,6 +44,7 @@ export const Schema = zod.object({
     .string()
     .min(1, { message: '게시판 이름를 입력하세요.' })
     .max(50, { message: '50자 이내로 입력하세요.' }),
+  parameters: zod.any().array(),
   templateSid: zod.number().min(1, { message: '템플릿을 선택하세요.' }),
 });
 
@@ -59,6 +64,7 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
   const editPath = paths.flow.templatedFlow.edit(entity?.id);
   const detailsPath = paths.flow.templatedFlow.details(entity?.id);
   const [templates, setTemplates] = useState<FlowTemplate[]>([]);
+  const [template, setTemplate] = useState<FlowTemplate>();
 
   useEffect(() => {
     getFlowTemplates().then((e) => {
@@ -70,6 +76,7 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
     () => ({
       id: entity?.id,
       name: entity?.name || '',
+      parameters: entity?.parameters || [],
       templateSid: entity?.templateSid || 0,
     }),
     [entity]
@@ -95,6 +102,12 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
       reset(defaultValues);
     }
   }, [entity, defaultValues, reset]);
+
+  useEffect(() => {
+    getFlowTemplate(values.templateSid).then((e) => {
+      setTemplate({ ...e });
+    });
+  }, [values.templateSid]);
 
   const onSubmit = handleSubmit(async (data) => {
     // data.requestParameters = rows;
@@ -126,12 +139,27 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
     router.push(listPath);
   });
 
+  const onParametersChanged = (e: FlowTemplate) => (event: ChangeEvent<HTMLInputElement>) => {
+    if (!values.parameters.find((f) => f.name === e.name)) {
+      values.parameters.push({ name: e.name, value: event.target.value });
+    }
+    const parameters = values.parameters.map((v) => {
+      if (v.name === e.name) {
+        v.value = event.target.value;
+      }
+      return v;
+    });
+
+    // @ts-ignore
+    setValue('parameters', [...parameters]);
+  };
+
   const renderDetails = (
     <Card>
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
       <Divider />
       <Grid container spacing={3} sx={{ p: 3 }}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
           <Field.Text
             name="name"
             label="플로우 명"
@@ -139,7 +167,7 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
             inputProps={{ readOnly: editMode === 'details' }}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
           <Field.Select
             variant="outlined"
             name="templateSid"
@@ -152,6 +180,39 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
               </MenuItem>
             ))}
           </Field.Select>
+        </Grid>
+        <Grid item xs={12} md={12}>
+          {template && (
+            <Card>
+              <CardHeader title="파라미터" sx={{ mb: 2 }} />
+              <Divider sx={{ borderStyle: 'dashed' }} />
+              {template.parameters.map((e) => (
+                <Grid container spacing={1} sx={{ p: 1 }}>
+                  <Grid item xs={12} md={2}>
+                    <Box sx={{ px: 2, py: 1, fontWeight: 'bold' }}>{e.name}</Box>
+                    <Box
+                      sx={{ px: 2, color: 'var(--palette-text-secondary)', fontStyle: 'italic' }}
+                    >
+                      {e.type}
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} md={10}>
+                    <Box sx={{ py: 1, color: 'var(--palette-text-secondary)' }}>
+                      {e.description}
+                    </Box>
+                    <TextField
+                      fullWidth
+                      inputProps={{ readOnly: editMode === 'details' }}
+                      defaultValue={
+                        values.parameters.find((f) => f.name === e.name)?.value || e.defaultValue
+                      }
+                      onChange={onParametersChanged(e)}
+                    />
+                  </Grid>
+                </Grid>
+              ))}
+            </Card>
+          )}
         </Grid>
       </Grid>
     </Card>
