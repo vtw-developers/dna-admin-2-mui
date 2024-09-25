@@ -2,7 +2,7 @@ import { z as zod } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMemo, useEffect, useCallback } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -155,9 +155,10 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
 
   const onParametersChanged = useCallback((rows: any[], key: string) => {
     // @ts-ignore
-    setValue(key, [...rows]);
+    setValue(key, rows);
   }, []);
 
+  const [importedParameters, setImportedParameters] = useState(undefined);
   const importTemplate = (e: any) => {
     console.log('import');
     const { files } = e.target;
@@ -172,10 +173,11 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
       console.log(schemaYaml);
       await importFlowTemplate({ yaml: schemaYaml }).then((result) => {
         console.log(result.parameters);
-        reset(result);
-        // setValue('name', result.name);
-        // setValue('templateId', result.templateId);
-        // setValue('parameters', [...result.parameters]);
+        // reset(result);
+        setValue('name', result.name);
+        setValue('templateId', result.templateId);
+        setImportedParameters(result.parameters);
+        // setValue('parameters', result.parameters);
       });
     };
     fileReader.readAsText(file);
@@ -211,6 +213,7 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
             title="템플릿 파라미터"
             editing={editing}
             initialRows={values.parameters}
+            importedRows={importedParameters}
             onChange={(rows: any[]) => onParametersChanged(rows, 'parameters')}
           />
           <DnaBottomButtons

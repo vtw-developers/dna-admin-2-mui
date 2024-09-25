@@ -51,25 +51,29 @@ type Props = {
   title: string;
   editing: boolean;
   initialRows: any[];
+  importedRows: any[];
   onChange: (rows: any[]) => void;
 };
 
-export function ParametersEditGrid({ title, editing, initialRows, onChange }: Props) {
+export function ParametersEditGrid({ title, editing, initialRows, importedRows, onChange }: Props) {
   const [rows, setRows] = useState(initialRows);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
+  console.log(initialRows);
   useEffect(() => {
-    setRows(
-      initialRows.map((row) => {
-        row.id = uuidv4();
-        return row;
-      })
-    );
-  }, [initialRows]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    importedRows &&
+      setRows(
+        importedRows.map((row) => {
+          row.id = uuidv4();
+          return row;
+        })
+      );
+  }, [importedRows]);
 
   useEffect(() => {
     console.log('rows');
-    // onChange(rows);
+    onChange(rows);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows]);
 
