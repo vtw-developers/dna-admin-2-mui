@@ -84,3 +84,9 @@ export const updateTemplatedFlow = async (params: TemplatedFlow) =>
 
 export const deleteTemplatedFlow = async (params: TemplatedFlow) =>
   (await axiosInstance.post(`${PATH_PREFIX}/delete`, params)).data;
+
+export const importFlow = async (params: any) =>
+  (await axiosInstance.post(`${PATH_PREFIX}/import`, params)).data;
+
+export const exportFlow = async (params: any) =>
+  (await axiosInstance.post(`${PATH_PREFIX}/export`, params)).data;

@@ -14,3 +14,13 @@ export type TemplatedFlow = {
 export const defaultTemplatedFlowFilters: TemplatedFlowFilters = {
   name: '',
 };
+
+export type DataSchema = {
+  id: string;
+  name: string;
+  type: string;
+  arrayType?: string;
+  description: string;
+  depth: number;
+  children: DataSchema[];
+};

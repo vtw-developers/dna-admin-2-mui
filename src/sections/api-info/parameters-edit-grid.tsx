@@ -59,7 +59,17 @@ export function ParametersEditGrid({ title, editing, initialRows, onChange }: Pr
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
   useEffect(() => {
-    onChange(rows);
+    setRows(
+      initialRows.map((row) => {
+        row.id = uuidv4();
+        return row;
+      })
+    );
+  }, [initialRows]);
+
+  useEffect(() => {
+    console.log('rows');
+    // onChange(rows);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows]);
 

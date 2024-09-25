@@ -1,14 +1,14 @@
 import { z as zod } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import { useForm } from 'react-hook-form';
-import { useMemo, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMemo, useEffect, useCallback } from 'react';
 
-import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import { Grid, styled } from '@mui/material';
 import CardHeader from '@mui/material/CardHeader';
 
 import { paths } from 'src/routes/paths';
@@ -24,6 +24,7 @@ import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 import {
   createFlowTemplate,
   deleteFlowTemplate,
+  importFlowTemplate,
   updateFlowTemplate,
 } from '../../actions/flow-template';
 
@@ -37,8 +38,12 @@ export const Schema = zod.object({
   sid: zod.number().optional(),
   name: zod
     .string()
-    .min(1, { message: '게시판 이름를 입력하세요.' })
-    .max(50, { message: '50자 이내로 입력하세요.' }),
+    .min(1, { message: '템플릿명을 입력하세요.' })
+    .max(50, { message: '100자 이내로 입력하세요.' }),
+  templateId: zod
+    .string()
+    .min(1, { message: '템플릿 ID를 입력하세요.' })
+    .max(50, { message: '100자 이내로 입력하세요.' }),
   parameters: zod.any().array(),
 });
 
@@ -62,6 +67,7 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
     () => ({
       sid: entity?.sid,
       name: entity?.name || '',
+      templateId: entity?.templateId || '',
       parameters:
         entity?.parameters.map((p) => {
           p.id = uuidv4();
@@ -127,10 +133,18 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
       <Divider />
       <Grid container spacing={3} sx={{ p: 3 }}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
           <Field.Text
             name="name"
-            label="템플릿 명"
+            label="템플릿 명 (한글)"
+            variant="outlined"
+            inputProps={{ readOnly: editMode === 'details' }}
+          />
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <Field.Text
+            name="templateId"
+            label="템플릿 ID (영문)"
             variant="outlined"
             inputProps={{ readOnly: editMode === 'details' }}
           />
@@ -139,20 +153,64 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
     </Card>
   );
 
-  const onParametersChanged = (rows: any[], key: string) => {
+  const onParametersChanged = useCallback((rows: any[], key: string) => {
     // @ts-ignore
     setValue(key, [...rows]);
+  }, []);
+
+  const importTemplate = (e: any) => {
+    console.log('import');
+    const { files } = e.target;
+    if (files.length < 1) {
+      return;
+    }
+    const file = files[0];
+    const fileReader = new FileReader();
+    fileReader.onload = async (f) => {
+      console.log(f);
+      const schemaYaml = f.target?.result as string;
+      console.log(schemaYaml);
+      await importFlowTemplate({ yaml: schemaYaml }).then((result) => {
+        console.log(result.parameters);
+        reset(result);
+        // setValue('name', result.name);
+        // setValue('templateId', result.templateId);
+        // setValue('parameters', [...result.parameters]);
+      });
+    };
+    fileReader.readAsText(file);
   };
+
+  console.log(defaultValues);
+
+  const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
 
   return (
     <>
       <Form methods={methods} onSubmit={onSubmit}>
+        <Stack direction="row" spacing={2} sx={{ px: 3, pb: 3 }}>
+          <Button variant="outlined" component="label">
+            가져오기
+            <VisuallyHiddenInput type="file" onChange={importTemplate} />
+          </Button>
+          <Button variant="outlined">내보내기</Button>
+        </Stack>
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
           <ParametersEditGrid
-            title="요청 파라미터"
+            title="템플릿 파라미터"
             editing={editing}
-            initialRows={defaultValues.parameters}
+            initialRows={values.parameters}
             onChange={(rows: any[]) => onParametersChanged(rows, 'parameters')}
           />
           <DnaBottomButtons
