@@ -64,7 +64,7 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
   const editPath = paths.flow.templatedFlow.edit(entity?.id);
   const detailsPath = paths.flow.templatedFlow.details(entity?.id);
   const [templates, setTemplates] = useState<FlowTemplate[]>([]);
-  const [template, setTemplate] = useState<FlowTemplate>();
+  const [currentTemplate, setCurrentTemplate] = useState<FlowTemplate>();
 
   useEffect(() => {
     getFlowTemplates().then((e) => {
@@ -105,7 +105,7 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
 
   useEffect(() => {
     getFlowTemplate(values.templateSid).then((e) => {
-      setTemplate({ ...e });
+      setCurrentTemplate({ ...e });
     });
   }, [values.templateSid]);
 
@@ -154,6 +154,40 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
     setValue('parameters', [...parameters]);
   };
 
+  const parametersDetails = (
+    <Grid item xs={12} md={12}>
+      {currentTemplate && (
+        <Card sx={{ pb: 3 }}>
+          <CardHeader title="파라미터" sx={{ mb: 2 }} />
+          <Divider sx={{ borderStyle: 'dashed' }} />
+          {currentTemplate.parameters.map((template, index) => (
+            <Grid container sx={{ p: 1 }} key={index}>
+              <Grid item xs={12} md={2}>
+                <Box sx={{ px: 2, py: 1, fontWeight: 'bold' }}>{template.name}</Box>
+                <Box sx={{ px: 2, color: 'var(--palette-text-secondary)', fontStyle: 'italic' }}>
+                  {template.type}
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={10}>
+                <Box sx={{ py: 1, color: 'var(--palette-text-secondary)' }}>
+                  {template.description} {template.defaultValue}
+                </Box>
+                <TextField
+                  fullWidth
+                  inputProps={{ readOnly: editMode === 'details' }}
+                  defaultValue={
+                    values.parameters.find((f) => f.name === template.name)?.value ||
+                    template.defaultValue
+                  }
+                  onChange={onParametersChanged(template)}
+                />
+              </Grid>
+            </Grid>
+          ))}
+        </Card>
+      )}
+    </Grid>
+  );
   const renderDetails = (
     <Card>
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
@@ -181,39 +215,6 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
             ))}
           </Field.Select>
         </Grid>
-        <Grid item xs={12} md={12}>
-          {template && (
-            <Card>
-              <CardHeader title="파라미터" sx={{ mb: 2 }} />
-              <Divider sx={{ borderStyle: 'dashed' }} />
-              {template.parameters.map((e) => (
-                <Grid container spacing={1} sx={{ p: 1 }}>
-                  <Grid item xs={12} md={2}>
-                    <Box sx={{ px: 2, py: 1, fontWeight: 'bold' }}>{e.name}</Box>
-                    <Box
-                      sx={{ px: 2, color: 'var(--palette-text-secondary)', fontStyle: 'italic' }}
-                    >
-                      {e.type}
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} md={10}>
-                    <Box sx={{ py: 1, color: 'var(--palette-text-secondary)' }}>
-                      {e.description}
-                    </Box>
-                    <TextField
-                      fullWidth
-                      inputProps={{ readOnly: editMode === 'details' }}
-                      defaultValue={
-                        values.parameters.find((f) => f.name === e.name)?.value || e.defaultValue
-                      }
-                      onChange={onParametersChanged(e)}
-                    />
-                  </Grid>
-                </Grid>
-              ))}
-            </Card>
-          )}
-        </Grid>
       </Grid>
     </Card>
   );
@@ -223,6 +224,7 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
       <Form methods={methods} onSubmit={onSubmit}>
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
+          {parametersDetails}
           <DnaBottomButtons
             editing={editing}
             listPath={listPath}
