@@ -30,6 +30,8 @@ import { defaultPagination } from '../../../utils/pagination';
 import { TemplatedFlowFilter } from '../templated-flow-filter';
 import { DnaPagination } from '../../../components/dna-pagination';
 
+import type { FlowTemplate } from '../../../types/flow-template';
+
 export function TemplatedFlowListView() {
   const router = useRouter();
 
@@ -48,15 +50,18 @@ export function TemplatedFlowListView() {
   }, [data, sortModel, pagination]);
 
   const handleViewRow = useCallback(
-    (id: string) => {
-      router.push(paths.flow.templatedFlow.details(id));
+    (sid: string) => {
+      console.log(sid);
+      router.push(paths.flow.templatedFlow.details(sid));
     },
     [router]
   );
 
+  const getRowId = (row: FlowTemplate) => row.sid || 0;
+
   const columns: GridColDef[] = [
     {
-      field: 'id',
+      field: 'sid',
       headerName: 'ID',
       minWidth: 200,
     },
@@ -70,7 +75,7 @@ export function TemplatedFlowListView() {
           noWrap
           color="inherit"
           variant="subtitle2"
-          onClick={() => handleViewRow(params.row.id)}
+          onClick={() => handleViewRow(params.row.sid)}
           sx={{ cursor: 'pointer' }}
         >
           {params.row.name}
@@ -125,6 +130,7 @@ export function TemplatedFlowListView() {
       >
         <DataGrid
           disableRowSelectionOnClick
+          getRowId={getRowId}
           rows={tableData}
           columns={columns}
           loading={loading}

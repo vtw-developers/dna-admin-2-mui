@@ -24,6 +24,7 @@ import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 import {
   createFlowTemplate,
   deleteFlowTemplate,
+  exportFlowTemplate,
   importFlowTemplate,
   updateFlowTemplate,
 } from '../../actions/flow-template';
@@ -171,14 +172,10 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
       console.log(f);
       const schemaYaml = f.target?.result as string;
       console.log(schemaYaml);
-      await importFlowTemplate({ yaml: schemaYaml }).then((result) => {
-        console.log(result.parameters);
-        // reset(result);
-        setValue('name', result.name);
-        setValue('templateId', result.templateId);
-        setImportedParameters(result.parameters);
-        // setValue('parameters', result.parameters);
-      });
+      const result = await importFlowTemplate({ yaml: schemaYaml });
+      setValue('name', result.name);
+      setValue('templateId', result.templateId);
+      setImportedParameters(result.parameters);
     };
     fileReader.readAsText(file);
   };
@@ -197,6 +194,16 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
     width: 1,
   });
 
+  const exportTemplate = async () => {
+    const { yaml } = await exportFlowTemplate({ sid: entity?.sid });
+    const element = document.createElement('a');
+    const file = new Blob([yaml], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = `${entity?.templateId}.template.yaml`;
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  };
+
   return (
     <>
       <Form methods={methods} onSubmit={onSubmit}>
@@ -205,7 +212,9 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
             가져오기
             <VisuallyHiddenInput type="file" onChange={importTemplate} />
           </Button>
-          <Button variant="outlined">내보내기</Button>
+          <Button variant="outlined" onClick={exportTemplate}>
+            내보내기
+          </Button>
         </Stack>
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}

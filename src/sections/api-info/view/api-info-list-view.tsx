@@ -44,8 +44,8 @@ export function ApiInfoListView() {
   }, [data, sortModel, pagination]);
 
   const handleViewRow = useCallback(
-    (id: string) => {
-      router.push(paths.manage.api.details(id));
+    (sid: string) => {
+      router.push(paths.manage.api.details(sid));
     },
     [router]
   );
@@ -66,7 +66,7 @@ export function ApiInfoListView() {
           noWrap
           color="inherit"
           variant="subtitle2"
-          onClick={() => handleViewRow(params.row.id)}
+          onClick={() => handleViewRow(params.row.sid)}
           sx={{ cursor: 'pointer' }}
         >
           {params.row.name}

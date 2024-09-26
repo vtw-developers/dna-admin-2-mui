@@ -69,10 +69,10 @@ export function useGetTemplatedFlows(
   return memoizedValue;
 }
 
-export const getTemplatedFlow = async (id: string | number) =>
+export const getTemplatedFlow = async (sid: string | number) =>
   (
     await axiosInstance.get(`${PATH_PREFIX}/find`, {
-      params: { id },
+      params: { sid },
     })
   ).data;
 

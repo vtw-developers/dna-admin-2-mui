@@ -39,11 +39,18 @@ import type { TemplatedFlow } from '../../types/templated-flow';
 export type SchemaType = zod.infer<typeof Schema>;
 
 export const Schema = zod.object({
-  id: zod.number().optional(),
+  sid: zod.number().optional(),
+  flowId: zod
+    .string()
+    .min(1, { message: '플로우ID를 입력하세요.' })
+    .max(100, { message: '100자 이내로 입력하세요.' }),
   name: zod
     .string()
-    .min(1, { message: '게시판 이름를 입력하세요.' })
-    .max(50, { message: '50자 이내로 입력하세요.' }),
+    .min(1, { message: '플로우명을 입력하세요.' })
+    .max(100, { message: '100자 이내로 입력하세요.' }),
+  httpMethod: zod.string().min(1, { message: 'HTTP Method 를 입력하세요.' }),
+  url: zod.string().min(1, { message: 'URL을 입력하세요.' }),
+
   parameters: zod.any().array(),
   templateSid: zod.number().min(1, { message: '템플릿을 선택하세요.' }),
 });
@@ -61,8 +68,8 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
   const confirm = useBoolean();
 
   const listPath = paths.flow.templatedFlow.root;
-  const editPath = paths.flow.templatedFlow.edit(entity?.id);
-  const detailsPath = paths.flow.templatedFlow.details(entity?.id);
+  const editPath = paths.flow.templatedFlow.edit(entity?.sid);
+  const detailsPath = paths.flow.templatedFlow.details(entity?.sid);
   const [templates, setTemplates] = useState<FlowTemplate[]>([]);
   const [currentTemplate, setCurrentTemplate] = useState<FlowTemplate>();
 
@@ -74,8 +81,10 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
 
   const defaultValues = useMemo(
     () => ({
-      id: entity?.id,
+      sid: entity?.sid,
       name: entity?.name || '',
+      httpMethod: entity?.httpMethod || 'GET',
+      url: entity?.url || '',
       parameters: entity?.parameters || [],
       templateSid: entity?.templateSid || 0,
     }),
@@ -193,10 +202,40 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
       <Divider />
       <Grid container spacing={3} sx={{ p: 3 }}>
-        <Grid item xs={12} md={12}>
+        <Grid item xs={12} md={6}>
+          <Field.Text
+            name="flowId"
+            label="플로우 ID"
+            variant="outlined"
+            inputProps={{ readOnly: editMode === 'details' }}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
           <Field.Text
             name="name"
             label="플로우 명"
+            variant="outlined"
+            inputProps={{ readOnly: editMode === 'details' }}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Field.Select
+            variant="outlined"
+            name="httpMethod"
+            label="HTTP Method"
+            inputProps={{ readOnly: editMode === 'details' }}
+          >
+            {['GET', 'POST'].map((option) => (
+              <MenuItem key={option} value={option} sx={{ textTransform: 'capitalize' }}>
+                {option}
+              </MenuItem>
+            ))}
+          </Field.Select>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Field.Text
+            name="url"
+            label="URL"
             variant="outlined"
             inputProps={{ readOnly: editMode === 'details' }}
           />

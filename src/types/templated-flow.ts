@@ -5,8 +5,13 @@ export type TemplatedFlowFilters = {
 };
 
 export type TemplatedFlow = {
-  id?: number;
+  sid?: number;
+  flowId: string;
   name: string;
+  httpMethod: string;
+  url: string;
+  requestParameters: any[];
+  responseBody: any;
   parameters: any[];
   templateSid: number;
 };
