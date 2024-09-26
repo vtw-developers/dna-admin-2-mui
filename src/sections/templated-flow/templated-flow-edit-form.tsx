@@ -27,17 +27,13 @@ import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
 import { ParametersEditGrid } from '../api-info/parameters-edit-grid';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
+import { getFlowTemplate, getFlowTemplates, exportFlowTemplate } from '../../actions/flow-template';
 import {
   createTemplatedFlow,
   deleteTemplatedFlow,
+  importTemplatedFlow,
   updateTemplatedFlow,
 } from '../../actions/templated-flow';
-import {
-  getFlowTemplate,
-  getFlowTemplates,
-  exportFlowTemplate,
-  importFlowTemplate,
-} from '../../actions/flow-template';
 
 import type { FlowTemplate } from '../../types/flow-template';
 import type { TemplatedFlow } from '../../types/templated-flow';
@@ -216,7 +212,7 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
                 <TextField
                   fullWidth
                   inputProps={{ readOnly: editMode === 'details' }}
-                  defaultValue={
+                  value={
                     values.parameters.find((f) => f.name === template.name)?.value ||
                     template.defaultValue
                   }
@@ -290,6 +286,10 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
     </Card>
   );
 
+  const [importedRequsetParameters, setImportedRequsetParameters] = useState(undefined);
+  const [importedResponseBody, setImportedResponseBody] = useState(undefined);
+  const [importedTemplateParameters, setImportedTemplateParameters] = useState(undefined);
+
   const importTemplate = (e: any) => {
     console.log('import');
     const { files } = e.target;
@@ -302,10 +302,18 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
       console.log(f);
       const schemaYaml = f.target?.result as string;
       console.log(schemaYaml);
-      const result = await importFlowTemplate({ yaml: schemaYaml });
+      const result = await importTemplatedFlow({ yaml: schemaYaml });
+      console.log(result);
+      setValue('flowId', result.flowId);
       setValue('name', result.name);
-      setValue('templateId', result.templateId);
-      setImportedParameters(result.parameters);
+      setValue('httpMethod', result.httpMethod);
+      setValue('url', result.url);
+      setValue('templateSid', result.templateSid);
+
+      setImportedRequsetParameters(result.requestParameters);
+      setImportedResponseBody(result.responseBody);
+      setImportedTemplateParameters(result.parameters);
+      setValue('parameters', result.parameters);
     };
     fileReader.readAsText(file);
   };
@@ -353,11 +361,12 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
             editing={editing}
             initialRows={values.requestParameters}
             onChange={(rows: any[]) => onParametersChanged(rows, 'requestParameters')}
-            importedRows={undefined}
+            importedRows={importedRequsetParameters}
           />
           <SchemaEditor
             title="응답 항목"
             initialData={values.responseBody}
+            importedData={importedResponseBody}
             onChange={(data: any) => onParametersChanged(data, 'responseBody')}
           />
           {parametersDetails}

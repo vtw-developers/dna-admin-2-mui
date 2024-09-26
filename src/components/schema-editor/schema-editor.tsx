@@ -22,10 +22,11 @@ const NAME_WIDTH = 340;
 type Props = {
   title: string;
   initialData: any;
+  importedData?: any;
   onChange: (data: DataSchema) => void;
 };
 
-export const SchemaEditor = ({ title, initialData, onChange }: Props) => {
+export const SchemaEditor = ({ title, initialData, onChange, importedData }: Props) => {
   console.log(initialData);
   const [data, setData] = useState(initialData);
 
@@ -33,6 +34,11 @@ export const SchemaEditor = ({ title, initialData, onChange }: Props) => {
     console.log(data);
     onChange(data);
   }, [data]);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    importedData && setData(importedData);
+  }, [importedData]);
 
   const onChangeName = (event: ChangeEvent<HTMLInputElement>, row: DataSchema) => {
     console.log(data);

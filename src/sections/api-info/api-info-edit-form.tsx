@@ -21,7 +21,6 @@ import { Form, Field } from 'src/components/hook-form';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ParametersEditGrid } from './parameters-edit-grid';
 import { ConfirmDialog } from '../../components/custom-dialog';
-import { SchemaEditor } from '../../components/schema-editor/schema-editor';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 import { createApiInfo, deleteApiInfo, updateApiInfo } from '../../actions/api-info';
 import { ServiceGroupSearchBox } from '../../components/dna-form/dna-service-group-search-box';
@@ -48,7 +47,6 @@ export const Schema = zod.object({
   flowMetaYaml: zod.string(),
   requestParameters: zod.any().array(),
   responseElements: zod.any().array(),
-  responseBody: zod.any(),
 });
 
 // ----------------------------------------------------------------------
@@ -95,7 +93,6 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
           p.id = uuidv4();
           return p;
         }) || [],
-      responseBody: entity?.responseBody || initialData,
     }),
     [entity]
   );
@@ -303,9 +300,6 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
             initialRows={defaultValues.responseElements}
             onChange={(rows: any[]) => onParametersChanged(rows, 'responseElements')}
           />
-
-          <SchemaEditor initialData={defaultValues.responseBody} onChange={onChangeSchema} />
-
           <DnaBottomButtons
             editing={editing}
             listPath={listPath}
