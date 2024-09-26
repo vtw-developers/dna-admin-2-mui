@@ -1,8 +1,8 @@
 import { z as zod } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import { useForm } from 'react-hook-form';
+import { useMemo, useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMemo, useState, useEffect, useCallback } from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -154,10 +154,10 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
     </Card>
   );
 
-  const onParametersChanged = useCallback((rows: any[], key: string) => {
+  const onParametersChanged = (rows: any[], key: string) => {
     // @ts-ignore
     setValue(key, rows);
-  }, []);
+  };
 
   const [importedParameters, setImportedParameters] = useState(undefined);
   const importTemplate = (e: any) => {

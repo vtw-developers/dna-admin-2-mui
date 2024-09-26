@@ -51,7 +51,7 @@ type Props = {
   title: string;
   editing: boolean;
   initialRows: any[];
-  importedRows: any;
+  importedRows?: any;
   onChange: (rows: any[]) => void;
 };
 

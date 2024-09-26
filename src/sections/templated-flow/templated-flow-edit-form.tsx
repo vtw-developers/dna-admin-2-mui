@@ -1,16 +1,17 @@
 import type { ChangeEvent } from 'react';
 
 import { z as zod } from 'zod';
+import { v4 as uuidv4 } from 'uuid';
 import { useForm } from 'react-hook-form';
 import { useMemo, useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import Box from '@mui/material/Box';
-import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import { Grid, styled } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
@@ -20,16 +21,23 @@ import { useRouter } from 'src/routes/hooks';
 
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
+import { SchemaEditor } from 'src/components/schema-editor/schema-editor';
 
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
-import { getFlowTemplate, getFlowTemplates } from '../../actions/flow-template';
+import { ParametersEditGrid } from '../api-info/parameters-edit-grid';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 import {
   createTemplatedFlow,
   deleteTemplatedFlow,
   updateTemplatedFlow,
 } from '../../actions/templated-flow';
+import {
+  getFlowTemplate,
+  getFlowTemplates,
+  exportFlowTemplate,
+  importFlowTemplate,
+} from '../../actions/flow-template';
 
 import type { FlowTemplate } from '../../types/flow-template';
 import type { TemplatedFlow } from '../../types/templated-flow';
@@ -50,9 +58,10 @@ export const Schema = zod.object({
     .max(100, { message: '100자 이내로 입력하세요.' }),
   httpMethod: zod.string().min(1, { message: 'HTTP Method 를 입력하세요.' }),
   url: zod.string().min(1, { message: 'URL을 입력하세요.' }),
-
-  parameters: zod.any().array(),
+  requestParameters: zod.any().array(),
+  responseBody: zod.any(),
   templateSid: zod.number().min(1, { message: '템플릿을 선택하세요.' }),
+  parameters: zod.any().array(),
 });
 
 // ----------------------------------------------------------------------
@@ -60,6 +69,14 @@ export const Schema = zod.object({
 type Props = {
   editMode: string;
   entity?: TemplatedFlow;
+};
+
+const initialSchema = {
+  id: 'root',
+  name: 'root',
+  type: 'Object',
+  depth: 1,
+  children: [],
 };
 
 export function TemplatedFlowEditForm({ editMode, entity }: Props) {
@@ -82,11 +99,18 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
   const defaultValues = useMemo(
     () => ({
       sid: entity?.sid,
+      flowId: entity?.flowId || '',
       name: entity?.name || '',
       httpMethod: entity?.httpMethod || 'GET',
       url: entity?.url || '',
-      parameters: entity?.parameters || [],
+      requestParameters:
+        entity?.requestParameters.map((p) => {
+          p.id = uuidv4();
+          return p;
+        }) || [],
+      responseBody: entity?.responseBody || initialSchema,
       templateSid: entity?.templateSid || 0,
+      parameters: entity?.parameters || [],
     }),
     [entity]
   );
@@ -113,9 +137,11 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
   }, [entity, defaultValues, reset]);
 
   useEffect(() => {
-    getFlowTemplate(values.templateSid).then((e) => {
-      setCurrentTemplate({ ...e });
-    });
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    values.templateSid &&
+      getFlowTemplate(values.templateSid).then((e) => {
+        setCurrentTemplate({ ...e });
+      });
   }, [values.templateSid]);
 
   const onSubmit = handleSubmit(async (data) => {
@@ -148,19 +174,25 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
     router.push(listPath);
   });
 
-  const onParametersChanged = (e: FlowTemplate) => (event: ChangeEvent<HTMLInputElement>) => {
-    if (!values.parameters.find((f) => f.name === e.name)) {
-      values.parameters.push({ name: e.name, value: event.target.value });
-    }
-    const parameters = values.parameters.map((v) => {
-      if (v.name === e.name) {
-        v.value = event.target.value;
+  const onTemplateParameterChanged =
+    (e: FlowTemplate) => (event: ChangeEvent<HTMLInputElement>) => {
+      if (!values.parameters.find((f) => f.name === e.name)) {
+        values.parameters.push({ name: e.name, value: event.target.value });
       }
-      return v;
-    });
+      const parameters = values.parameters.map((v) => {
+        if (v.name === e.name) {
+          v.value = event.target.value;
+        }
+        return v;
+      });
 
+      // @ts-ignore
+      setValue('parameters', [...parameters]);
+    };
+
+  const onParametersChanged = (rows: any[], key: string) => {
     // @ts-ignore
-    setValue('parameters', [...parameters]);
+    setValue(key, rows);
   };
 
   const parametersDetails = (
@@ -188,7 +220,7 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
                     values.parameters.find((f) => f.name === template.name)?.value ||
                     template.defaultValue
                   }
-                  onChange={onParametersChanged(template)}
+                  onChange={onTemplateParameterChanged(template)}
                 />
               </Grid>
             </Grid>
@@ -258,11 +290,76 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
     </Card>
   );
 
+  const importTemplate = (e: any) => {
+    console.log('import');
+    const { files } = e.target;
+    if (files.length < 1) {
+      return;
+    }
+    const file = files[0];
+    const fileReader = new FileReader();
+    fileReader.onload = async (f) => {
+      console.log(f);
+      const schemaYaml = f.target?.result as string;
+      console.log(schemaYaml);
+      const result = await importFlowTemplate({ yaml: schemaYaml });
+      setValue('name', result.name);
+      setValue('templateId', result.templateId);
+      setImportedParameters(result.parameters);
+    };
+    fileReader.readAsText(file);
+  };
+
+  console.log(defaultValues);
+
+  const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
+
+  const exportTemplate = async () => {
+    const { yaml } = await exportFlowTemplate({ sid: entity?.sid });
+    const element = document.createElement('a');
+    const file = new Blob([yaml], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = `${entity?.templateId}.template.yaml`;
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  };
+
   return (
     <>
       <Form methods={methods} onSubmit={onSubmit}>
+        <Stack direction="row" spacing={2} sx={{ px: 3, pb: 3 }}>
+          <Button variant="outlined" component="label">
+            가져오기
+            <VisuallyHiddenInput type="file" onChange={importTemplate} />
+          </Button>
+          <Button variant="outlined" onClick={exportTemplate}>
+            내보내기
+          </Button>
+        </Stack>
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
+          <ParametersEditGrid
+            title="요청 파라미터"
+            editing={editing}
+            initialRows={values.requestParameters}
+            onChange={(rows: any[]) => onParametersChanged(rows, 'requestParameters')}
+            importedRows={undefined}
+          />
+          <SchemaEditor
+            title="응답 항목"
+            initialData={values.responseBody}
+            onChange={(data: any) => onParametersChanged(data, 'responseBody')}
+          />
           {parametersDetails}
           <DnaBottomButtons
             editing={editing}

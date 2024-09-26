@@ -4,10 +4,13 @@ import type { SelectChangeEvent } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import { useState, useEffect } from 'react';
 
+import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
+import CardHeader from '@mui/material/CardHeader';
 import { Select, styled, FormControl } from '@mui/material';
 
 import { exportFlow, importFlow } from 'src/actions/templated-flow';
@@ -17,18 +20,19 @@ import type { DataSchema } from '../../types/templated-flow';
 const NAME_WIDTH = 340;
 
 type Props = {
+  title: string;
   initialData: any;
   onChange: (data: DataSchema) => void;
 };
 
-export const SchemaEditor = ({ initialData, onChange }: Props) => {
+export const SchemaEditor = ({ title, initialData, onChange }: Props) => {
   console.log(initialData);
   const [data, setData] = useState(initialData);
 
   useEffect(() => {
     console.log(data);
     onChange(data);
-  }, [data, onChange]);
+  }, [data]);
 
   const onChangeName = (event: ChangeEvent<HTMLInputElement>, row: DataSchema) => {
     console.log(data);
@@ -207,26 +211,30 @@ export const SchemaEditor = ({ initialData, onChange }: Props) => {
   });
 
   return (
-    <div>
+    <Card>
+      <CardHeader title={title} subheader="" sx={{ mb: 3 }} />
+      <Divider />
       <div>
-        <Stack direction="row" spacing={2} sx={{ px: 3, pt: 1 }}>
-          <Button variant="outlined" component="label">
-            가져오기
-            <VisuallyHiddenInput type="file" onChange={importSchema} />
-          </Button>
-          <Button variant="outlined" onClick={exportSchema}>
-            내보내기
-          </Button>
-        </Stack>
+        {/*        <div>
+          <Stack direction="row" spacing={2} sx={{ px: 3, pt: 1 }}>
+            <Button variant="outlined" component="label">
+              가져오기
+              <VisuallyHiddenInput type="file" onChange={importSchema} />
+            </Button>
+            <Button variant="outlined" onClick={exportSchema}>
+              내보내기
+            </Button>
+          </Stack>
+        </div> */}
+        <div>
+          <Stack direction="row" spacing={2} sx={{ px: 3, pt: 1 }}>
+            {nameInput(data)}
+            {typeInput(data)}
+            {data.type === 'Object' && addButton(data)}
+          </Stack>
+          {recursive(data)}
+        </div>
       </div>
-      <div>
-        <Stack direction="row" spacing={2} sx={{ px: 3, pt: 1 }}>
-          {nameInput(data)}
-          {typeInput(data)}
-          {data.type === 'Object' && addButton(data)}
-        </Stack>
-        {recursive(data)}
-      </div>
-    </div>
+    </Card>
   );
 };
