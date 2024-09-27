@@ -1,19 +1,15 @@
-import type { ChangeEvent } from 'react';
-
 import { z as zod } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import { useForm } from 'react-hook-form';
 import { useMemo, useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import { Grid, styled } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
 
 import { paths } from 'src/routes/paths';
@@ -23,6 +19,7 @@ import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 import { SchemaEditor } from 'src/components/schema-editor/schema-editor';
 
+import { ParametersForm } from './parameters-form';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
 import { ParametersEditGrid } from '../api-info/parameters-edit-grid';
@@ -100,7 +97,7 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
       httpMethod: entity?.httpMethod || 'GET',
       url: entity?.url || '',
       requestParameters:
-        entity?.requestParameters.map((p) => {
+        entity?.requestParameters?.map((p) => {
           p.id = uuidv4();
           return p;
         }) || [],
@@ -140,7 +137,7 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
       });
   }, [values.templateSid]);
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async (data: any) => {
     // data.requestParameters = rows;
     try {
       if (editMode === 'create') {
@@ -164,67 +161,17 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
     }
   };
 
-  const confirmDelete = handleSubmit(async (data) => {
+  const confirmDelete = handleSubmit(async (data: any) => {
     await deleteTemplatedFlow(data);
     toast.success('삭제되었습니다.');
     router.push(listPath);
   });
-
-  const onTemplateParameterChanged =
-    (e: FlowTemplate) => (event: ChangeEvent<HTMLInputElement>) => {
-      if (!values.parameters.find((f) => f.name === e.name)) {
-        values.parameters.push({ name: e.name, value: event.target.value });
-      }
-      const parameters = values.parameters.map((v) => {
-        if (v.name === e.name) {
-          v.value = event.target.value;
-        }
-        return v;
-      });
-
-      // @ts-ignore
-      setValue('parameters', [...parameters]);
-    };
 
   const onParametersChanged = (rows: any[], key: string) => {
     // @ts-ignore
     setValue(key, rows);
   };
 
-  const parametersDetails = (
-    <Grid item xs={12} md={12}>
-      {currentTemplate && (
-        <Card sx={{ pb: 3 }}>
-          <CardHeader title="파라미터" sx={{ mb: 2 }} />
-          <Divider sx={{ borderStyle: 'dashed' }} />
-          {currentTemplate.parameters.map((template, index) => (
-            <Grid container sx={{ p: 1 }} key={index}>
-              <Grid item xs={12} md={2}>
-                <Box sx={{ px: 2, py: 1, fontWeight: 'bold' }}>{template.name}</Box>
-                <Box sx={{ px: 2, color: 'var(--palette-text-secondary)', fontStyle: 'italic' }}>
-                  {template.type}
-                </Box>
-              </Grid>
-              <Grid item xs={12} md={10}>
-                <Box sx={{ py: 1, color: 'var(--palette-text-secondary)' }}>
-                  {template.description} {template.defaultValue}
-                </Box>
-                <TextField
-                  fullWidth
-                  inputProps={{ readOnly: editMode === 'details' }}
-                  value={
-                    values.parameters.find((f) => f.name === template.name)?.value ||
-                    template.defaultValue
-                  }
-                  onChange={onTemplateParameterChanged(template)}
-                />
-              </Grid>
-            </Grid>
-          ))}
-        </Card>
-      )}
-    </Grid>
-  );
   const renderDetails = (
     <Card>
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
@@ -291,7 +238,6 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
   const [importedTemplateParameters, setImportedTemplateParameters] = useState(undefined);
 
   const importTemplate = (e: any) => {
-    console.log('import');
     const { files } = e.target;
     if (files.length < 1) {
       return;
@@ -299,11 +245,8 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
     const file = files[0];
     const fileReader = new FileReader();
     fileReader.onload = async (f) => {
-      console.log(f);
       const schemaYaml = f.target?.result as string;
-      console.log(schemaYaml);
       const result = await importTemplatedFlow({ yaml: schemaYaml });
-      console.log(result);
       setValue('flowId', result.flowId);
       setValue('name', result.name);
       setValue('httpMethod', result.httpMethod);
@@ -317,8 +260,6 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
     };
     fileReader.readAsText(file);
   };
-
-  console.log(defaultValues);
 
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -369,7 +310,12 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
             importedData={importedResponseBody}
             onChange={(data: any) => onParametersChanged(data, 'responseBody')}
           />
-          {parametersDetails}
+          <ParametersForm
+            editing={editing}
+            currentTemplate={currentTemplate}
+            parameters={values.parameters}
+            setValue={setValue}
+          />
           <DnaBottomButtons
             editing={editing}
             listPath={listPath}

@@ -14,6 +14,7 @@ export type TemplatedFlow = {
   responseBody: any;
   parameters: any[];
   templateSid: number;
+  templateId: string;
 };
 
 export const defaultTemplatedFlowFilters: TemplatedFlowFilters = {
