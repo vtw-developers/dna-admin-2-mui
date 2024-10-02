@@ -7,13 +7,13 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { ScheduleEditForm } from '../schedule-edit-form';
 
 import type { EditModes } from '../../../types/edit';
-import type { ApiInfo } from '../../../types/api-info';
+import type { Schedule } from '../../../types/schedule';
 
 // ----------------------------------------------------------------------
 
 type Props = {
   editMode: EditModes;
-  entity?: ApiInfo;
+  entity?: Schedule;
 };
 
 export function ScheduleEditView({ editMode, entity }: Props): JSX.Element {

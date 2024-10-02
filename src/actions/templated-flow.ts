@@ -90,3 +90,6 @@ export const importTemplatedFlow = async (params: any) =>
 
 export const exportTemplatedFlow = async (params: any) =>
   (await axiosInstance.post(`${PATH_PREFIX}/export`, params)).data;
+
+export const getScheduableFlows = async () =>
+  (await axiosInstance.get(`${PATH_PREFIX}/getSchedulableFlows`)).data;

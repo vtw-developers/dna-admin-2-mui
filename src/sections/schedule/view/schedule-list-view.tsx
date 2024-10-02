@@ -5,11 +5,11 @@ import type { ApiInfo, ApiInfoFilters } from 'src/types/api-info';
 import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
-import cronstrue from 'cronstrue/i18n';
 import { useState, useEffect, useCallback } from 'react';
 
-import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
+import Link from '@mui/material/Link';
+import Button from '@mui/material/Button';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 
 import { DashboardContent } from 'src/layouts/dashboard';
@@ -22,6 +22,8 @@ import { defaultApiInfoFilters } from 'src/types/api-info';
 import { paths } from '../../../routes/paths';
 import { useRouter } from '../../../routes/hooks';
 import { ScheduleFilter } from '../schedule-filter';
+import { Iconify } from '../../../components/iconify';
+import { RouterLink } from '../../../routes/components';
 import { useGetSchedules } from '../../../actions/schedule';
 import { defaultPagination } from '../../../utils/pagination';
 import { DnaPagination } from '../../../components/dna-pagination';
@@ -36,6 +38,7 @@ export function ScheduleListView() {
   const [tableData, setTableData] = useState<ApiInfo[]>([]);
 
   useEffect(() => {
+    console.log(data);
     setTableData(data);
   }, [data, sortModel, pagination, filters]);
 
@@ -48,16 +51,25 @@ export function ScheduleListView() {
 
   const columns: GridColDef[] = [
     {
-      field: 'serviceGroupName',
-      headerName: '서비스그룹',
+      field: 'id',
+      headerName: 'ID',
       minWidth: 200,
       flex: 1,
     },
     {
-      field: 'ctiInfoName',
-      headerName: 'CTI명',
+      field: 'flowSid',
+      headerName: 'Flow',
       minWidth: 200,
       flex: 1,
+      renderCell: (params) => {
+        const { flowSid, flowId, flowName } = params.row;
+        // const cronExprString = cronExpr ? cronstrue.toString(cronExpr, { locale: 'ko' }) : '미설정';
+        return (
+          <div>
+            {flowName} ({flowId})
+          </div>
+        );
+      },
     },
     {
       field: 'cronExpr',
@@ -66,16 +78,16 @@ export function ScheduleListView() {
       flex: 1,
       renderCell: (params) => {
         const { cronExpr } = params.row;
-        const cronExprString = cronExpr ? cronstrue.toString(cronExpr, { locale: 'ko' }) : '미설정';
+        // const cronExprString = cronExpr ? cronstrue.toString(cronExpr, { locale: 'ko' }) : '미설정';
         return (
           <Link
             noWrap
             color="inherit"
             variant="subtitle2"
-            onClick={() => handleViewRow(params.row.ctiInfoId)}
+            onClick={() => handleViewRow(params.row.id)}
             sx={{ cursor: 'pointer' }}
           >
-            {cronExprString}
+            {cronExpr}
           </Link>
         );
       },
@@ -88,6 +100,17 @@ export function ScheduleListView() {
         heading="스케줄"
         links={[{ name: '스케줄' }]}
         sx={{ mb: { xs: 3, md: 5 } }}
+        action={
+          <Button
+            component={RouterLink}
+            href={paths.manage.schedule.new}
+            variant="contained"
+            color="primary"
+            startIcon={<Iconify icon="mingcute:add-line" />}
+          >
+            스케줄 등록
+          </Button>
+        }
       />
       <Card className="list-filter" sx={{ mb: { xs: 3, md: 5 } }}>
         <ScheduleFilter onSearch={(f) => setFilters(f)} />
@@ -103,7 +126,7 @@ export function ScheduleListView() {
         }}
       >
         <DataGrid
-          getRowId={(row) => row.ctiInfoId}
+          getRowId={(row) => row.id}
           disableRowSelectionOnClick
           rows={tableData}
           columns={columns}
