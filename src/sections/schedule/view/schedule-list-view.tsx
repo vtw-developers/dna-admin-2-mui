@@ -97,9 +97,10 @@ export function ScheduleListView() {
       headerName: '상태',
       minWidth: 200,
       renderCell: (params) => {
-        const { cronExpr } = params.row;
-        // const cronExprString = cronExpr ? cronstrue.toString(cronExpr, { locale: 'ko' }) : '미설정';
-        return <div>미등록</div>;
+        console.log(params.row?.state);
+        if (!params.row?.state) return <div>미등록</div>;
+        if (params.row?.state === 'running') return <div>running</div>;
+        return <div>stop</div>;
       },
     },
     {
@@ -107,12 +108,47 @@ export function ScheduleListView() {
       headerName: '',
       minWidth: 200,
       renderCell: (params) => {
-        const { cronExpr } = params.row;
-        // const cronExprString = cronExpr ? cronstrue.toString(cronExpr, { locale: 'ko' }) : '미설정';
-        return <Button variant="outlined">등록</Button>;
+        if (!params.row?.state)
+          return (
+            <Button variant="outlined" onClick={() => changeState(params.row.id, 'stop')}>
+              등록
+            </Button>
+          );
+        if (params.row?.state === 'running')
+          return (
+            <>
+              <Button variant="outlined" onClick={() => changeState(params.row.id, 'stop')}>
+                정지
+              </Button>
+              <Button variant="outlined" onClick={() => changeState(params.row.id, 'running')}>
+                즉시 실행
+              </Button>
+            </>
+          );
+        return (
+          <>
+            <Button variant="outlined" onClick={() => changeState(params.row.id, 'running')}>
+              실행
+            </Button>
+            <Button variant="outlined" onClick={() => changeState(params.row.id, 'running')}>
+              즉시 실행
+            </Button>
+          </>
+        );
       },
     },
   ];
+
+  const changeState = (id: any, state: any) => {
+    setTableData(
+      tableData.map((t) => {
+        if (t.id === id) {
+          return { ...t, state };
+        }
+        return t;
+      })
+    );
+  };
 
   return (
     <DashboardContent className="dna-common-list">

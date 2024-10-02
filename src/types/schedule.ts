@@ -14,6 +14,7 @@ export type Schedule = {
   id?: number;
   flowSid: number;
   cronExpr: string;
+  state: string;
 };
 
 export const defaultApiInfoFilters: ApiInfoFilters = {
