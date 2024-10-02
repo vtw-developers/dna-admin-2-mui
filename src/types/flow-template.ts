@@ -6,6 +6,7 @@ export type FlowTemplateFilters = {
 
 export type FlowTemplate = {
   sid?: number;
+  flowType: string;
   name: string;
   templateId: string;
   parameters: any[];

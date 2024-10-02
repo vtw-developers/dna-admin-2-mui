@@ -41,6 +41,7 @@ export type SchemaType = zod.infer<typeof Schema>;
 
 export const Schema = zod.object({
   sid: zod.number().optional(),
+  flowType: zod.string(),
   flowId: zod
     .string()
     .min(1, { message: '플로우ID를 입력하세요.' })
@@ -49,11 +50,11 @@ export const Schema = zod.object({
     .string()
     .min(1, { message: '플로우명을 입력하세요.' })
     .max(100, { message: '100자 이내로 입력하세요.' }),
-  httpMethod: zod.string().min(1, { message: 'HTTP Method 를 입력하세요.' }),
-  url: zod.string().min(1, { message: 'URL을 입력하세요.' }),
+  httpMethod: zod.string() /* .min(1, { message: 'HTTP Method 를 입력하세요.' }) */,
+  url: zod.string() /* .min(1, { message: 'URL을 입력하세요.' }) */,
   requestParameters: zod.any().array(),
   responseBody: zod.any(),
-  templateSid: zod.number().min(1, { message: '템플릿을 선택하세요.' }),
+  templateSid: zod.number().optional() /* .min(1, { message: '템플릿을 선택하세요.' }) */,
   parameters: zod.any().array(),
 });
 
@@ -92,6 +93,7 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
   const defaultValues = useMemo(
     () => ({
       sid: entity?.sid,
+      flowType: entity?.flowType || 'REST',
       flowId: entity?.flowId || '',
       name: entity?.name || '',
       httpMethod: entity?.httpMethod || 'GET',
@@ -102,7 +104,8 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
           return p;
         }) || [],
       responseBody: entity?.responseBody || initialSchema,
-      templateSid: entity?.templateSid || 0,
+      templated: entity?.templated || false,
+      templateSid: entity?.templateSid || undefined,
       parameters: entity?.parameters || [],
     }),
     [entity]
@@ -118,10 +121,11 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
     watch,
     setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = methods;
 
   const values = watch();
+  console.log(errors);
 
   useEffect(() => {
     if (entity) {
@@ -138,6 +142,7 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
   }, [values.templateSid]);
 
   const onSubmit = handleSubmit(async (data: any) => {
+    console.log(data);
     // data.requestParameters = rows;
     try {
       if (editMode === 'create') {
@@ -177,7 +182,21 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
       <Divider />
       <Grid container spacing={3} sx={{ p: 3 }}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
+          <Field.Select
+            variant="outlined"
+            name="flowType"
+            label="유형"
+            inputProps={{ readOnly: editMode === 'details' }}
+          >
+            {['REST', 'BATCH', 'POLL'].map((option) => (
+              <MenuItem key={option} value={option} sx={{ textTransform: 'capitalize' }}>
+                {option}
+              </MenuItem>
+            ))}
+          </Field.Select>
+        </Grid>
+        <Grid item xs={12} md={4}>
           <Field.Text
             name="flowId"
             label="플로우 ID"
@@ -185,7 +204,7 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
             inputProps={{ readOnly: editMode === 'details' }}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <Field.Text
             name="name"
             label="플로우 명"
@@ -193,6 +212,48 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
             inputProps={{ readOnly: editMode === 'details' }}
           />
         </Grid>
+        <Grid item xs={12} md={3}>
+          <Field.Select
+            variant="outlined"
+            name="templated"
+            label="템플릿 사용"
+            inputProps={{ readOnly: editMode === 'details' }}
+          >
+            {[
+              { value: true, text: '사용' },
+              { value: false, text: '미사용' },
+            ].map((option, i) => (
+              <MenuItem key={i} value={option.value} sx={{ textTransform: 'capitalize' }}>
+                {option.text}
+              </MenuItem>
+            ))}
+          </Field.Select>
+        </Grid>
+        {values.templated && (
+          <Grid item xs={12} md={9}>
+            <Field.Select
+              variant="outlined"
+              name="templateSid"
+              label="템플릿 선택"
+              inputProps={{ readOnly: editMode === 'details' }}
+            >
+              {templates.map((option) => (
+                <MenuItem key={option.sid} value={option.sid} sx={{ textTransform: 'capitalize' }}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </Field.Select>
+          </Grid>
+        )}
+      </Grid>
+    </Card>
+  );
+
+  const renderHttp = (
+    <Card>
+      <CardHeader title="HTTP 정보" subheader="" sx={{ mb: 3 }} />
+      <Divider />
+      <Grid container spacing={3} sx={{ p: 3 }}>
         <Grid item xs={12} md={6}>
           <Field.Select
             variant="outlined"
@@ -214,20 +275,6 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
             variant="outlined"
             inputProps={{ readOnly: editMode === 'details' }}
           />
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <Field.Select
-            variant="outlined"
-            name="templateSid"
-            label="템플릿 선택"
-            inputProps={{ readOnly: editMode === 'details' }}
-          >
-            {templates.map((option) => (
-              <MenuItem key={option.sid} value={option.sid} sx={{ textTransform: 'capitalize' }}>
-                {option.name}
-              </MenuItem>
-            ))}
-          </Field.Select>
         </Grid>
       </Grid>
     </Card>
@@ -297,25 +344,32 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
         </Stack>
         <Stack spacing={{ xs: 3, md: 5 }} sx={{ mx: 'auto' }}>
           {renderDetails}
-          <ParametersEditGrid
-            title="요청 파라미터"
-            editing={editing}
-            initialRows={values.requestParameters}
-            onChange={(rows: any[]) => onParametersChanged(rows, 'requestParameters')}
-            importedRows={importedRequsetParameters}
-          />
-          <SchemaEditor
-            title="응답 항목"
-            initialData={values.responseBody}
-            importedData={importedResponseBody}
-            onChange={(data: any) => onParametersChanged(data, 'responseBody')}
-          />
-          <ParametersForm
-            editing={editing}
-            currentTemplate={currentTemplate}
-            parameters={values.parameters}
-            setValue={setValue}
-          />
+          {values.flowType === 'REST' && renderHttp}
+          {values.flowType === 'REST' && (
+            <ParametersEditGrid
+              title="요청 파라미터"
+              editing={editing}
+              initialRows={values.requestParameters}
+              onChange={(rows: any[]) => onParametersChanged(rows, 'requestParameters')}
+              importedRows={importedRequsetParameters}
+            />
+          )}
+          {values.flowType === 'REST' && (
+            <SchemaEditor
+              title="응답 항목"
+              initialData={values.responseBody}
+              importedData={importedResponseBody}
+              onChange={(data: any) => onParametersChanged(data, 'responseBody')}
+            />
+          )}
+          {values.templated && values.templateSid && (
+            <ParametersForm
+              editing={editing}
+              currentTemplate={currentTemplate}
+              parameters={values.parameters}
+              setValue={setValue}
+            />
+          )}
           <DnaBottomButtons
             editing={editing}
             listPath={listPath}

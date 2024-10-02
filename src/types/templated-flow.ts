@@ -6,6 +6,7 @@ export type TemplatedFlowFilters = {
 
 export type TemplatedFlow = {
   sid?: number;
+  flowType: string;
   flowId: string;
   name: string;
   httpMethod: string;
@@ -13,7 +14,8 @@ export type TemplatedFlow = {
   requestParameters: any[];
   responseBody: any;
   parameters: any[];
-  templateSid: number;
+  templated: boolean;
+  templateSid: number | undefined;
   templateId: string;
 };
 

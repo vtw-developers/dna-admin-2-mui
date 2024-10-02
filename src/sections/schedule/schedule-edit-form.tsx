@@ -1,6 +1,6 @@
 import { z as zod } from 'zod';
 import { useForm } from 'react-hook-form';
-import { useMemo, useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Grid } from '@mui/material';
@@ -8,6 +8,7 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
 import CardHeader from '@mui/material/CardHeader';
 
 import { paths } from 'src/routes/paths';
@@ -18,8 +19,9 @@ import { Form, Field } from 'src/components/hook-form';
 
 import { useBoolean } from '../../hooks/use-boolean';
 import { deleteApiInfo } from '../../actions/api-info';
-import { updateSchedule } from '../../actions/schedule';
 import { ConfirmDialog } from '../../components/custom-dialog';
+import { getScheduableFlows } from '../../actions/templated-flow';
+import { createSchedule, updateSchedule } from '../../actions/schedule';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 
 import type { Schedule } from '../../types/schedule';
@@ -30,7 +32,7 @@ export type SchemaType = zod.infer<typeof Schema>;
 
 export const Schema = zod.object({
   id: zod.number().optional(),
-  ctiInfoId: zod.number(),
+  flowSid: zod.number(),
   cronExpr: zod.string(),
 });
 
@@ -50,13 +52,19 @@ export function ScheduleEditForm({ editMode, entity }: Props) {
   const editPath = paths.manage.schedule.edit(entity?.ctiInfoId);
   const detailsPath = paths.manage.schedule.details(entity?.ctiInfoId);
 
+  const [schedulableFlows, setSchedulableFlows] = useState([]);
+  useEffect(() => {
+    getScheduableFlows().then((e) => {
+      console.log(e);
+      setSchedulableFlows([...e]);
+    });
+  }, []);
+
   const defaultValues = useMemo(
     () => ({
       id: entity?.id,
-      serviceGroupName: entity?.serviceGroupName || '',
-      ctiInfoName: entity?.ctiInfoName || '',
+      flowSid: entity?.flowSid || '',
       cronExpr: entity?.cronExpr || '',
-      ctiInfoId: entity?.ctiInfoId || undefined,
     }),
     [entity]
   );
@@ -71,10 +79,11 @@ export function ScheduleEditForm({ editMode, entity }: Props) {
     watch,
     setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = methods;
 
   const values = watch();
+  console.log(errors);
 
   useEffect(() => {
     if (entity) {
@@ -84,7 +93,10 @@ export function ScheduleEditForm({ editMode, entity }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      if (editMode === 'update') {
+      if (editMode === 'create') {
+        await createSchedule(data).then(() => toast.success('저장되었습니다.'));
+        router.push(detailsPath);
+      } else if (editMode === 'update') {
         await updateSchedule(data).then(() => toast.success('수정되었습니다.'));
         router.push(detailsPath);
       }
@@ -113,13 +125,21 @@ export function ScheduleEditForm({ editMode, entity }: Props) {
       <CardHeader title="기본정보" subheader="" sx={{ mb: 3 }} />
       <Divider />
       <Grid container spacing={3} sx={{ p: 3 }}>
-        <Grid item xs={12} md={6}>
-          <Field.Text name="serviceGroupName" label="서비스그룹" inputProps={{ readOnly: true }} />
+        <Grid item xs={12} md={12}>
+          <Field.Select
+            variant="outlined"
+            name="flowSid"
+            label="플로우"
+            inputProps={{ readOnly: editMode === 'details' }}
+          >
+            {schedulableFlows.map((option) => (
+              <MenuItem key={option.sid} value={option.sid} sx={{ textTransform: 'capitalize' }}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </Field.Select>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <Field.Text name="ctiInfoName" label="CTI명" inputProps={{ readOnly: true }} />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
           <Field.Text
             name="cronExpr"
             label="스케줄"

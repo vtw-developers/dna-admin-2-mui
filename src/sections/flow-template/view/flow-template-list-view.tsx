@@ -55,13 +55,13 @@ export function FlowTemplateListView() {
 
   const columns: GridColDef[] = [
     {
-      field: 'sid',
-      headerName: 'ID',
-      minWidth: 200,
+      field: 'flowType',
+      headerName: '유형',
+      width: 100,
     },
     {
       field: 'name',
-      headerName: '템플릿',
+      headerName: '템플릿명',
       flex: 1,
       minWidth: 200,
       renderCell: (params) => (
@@ -75,6 +75,12 @@ export function FlowTemplateListView() {
           {params.row.name}
         </Link>
       ),
+    },
+    {
+      field: 'templateId',
+      headerName: '템플릿ID',
+      flex: 1,
+      minWidth: 200,
     },
   ];
 

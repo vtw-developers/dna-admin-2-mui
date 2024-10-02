@@ -12,9 +12,7 @@ export type ApiInfoFilters = {
 
 export type Schedule = {
   id?: number;
-  serviceGroupName: string;
-  ctiInfoId: number;
-  ctiInfoName: string;
+  flowSid: number;
   cronExpr: string;
 };
 

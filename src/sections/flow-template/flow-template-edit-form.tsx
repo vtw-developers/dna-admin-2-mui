@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import { Grid, styled } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
 import CardHeader from '@mui/material/CardHeader';
 
 import { paths } from 'src/routes/paths';
@@ -37,6 +38,7 @@ export type SchemaType = zod.infer<typeof Schema>;
 
 export const Schema = zod.object({
   sid: zod.number().optional(),
+  flowType: zod.string(),
   name: zod
     .string()
     .min(1, { message: '템플릿명을 입력하세요.' })
@@ -67,6 +69,7 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
   const defaultValues = useMemo(
     () => ({
       sid: entity?.sid,
+      flowType: entity?.flowType || 'REST',
       name: entity?.name || '',
       templateId: entity?.templateId || '',
       parameters:
@@ -135,6 +138,20 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
       <Divider />
       <Grid container spacing={3} sx={{ p: 3 }}>
         <Grid item xs={12} md={12}>
+          <Field.Select
+            variant="outlined"
+            name="flowType"
+            label="유형"
+            inputProps={{ readOnly: editMode === 'details' }}
+          >
+            {['REST', 'BATCH', 'POLL'].map((option) => (
+              <MenuItem key={option} value={option} sx={{ textTransform: 'capitalize' }}>
+                {option}
+              </MenuItem>
+            ))}
+          </Field.Select>
+        </Grid>
+        <Grid item xs={12} md={12}>
           <Field.Text
             name="name"
             label="템플릿 명 (한글)"
@@ -175,6 +192,7 @@ export function FlowTemplateEditForm({ editMode, entity }: Props) {
       const result = await importFlowTemplate({ yaml: schemaYaml });
       setValue('name', result.name);
       setValue('templateId', result.templateId);
+      setValue('flowType', result.flowType);
       setImportedParameters(result.parameters);
     };
     fileReader.readAsText(file);
