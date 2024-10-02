@@ -19,6 +19,7 @@ const ROOTS = {
   USER: '/manage/user',
   FLOW_TEMPLATE: '/flow/template',
   TEMPLATED_FLOW: '/flow/templated-flow',
+  DATASOURCE: '/manage/datasource',
 };
 
 // ----------------------------------------------------------------------
@@ -66,6 +67,12 @@ export const paths = {
       new: `${ROOTS.SERVICE_GROUP}/new`,
       details: (id: string | number | undefined) => `${ROOTS.SERVICE_GROUP}/${id}`,
       edit: (id: string | number | undefined) => `${ROOTS.SERVICE_GROUP}/${id}/edit`,
+    },
+    datasource: {
+      root: `${ROOTS.DATASOURCE}`,
+      new: `${ROOTS.DATASOURCE}/new`,
+      details: (id: string | number | undefined) => `${ROOTS.DATASOURCE}/${id}`,
+      edit: (id: string | number | undefined) => `${ROOTS.DATASOURCE}/${id}/edit`,
     },
     schedule: {
       root: `${ROOTS.SCHEDULE}`,
