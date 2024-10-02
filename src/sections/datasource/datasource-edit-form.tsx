@@ -47,7 +47,7 @@ type Props = {
   entity?: Datasource;
 };
 
-const databases = [
+export const databases = [
   {
     id: 'PostgreSQL',
     icon: '/icons/database/postgresql.svg',

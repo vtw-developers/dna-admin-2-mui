@@ -6,8 +6,10 @@ import { Grid } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
+import { databases } from './datasource-edit-form';
 import { Iconify } from '../../components/iconify';
 import { defaultDatasourceFilters } from '../../types/datasource';
+import { DnaSelectBox } from '../../components/form/dna-select-box';
 
 import type { DatasourceFilters } from '../../types/datasource';
 
@@ -38,11 +40,13 @@ export function DatasourceFilter({ onSearch }: Props) {
         />
       </Grid>
       <Grid item xs={12} md={6}>
-        <TextField
+        <DnaSelectBox
           label="데이터베이스"
-          fullWidth
+          items={databases}
           value={filters.database}
-          onChange={handleFilterName('database')}
+          onValueChange={handleFilterName('database')}
+          valueField="id"
+          textField="id"
         />
       </Grid>
       <Grid item xs={12} md={12} textAlign="center">
