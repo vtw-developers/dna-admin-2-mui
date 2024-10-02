@@ -92,6 +92,26 @@ export function ScheduleListView() {
         );
       },
     },
+    {
+      field: 'status',
+      headerName: '상태',
+      minWidth: 200,
+      renderCell: (params) => {
+        const { cronExpr } = params.row;
+        // const cronExprString = cronExpr ? cronstrue.toString(cronExpr, { locale: 'ko' }) : '미설정';
+        return <div>미등록</div>;
+      },
+    },
+    {
+      field: 'a',
+      headerName: '',
+      minWidth: 200,
+      renderCell: (params) => {
+        const { cronExpr } = params.row;
+        // const cronExprString = cronExpr ? cronstrue.toString(cronExpr, { locale: 'ko' }) : '미설정';
+        return <Button variant="outlined">등록</Button>;
+      },
+    },
   ];
 
   return (
