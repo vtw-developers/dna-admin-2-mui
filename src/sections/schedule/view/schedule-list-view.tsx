@@ -24,9 +24,9 @@ import { useRouter } from '../../../routes/hooks';
 import { ScheduleFilter } from '../schedule-filter';
 import { Iconify } from '../../../components/iconify';
 import { RouterLink } from '../../../routes/components';
-import { useGetSchedules } from '../../../actions/schedule';
 import { defaultPagination } from '../../../utils/pagination';
 import { DnaPagination } from '../../../components/dna-pagination';
+import { useGetSchedules, registerSchedule } from '../../../actions/schedule';
 
 export function ScheduleListView() {
   const router = useRouter();
@@ -108,9 +108,10 @@ export function ScheduleListView() {
       headerName: '',
       minWidth: 200,
       renderCell: (params) => {
+        console.log(params);
         if (!params.row?.state)
           return (
-            <Button variant="outlined" onClick={() => changeState(params.row.id, 'stop')}>
+            <Button variant="outlined" onClick={() => register(params.row.id)}>
               등록
             </Button>
           );
@@ -138,6 +139,19 @@ export function ScheduleListView() {
       },
     },
   ];
+
+  const register = async (id: any) => {
+    console.log(id);
+    await registerSchedule({ id });
+    // setTableData(
+    //   tableData.map((t) => {
+    //     if (t.id === id) {
+    //       return { ...t, state };
+    //     }
+    //     return t;
+    //   })
+    // );
+  };
 
   const changeState = (id: any, state: any) => {
     setTableData(

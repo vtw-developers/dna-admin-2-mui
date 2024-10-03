@@ -85,3 +85,6 @@ export const updateSchedule = async (params: Schedule) =>
 
 export const deleteSchedule = async (params: Schedule) =>
   (await axiosInstance.post(`${PATH_PREFIX}/delete`, params)).data;
+
+export const registerSchedule = async (params: any) =>
+  (await axiosInstance.post(`${PATH_PREFIX}/register`, params)).data;
