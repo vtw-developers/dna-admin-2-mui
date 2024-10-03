@@ -97,10 +97,11 @@ export function ScheduleListView() {
       headerName: '상태',
       minWidth: 200,
       renderCell: (params) => {
-        console.log(params.row?.state);
-        if (!params.row?.state) return <div>미등록</div>;
-        if (params.row?.state === 'running') return <div>running</div>;
-        return <div>stop</div>;
+        console.log(params.row?.status);
+        if (!params.row?.status || params.row.status === 'UNREGISTERD') return <div>미등록</div>;
+        if (params.row.status === 'PAUSED') return <div>정지</div>;
+        if (params.row.status === 'NORMAL') return <div>실행중</div>;
+        return <div>params.row?.status</div>;
       },
     },
     {
@@ -109,13 +110,13 @@ export function ScheduleListView() {
       minWidth: 200,
       renderCell: (params) => {
         console.log(params);
-        if (!params.row?.state)
+        if (!params.row?.status)
           return (
             <Button variant="outlined" onClick={() => register(params.row.id)}>
               등록
             </Button>
           );
-        if (params.row?.state === 'running')
+        if (params.row?.status === 'NORMAL') {
           return (
             <>
               <Button variant="outlined" onClick={() => changeState(params.row.id, 'stop')}>
@@ -126,31 +127,35 @@ export function ScheduleListView() {
               </Button>
             </>
           );
-        return (
-          <>
-            <Button variant="outlined" onClick={() => changeState(params.row.id, 'running')}>
-              실행
-            </Button>
-            <Button variant="outlined" onClick={() => changeState(params.row.id, 'running')}>
-              즉시 실행
-            </Button>
-          </>
-        );
+        }
+
+        if (params.row?.status === 'PAUSED') {
+          return (
+            <>
+              <Button variant="outlined" onClick={() => changeState(params.row.id, 'running')}>
+                실행
+              </Button>
+              <Button variant="outlined" onClick={() => changeState(params.row.id, 'running')}>
+                즉시 실행
+              </Button>
+            </>
+          );
+        }
       },
     },
   ];
 
   const register = async (id: any) => {
-    console.log(id);
-    await registerSchedule({ id });
-    // setTableData(
-    //   tableData.map((t) => {
-    //     if (t.id === id) {
-    //       return { ...t, state };
-    //     }
-    //     return t;
-    //   })
-    // );
+    const result = await registerSchedule({ id });
+    console.log(result);
+    setTableData(
+      tableData.map((t) => {
+        if (t.id === id) {
+          return { ...t, state: result.status };
+        }
+        return t;
+      })
+    );
   };
 
   const changeState = (id: any, state: any) => {
