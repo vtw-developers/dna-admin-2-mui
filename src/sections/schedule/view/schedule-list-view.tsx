@@ -26,7 +26,12 @@ import { Iconify } from '../../../components/iconify';
 import { RouterLink } from '../../../routes/components';
 import { defaultPagination } from '../../../utils/pagination';
 import { DnaPagination } from '../../../components/dna-pagination';
-import { useGetSchedules, registerSchedule } from '../../../actions/schedule';
+import {
+  stopSchedule,
+  startSchedule,
+  useGetSchedules,
+  registerSchedule,
+} from '../../../actions/schedule';
 
 export function ScheduleListView() {
   const router = useRouter();
@@ -97,30 +102,29 @@ export function ScheduleListView() {
       headerName: '상태',
       minWidth: 200,
       renderCell: (params) => {
-        console.log(params.row?.status);
-        if (!params.row?.status || params.row.status === 'UNREGISTERD') return <div>미등록</div>;
+        console.log(params.row.status);
+        if (!params.row?.status || params.row.status === 'UNREGISTERED') return <div>미등록</div>;
         if (params.row.status === 'PAUSED') return <div>정지</div>;
         if (params.row.status === 'NORMAL') return <div>실행중</div>;
-        return <div>params.row?.status</div>;
+        return <div>{params.row?.status}</div>;
       },
     },
     {
-      field: 'a',
+      field: '@actionButtons',
       headerName: '',
       minWidth: 200,
       renderCell: (params) => {
-        console.log(params);
-        if (!params.row?.status)
+        if (!params.row?.status || params.row.status === 'UNREGISTERED')
           return (
             <Button variant="outlined" onClick={() => register(params.row.id)}>
               등록
             </Button>
           );
-        if (params.row?.status === 'NORMAL') {
+        if (params.row?.status === 'PAUSED') {
           return (
             <>
-              <Button variant="outlined" onClick={() => changeState(params.row.id, 'stop')}>
-                정지
+              <Button variant="outlined" onClick={() => start(params.row.id)}>
+                실행
               </Button>
               <Button variant="outlined" onClick={() => changeState(params.row.id, 'running')}>
                 즉시 실행
@@ -128,12 +132,11 @@ export function ScheduleListView() {
             </>
           );
         }
-
-        if (params.row?.status === 'PAUSED') {
+        if (params.row?.status === 'NORMAL') {
           return (
             <>
-              <Button variant="outlined" onClick={() => changeState(params.row.id, 'running')}>
-                실행
+              <Button variant="outlined" onClick={() => stop(params.row.id)}>
+                정지
               </Button>
               <Button variant="outlined" onClick={() => changeState(params.row.id, 'running')}>
                 즉시 실행
@@ -145,17 +148,33 @@ export function ScheduleListView() {
     },
   ];
 
-  const register = async (id: any) => {
-    const result = await registerSchedule({ id });
-    console.log(result);
+  const updateStatus = (id: any, status: any) => {
+    console.log(id);
+    console.log(status);
     setTableData(
       tableData.map((t) => {
         if (t.id === id) {
-          return { ...t, state: result.status };
+          return { ...t, status };
         }
         return t;
       })
     );
+  };
+
+  const register = async (id: any) => {
+    const result = await registerSchedule({ id });
+    updateStatus(id, result.status);
+  };
+
+  const start = async (id: any) => {
+    const result = await startSchedule({ id });
+    updateStatus(id, result.status);
+  };
+
+  const stop = async (id: any) => {
+    console.log(id);
+    const result = await stopSchedule({ id });
+    updateStatus(id, result.status);
   };
 
   const changeState = (id: any, state: any) => {
