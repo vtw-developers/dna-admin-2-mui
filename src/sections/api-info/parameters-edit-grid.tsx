@@ -25,7 +25,7 @@ import { Iconify } from '../../components/iconify';
 const yaml = require('js-yaml');
 
 // ----------------------------------------------------------------------
-const types = ['String', 'Integer', 'Number', 'Object', 'Array', 'Boolean'];
+const types = ['String', 'Integer', 'Number', 'Object', 'Array', 'Boolean', 'Sql', 'DataMapping'];
 
 export type SchemaType = zod.infer<typeof Schema>;
 
@@ -59,12 +59,11 @@ export function ParametersEditGrid({ title, editing, initialRows, importedRows, 
   const [rows, setRows] = useState(initialRows);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
-  console.log(initialRows);
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     importedRows &&
       setRows(
-        importedRows.map((row) => {
+        importedRows.map((row: any) => {
           row.id = uuidv4();
           return row;
         })
@@ -72,7 +71,6 @@ export function ParametersEditGrid({ title, editing, initialRows, importedRows, 
   }, [importedRows]);
 
   useEffect(() => {
-    console.log('rows');
     onChange(rows);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows]);

@@ -1,5 +1,7 @@
 import type { ChangeEvent } from 'react';
 
+import Editor from '@monaco-editor/react';
+
 import Box from '@mui/material/Box';
 import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
@@ -37,6 +39,11 @@ export function ParametersForm({ editing, currentTemplate, parameters, setValue 
       setValue('parameters', [...params]);
     };
 
+  const SqlQueryEditor = ({ parameter }: any) => {
+    const { defaultValue } = parameter;
+    return <Editor height="10vh" language="sql" defaultValue={defaultValue} />;
+  };
+
   return (
     <Card sx={{ pb: 3 }}>
       <CardHeader title="파라미터" sx={{ mb: 2 }} />
@@ -50,18 +57,30 @@ export function ParametersForm({ editing, currentTemplate, parameters, setValue 
             </Box>
           </Grid>
           <Grid item xs={12} md={10}>
-            <Box sx={{ py: 1, color: 'var(--palette-text-secondary)' }}>
-              {parameter.description} {parameter.defaultValue}
-            </Box>
-            <TextField
-              fullWidth
-              inputProps={{ readOnly: !editing }}
-              value={
-                parameters.find((p: any) => p.name === parameter.name)?.value ||
-                parameter.defaultValue
-              }
-              onChange={onTemplateParameterChanged(parameter)}
-            />
+            {parameter.type === 'Sql' && (
+              <>
+                <Box sx={{ py: 1, color: 'var(--palette-text-secondary)' }}>
+                  {parameter.description}
+                </Box>
+                <SqlQueryEditor parameter={parameter} />
+              </>
+            )}
+            {parameter.type !== 'Sql' && (
+              <>
+                <Box sx={{ py: 1, color: 'var(--palette-text-secondary)' }}>
+                  {parameter.description} {parameter.defaultValue}
+                </Box>
+                <TextField
+                  fullWidth
+                  inputProps={{ readOnly: !editing }}
+                  value={
+                    parameters.find((p: any) => p.name === parameter.name)?.value ||
+                    parameter.defaultValue
+                  }
+                  onChange={onTemplateParameterChanged(parameter)}
+                />
+              </>
+            )}
           </Grid>
         </Grid>
       ))}

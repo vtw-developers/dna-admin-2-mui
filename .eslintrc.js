@@ -27,6 +27,7 @@ module.exports = {
   rules: {
     // general
     'no-alert': 0,
+    'react/prop-types': 'off',
     camelcase: 0,
     'no-console': 0,
     'no-unused-vars': 0,
