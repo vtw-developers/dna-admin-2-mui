@@ -54,6 +54,7 @@ export const Schema = zod.object({
   url: zod.string() /* .min(1, { message: 'URL을 입력하세요.' }) */,
   requestParameters: zod.any().array(),
   responseBody: zod.any(),
+  templated: zod.boolean(),
   templateSid: zod.number().optional() /* .min(1, { message: '템플릿을 선택하세요.' }) */,
   parameters: zod.any().array(),
 });
