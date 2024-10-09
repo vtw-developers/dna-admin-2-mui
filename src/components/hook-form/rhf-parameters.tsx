@@ -146,7 +146,7 @@ export function RHFParametersEditor({ name, editing, currentTemplate, setValue }
                       }
                     >
                       {dataSources.map((option) => (
-                        <MenuItem key={option.id} value={option.id}>
+                        <MenuItem key={option.id} value={option.name}>
                           {option.name}
                         </MenuItem>
                       ))}
