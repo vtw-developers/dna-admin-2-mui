@@ -27,6 +27,7 @@ import { RouterLink } from '../../../routes/components';
 import { defaultPagination } from '../../../utils/pagination';
 import { DnaPagination } from '../../../components/dna-pagination';
 import {
+  runFlow,
   stopSchedule,
   startSchedule,
   useGetSchedules,
@@ -126,7 +127,7 @@ export function ScheduleListView() {
               <Button variant="outlined" onClick={() => start(params.row.id)}>
                 실행
               </Button>
-              <Button variant="outlined" onClick={() => changeState(params.row.id, 'running')}>
+              <Button variant="outlined" onClick={() => run(params.row.id)}>
                 즉시 실행
               </Button>
             </>
@@ -138,7 +139,7 @@ export function ScheduleListView() {
               <Button variant="outlined" onClick={() => stop(params.row.id)}>
                 정지
               </Button>
-              <Button variant="outlined" onClick={() => changeState(params.row.id, 'running')}>
+              <Button variant="outlined" onClick={() => run(params.row.id)}>
                 즉시 실행
               </Button>
             </>
@@ -149,8 +150,6 @@ export function ScheduleListView() {
   ];
 
   const updateStatus = (id: any, status: any) => {
-    console.log(id);
-    console.log(status);
     setTableData(
       tableData.map((t) => {
         if (t.id === id) {
@@ -177,15 +176,10 @@ export function ScheduleListView() {
     updateStatus(id, result.status);
   };
 
-  const changeState = (id: any, state: any) => {
-    setTableData(
-      tableData.map((t) => {
-        if (t.id === id) {
-          return { ...t, state };
-        }
-        return t;
-      })
-    );
+  const run = async (id: any) => {
+    console.log(id);
+    const result = await runFlow({ id });
+    updateStatus(id, result.status);
   };
 
   return (

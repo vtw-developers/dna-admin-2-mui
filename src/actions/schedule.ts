@@ -94,3 +94,6 @@ export const startSchedule = async (params: any) =>
 
 export const stopSchedule = async (params: any) =>
   (await axiosInstance.post(`${PATH_PREFIX}/stop`, params)).data;
+
+export const runFlow = async (params: any) =>
+  (await axiosInstance.post(`${PATH_PREFIX}/run`, params)).data;
