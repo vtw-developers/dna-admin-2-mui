@@ -1,5 +1,5 @@
+import type { Flow, FlowFilters } from 'src/types/flow';
 import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
-import type { TemplatedFlow, TemplatedFlowFilters } from 'src/types/templated-flow';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
 import useSWR from 'swr';
@@ -17,17 +17,17 @@ const swrOptions = {
 
 // ----------------------------------------------------------------------
 
-type TemplatedFlowsData = {
+type FlowsData = {
   totalCount: number;
-  data: TemplatedFlow[];
+  data: Flow[];
 };
 
-const PATH_PREFIX = '/templatedFlow';
+const PATH_PREFIX = '/flow';
 
-export function useGetTemplatedFlows(
+export function useGetFlows(
   pagination: GridPaginationModel,
   sortModel: GridSortModel,
-  filters: TemplatedFlowFilters
+  filters: FlowFilters
 ) {
   const url = `${PATH_PREFIX}/list`;
   const sort = () => {
@@ -37,7 +37,7 @@ export function useGetTemplatedFlows(
     return '';
   };
 
-  const { data, isLoading, error, isValidating, mutate } = useSWR<TemplatedFlowsData>(
+  const { data, isLoading, error, isValidating, mutate } = useSWR<FlowsData>(
     [
       `${url}`,
       {
@@ -76,13 +76,13 @@ export const getTemplatedFlow = async (sid: string | number) =>
     })
   ).data;
 
-export const createTemplatedFlow = async (params: TemplatedFlow) =>
+export const createTemplatedFlow = async (params: Flow) =>
   (await axiosInstance.post(`${PATH_PREFIX}/create`, params)).data;
 
-export const updateTemplatedFlow = async (params: TemplatedFlow) =>
+export const updateTemplatedFlow = async (params: Flow) =>
   (await axiosInstance.post(`${PATH_PREFIX}/update`, params)).data;
 
-export const deleteTemplatedFlow = async (params: TemplatedFlow) =>
+export const deleteTemplatedFlow = async (params: Flow) =>
   (await axiosInstance.post(`${PATH_PREFIX}/delete`, params)).data;
 
 export const importTemplatedFlow = async (params: any) =>

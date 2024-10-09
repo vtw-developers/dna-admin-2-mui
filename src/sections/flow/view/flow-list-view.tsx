@@ -1,8 +1,8 @@
 'use client';
 
 import type { GridColDef } from '@mui/x-data-grid';
+import type { Flow, FlowFilters } from 'src/types/flow';
 import type { GridSortModel } from '@mui/x-data-grid/models/gridSortModel';
-import type { TemplatedFlow, TemplatedFlowFilters } from 'src/types/templated-flow';
 import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPaginationProps';
 
 import { useRouter } from 'next/navigation';
@@ -16,34 +16,30 @@ import { isDeepEqual } from '@mui/x-data-grid/internals';
 
 import { RouterLink } from 'src/routes/components';
 
+import { useGetFlows } from 'src/actions/flow';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { useGetTemplatedFlows } from 'src/actions/templated-flow';
 
 import { Iconify } from 'src/components/iconify';
 import { EmptyContent } from 'src/components/empty-content';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { defaultTemplatedFlowFilters } from 'src/types/templated-flow';
+import { defaultTemplatedFlowFilters } from 'src/types/flow';
 
+import { FlowFilter } from '../flow-filter';
 import { paths } from '../../../routes/paths';
 import { defaultPagination } from '../../../utils/pagination';
-import { TemplatedFlowFilter } from '../templated-flow-filter';
 import { DnaPagination } from '../../../components/dna-pagination';
 
 import type { FlowTemplate } from '../../../types/flow-template';
 
-export function TemplatedFlowListView() {
+export function FlowListView() {
   const router = useRouter();
 
   const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const [pagination, setPagination] = useState<GridPaginationModel>(defaultPagination);
-  const [filters, setFilters] = useState<TemplatedFlowFilters>(defaultTemplatedFlowFilters);
-  const { data, loading, totalCount, mutate } = useGetTemplatedFlows(
-    pagination,
-    sortModel,
-    filters
-  );
-  const [tableData, setTableData] = useState<TemplatedFlow[]>([]);
+  const [filters, setFilters] = useState<FlowFilters>(defaultTemplatedFlowFilters);
+  const { data, loading, totalCount, mutate } = useGetFlows(pagination, sortModel, filters);
+  const [tableData, setTableData] = useState<Flow[]>([]);
 
   useEffect(() => {
     setTableData(data);
@@ -52,7 +48,7 @@ export function TemplatedFlowListView() {
   const handleViewRow = useCallback(
     (sid: string) => {
       console.log(sid);
-      router.push(paths.flow.templatedFlow.details(sid));
+      router.push(paths.flow.flow.details(sid));
     },
     [router]
   );
@@ -98,7 +94,7 @@ export function TemplatedFlowListView() {
         action={
           <Button
             component={RouterLink}
-            href={paths.flow.templatedFlow.new}
+            href={paths.flow.flow.new}
             variant="contained"
             color="primary"
             startIcon={<Iconify icon="mingcute:add-line" />}
@@ -109,7 +105,7 @@ export function TemplatedFlowListView() {
         sx={{ mb: { xs: 3, md: 5 } }}
       />
       <Card className="list-filter" sx={{ mb: { xs: 3, md: 5 } }}>
-        <TemplatedFlowFilter
+        <FlowFilter
           onSearch={(f) => {
             setFilters(f);
             if (isDeepEqual(filters, f)) {

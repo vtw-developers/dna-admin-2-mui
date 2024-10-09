@@ -30,10 +30,10 @@ import {
   deleteTemplatedFlow,
   importTemplatedFlow,
   updateTemplatedFlow,
-} from '../../actions/templated-flow';
+} from '../../actions/flow';
 
+import type { Flow } from '../../types/flow';
 import type { FlowTemplate } from '../../types/flow-template';
-import type { TemplatedFlow } from '../../types/templated-flow';
 
 // ----------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ export const Schema = zod.object({
 
 type Props = {
   editMode: string;
-  entity?: TemplatedFlow;
+  entity?: Flow;
 };
 
 const initialSchema = {
@@ -74,14 +74,14 @@ const initialSchema = {
   children: [],
 };
 
-export function TemplatedFlowEditForm({ editMode, entity }: Props) {
+export function FlowEditForm({ editMode, entity }: Props) {
   const editing = editMode !== 'details';
   const router = useRouter();
   const confirm = useBoolean();
 
-  const listPath = paths.flow.templatedFlow.root;
-  const editPath = paths.flow.templatedFlow.edit(entity?.sid);
-  const detailsPath = paths.flow.templatedFlow.details(entity?.sid);
+  const listPath = paths.flow.flow.root;
+  const editPath = paths.flow.flow.edit(entity?.sid);
+  const detailsPath = paths.flow.flow.details(entity?.sid);
   const [templates, setTemplates] = useState<FlowTemplate[]>([]);
   const [currentTemplate, setCurrentTemplate] = useState<FlowTemplate>();
 

@@ -13,9 +13,9 @@ import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
 import { Select, styled, FormControl } from '@mui/material';
 
-import { exportFlow, importFlow } from 'src/actions/templated-flow';
+import { exportFlow, importFlow } from 'src/actions/flow';
 
-import type { DataSchema } from '../../types/templated-flow';
+import type { DataSchema } from '../../types/flow';
 
 const NAME_WIDTH = 340;
 

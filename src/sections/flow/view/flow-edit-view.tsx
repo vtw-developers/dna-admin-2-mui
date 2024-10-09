@@ -4,19 +4,19 @@ import { DashboardContent } from 'src/layouts/dashboard';
 
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { TemplatedFlowEditForm } from '../templated-flow-edit-form';
+import { FlowEditForm } from '../flow-edit-form';
 
+import type { Flow } from '../../../types/flow';
 import type { EditModes } from '../../../types/edit';
-import type { TemplatedFlow } from '../../../types/templated-flow';
 
 // ----------------------------------------------------------------------
 
 type Props = {
   editMode: EditModes;
-  entity?: TemplatedFlow;
+  entity?: Flow;
 };
 
-export function TemplatedFlowEditView({ editMode, entity }: Props): JSX.Element {
+export function FlowEditView({ editMode, entity }: Props): JSX.Element {
   const title = () => {
     switch (editMode) {
       case 'create':
@@ -33,14 +33,11 @@ export function TemplatedFlowEditView({ editMode, entity }: Props): JSX.Element 
     <DashboardContent>
       <CustomBreadcrumbs
         heading={title()}
-        links={[
-          { name: '템플릿 기반 플로우 관리', href: '/flow/templated-flow' },
-          { name: title() },
-        ]}
+        links={[{ name: '플로우 관리', href: '/flow/flow' }, { name: title() }]}
         sx={{ mb: { xs: 3, md: 5 } }}
       />
 
-      <TemplatedFlowEditForm editMode={editMode} entity={entity} />
+      <FlowEditForm editMode={editMode} entity={entity} />
     </DashboardContent>
   );
 }

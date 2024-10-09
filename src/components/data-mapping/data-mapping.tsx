@@ -2,8 +2,8 @@ import React from 'react';
 
 import MappingTable from './mapping-table';
 import MappingDetails from './mapping-details';
+import { MappingPosition } from './useMapping';
 import MappingConnection from './mapping-connection';
-import { useMapping, MappingPosition } from './useMapping';
 
 const source = {
   name: 'Source',
@@ -67,28 +67,30 @@ const target = {
 };
 
 const dataMap = {
-  source: null,
-  target: null,
+  source,
+  target,
   connections: [],
 };
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const mappingHook = useMapping(dataMap);
 
+// const mappingHook = useMapping(dataMap);
+//
 export const MappingContext = React.createContext(null);
 
-function DataMapping() {
+function DataMapping({ mappingHook }) {
+  console.log(mappingHook);
   return (
     <div className="cti-transform">
       <MappingContext.Provider value={mappingHook}>
         <div className="mapping-container">
           <div className="item-block mapping-table">
-            <MappingTable entity={source} position={MappingPosition.SOURCE} />
+            <MappingTable entity={mappingHook.source} position={MappingPosition.SOURCE} />
           </div>
           <div id="item-block mapping-div">
             <MappingConnection />
           </div>
           <div className="item-block mapping-table">
-            <MappingTable entity={target} position={MappingPosition.TARGET} />
+            <MappingTable entity={mappingHook.target} position={MappingPosition.TARGET} />
           </div>
         </div>
         <MappingDetails />

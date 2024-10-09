@@ -1,10 +1,10 @@
 // ----------------------------------------------------------------------
 
-export type TemplatedFlowFilters = {
+export type FlowFilters = {
   name: string;
 };
 
-export type TemplatedFlow = {
+export type Flow = {
   sid?: number;
   flowType: string;
   flowId: string;
@@ -19,7 +19,7 @@ export type TemplatedFlow = {
   templateId: string;
 };
 
-export const defaultTemplatedFlowFilters: TemplatedFlowFilters = {
+export const defaultTemplatedFlowFilters: FlowFilters = {
   name: '',
 };
 

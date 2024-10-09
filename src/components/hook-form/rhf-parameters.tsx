@@ -10,6 +10,8 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
 
+import DataMapping from '../data-mapping/data-mapping';
+import { useMapping } from '../data-mapping/useMapping';
 import { getDatasources } from '../../actions/datasource';
 
 import type { EditorProps } from '../editor';
@@ -26,6 +28,76 @@ type Props = EditorProps & {
 };
 
 export function RHFParametersEditor({ name, editing, currentTemplate, setValue }: Props) {
+  const source = {
+    name: 'Source',
+    columns: [
+      {
+        name: 'id',
+        notNull: true,
+        type: 'String',
+        primaryKey: false,
+        length: '50',
+      },
+      {
+        name: 'name',
+        notNull: true,
+        type: 'String',
+        primaryKey: false,
+        length: '100',
+      },
+      {
+        name: 'age',
+        notNull: true,
+        type: 'Integer',
+        primaryKey: false,
+        length: '',
+      },
+      {
+        name: 'gender',
+        notNull: true,
+        type: 'string',
+        primaryKey: false,
+        length: '1',
+      },
+    ],
+  };
+
+  const target = {
+    name: 'Target',
+    columns: [
+      {
+        name: 'PID',
+        notNull: true,
+        type: 'String',
+        primaryKey: true,
+        length: '10',
+      },
+      {
+        name: 'USER_NM',
+        notNull: true,
+        type: 'String',
+        primaryKey: false,
+        length: '100',
+      },
+      {
+        name: 'BIRTH',
+        notNull: true,
+        type: 'String',
+        primaryKey: false,
+        length: '5',
+      },
+    ],
+  };
+  const dataMap = {
+    source,
+    target,
+    connections: [],
+  };
+  console.log(dataMap);
+  const mappingHook = useMapping(dataMap);
+  //
+  // export const MappingContext = React.createContext(null);
+
   const {
     control,
     formState: { isSubmitSuccessful },
@@ -170,32 +242,42 @@ export function RHFParametersEditor({ name, editing, currentTemplate, setValue }
                     />
                   </>
                 )}
-                {parameter.type !== 'DataSource' && parameter.type !== 'SQL' && (
+                {parameter.type === 'DataMapping' && (
                   <>
                     <Box sx={{ py: 1, color: 'var(--palette-text-secondary)' }}>
-                      {parameter.description} {parameter.defaultValue}
+                      {parameter.description}
                     </Box>
-                    <TextField
-                      {...field}
-                      fullWidth
-                      inputProps={{ readOnly: !editing }}
-                      value={
-                        parameters.find((p: any) => p.name === parameter.name)?.value ||
-                        parameter.defaultValue
-                      }
-                      /*                      onChange={(event) => {
+                    <DataMapping mappingHook={mappingHook} />
+                  </>
+                )}
+                {parameter.type !== 'DataSource' &&
+                  parameter.type !== 'SQL' &&
+                  parameter.type !== 'DataMapping' && (
+                    <>
+                      <Box sx={{ py: 1, color: 'var(--palette-text-secondary)' }}>
+                        {parameter.description} {parameter.defaultValue}
+                      </Box>
+                      <TextField
+                        {...field}
+                        fullWidth
+                        inputProps={{ readOnly: !editing }}
+                        value={
+                          parameters.find((p: any) => p.name === parameter.name)?.value ||
+                          parameter.defaultValue
+                        }
+                        /*                      onChange={(event) => {
                         if (type === 'number') {
                           field.onChange(Number(event.target.value));
                         } else {
                           field.onChange(event.target.value);
                         }
                       }} */
-                      onChange={(event) =>
-                        onTemplateParameterChanged(parameter, event.target.value, field)
-                      }
-                    />
-                  </>
-                )}
+                        onChange={(event) =>
+                          onTemplateParameterChanged(parameter, event.target.value, field)
+                        }
+                      />
+                    </>
+                  )}
               </Grid>
             </Grid>
           ))}

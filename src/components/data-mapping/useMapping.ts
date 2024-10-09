@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { linkHorizontal } from 'd3-shape';
 
-type DataMap = {
-  source: null;
-  target: null;
-  connections: [];
-};
+// type DataMap = {
+//   source;
+//   target: null;
+//   connections: [];
+// };
 
 export enum MappingPosition {
   SOURCE,
@@ -19,7 +19,9 @@ export enum ConnectionState {
   SELECTED,
 }
 
-export const useMapping = (dataMap: DataMap) => {
+export const useMapping = (dataMap) => {
+  console.log(dataMap);
+
   const [source, setSource] = useState(dataMap.source);
   const [target, setTarget] = useState(dataMap.target);
   const [connections, setConnections] = useState(dataMap.connections);
@@ -63,7 +65,8 @@ export const useMapping = (dataMap: DataMap) => {
     console.log('dragStart');
     const entity = position === MappingPosition.SOURCE ? source : target;
     const column = entity.columns[iIndex];
-
+    console.log(entity);
+    console.log(column);
     if (position === MappingPosition.SOURCE) {
       console.log(column);
       setSourceColumn(column);
@@ -75,6 +78,8 @@ export const useMapping = (dataMap: DataMap) => {
   };
 
   const dragOver = (event: any, position: MappingPosition, iIndex: number) => {
+    console.log(position === MappingPosition.TARGET);
+    console.log(sourceColumn);
     event.preventDefault();
     if (position === MappingPosition.TARGET && !sourceColumn) {
       return;
@@ -138,9 +143,37 @@ export const useMapping = (dataMap: DataMap) => {
     ctx.restore();
   }
 
-  function removeDraggedLine(): void {}
+  function removeDraggedLine(): void {
+    setConnections(
+      connections.map((conn, i) => {
+        if (conn.state === ConnectionState.DRAGGED) {
+          connections.splice(i, 1);
+        }
+        return connections;
+      })
+    );
+  }
 
-  function drawDraggedLine(fromItem: any, toItem: any): void {}
+  function drawDraggedLine(fromItem: any, toItem: any): void {
+    // 드래그 중일때 하늘색 라인
+    removeDraggedLine();
+
+    const from = source.columns.findIndex((i) => i.name == fromItem.name);
+    const to = target.columns.findIndex((i) => i.name == toItem.name);
+    const d = link(from, to);
+
+    const messageConnection = {
+      id: uuidv4(),
+      state: ConnectionState.DRAGGED,
+      from: fromItem.name,
+      to: toItem.name,
+      path: d,
+      stroke: '#91e3ff',
+      transformations: [],
+    };
+
+    setConnections([...connections, messageConnection]);
+  }
 
   function typeCheck(e) {
     if (e === null) return null;

@@ -18,7 +18,7 @@ const ROOTS = {
   MENU: '/manage/menu',
   USER: '/manage/user',
   FLOW_TEMPLATE: '/flow/template',
-  TEMPLATED_FLOW: '/flow/templated-flow',
+  FLOW: '/flow/flow',
   DATASOURCE: '/manage/datasource',
 };
 
@@ -42,11 +42,11 @@ export const paths = {
       details: (id: string | number | undefined) => `${ROOTS.FLOW_TEMPLATE}/${id}`,
       edit: (id: string | number | undefined) => `${ROOTS.FLOW_TEMPLATE}/${id}/edit`,
     },
-    templatedFlow: {
-      root: `${ROOTS.TEMPLATED_FLOW}`,
-      new: `${ROOTS.TEMPLATED_FLOW}/new`,
-      details: (id: string | number | undefined) => `${ROOTS.TEMPLATED_FLOW}/${id}`,
-      edit: (id: string | number | undefined) => `${ROOTS.TEMPLATED_FLOW}/${id}/edit`,
+    flow: {
+      root: `${ROOTS.FLOW}`,
+      new: `${ROOTS.FLOW}/new`,
+      details: (id: string | number | undefined) => `${ROOTS.FLOW}/${id}`,
+      edit: (id: string | number | undefined) => `${ROOTS.FLOW}/${id}/edit`,
     },
   },
   manage: {

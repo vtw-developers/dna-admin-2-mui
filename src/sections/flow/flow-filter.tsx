@@ -7,18 +7,18 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
 import { Iconify } from '../../components/iconify';
-import { defaultTemplatedFlowFilters } from '../../types/templated-flow';
+import { defaultTemplatedFlowFilters } from '../../types/flow';
 
-import type { TemplatedFlowFilters } from '../../types/templated-flow';
+import type { FlowFilters } from '../../types/flow';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  onSearch: (filters: TemplatedFlowFilters) => void;
+  onSearch: (filters: FlowFilters) => void;
 };
 
-export function TemplatedFlowFilter({ onSearch }: Props) {
-  const [filters, setFilters] = useState<TemplatedFlowFilters>(defaultTemplatedFlowFilters);
+export function FlowFilter({ onSearch }: Props) {
+  const [filters, setFilters] = useState<FlowFilters>(defaultTemplatedFlowFilters);
 
   const handleFilterName = useCallback(
     (field: string) => (event: ChangeEvent<HTMLInputElement>) => {

@@ -19,8 +19,8 @@ import { Form, Field } from 'src/components/hook-form';
 
 import { useBoolean } from '../../hooks/use-boolean';
 import { deleteApiInfo } from '../../actions/api-info';
+import { getScheduableFlows } from '../../actions/flow';
 import { ConfirmDialog } from '../../components/custom-dialog';
-import { getScheduableFlows } from '../../actions/templated-flow';
 import { createSchedule, updateSchedule } from '../../actions/schedule';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 

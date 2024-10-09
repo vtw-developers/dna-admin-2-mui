@@ -1,13 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
-import { useMapping } from './useMapping';
+import { MappingContext } from './data-mapping';
 
 export default function MappingTable({ entity, position }) {
-  const { dragStart, dragOver, mouseDown } = useMapping({
-    source: null,
-    target: null,
-    connections: [],
-  });
+  const { dragStart, dragOver, mouseDown } = useContext(MappingContext);
 
   return (
     <>
