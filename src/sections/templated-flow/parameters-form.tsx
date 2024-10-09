@@ -23,6 +23,8 @@ type Props = {
 };
 
 export function ParametersForm({ editing, currentTemplate, parameters, setValue }: Props) {
+  console.log(parameters);
+
   const onTemplateParameterChanged =
     (e: FlowTemplate) => (event: ChangeEvent<HTMLInputElement>) => {
       if (!parameters.find((f: any) => f.name === e.name)) {
@@ -36,12 +38,35 @@ export function ParametersForm({ editing, currentTemplate, parameters, setValue 
       });
 
       // @ts-ignore
-      setValue('parameters', [...params]);
+      // setValue('parameters', [...params]);
     };
 
   const SqlQueryEditor = ({ parameter }: any) => {
     const { defaultValue } = parameter;
-    return <Editor height="10vh" language="sql" defaultValue={defaultValue} />;
+
+    const onSqlChanged = (e: FlowTemplate) => (value) => {
+      if (!parameters.find((f: any) => f.name === e.name)) {
+        parameters.push({ name: e.name, value });
+      }
+      const params = parameters.map((v: any) => {
+        if (v.name === e.name) {
+          v.value = value;
+        }
+        return v;
+      });
+
+      // @ts-ignore
+      setValue('parameters', [...params]);
+    };
+
+    return (
+      <Editor
+        height="10vh"
+        language="sql"
+        defaultValue={defaultValue}
+        /*        onChange={onSqlChanged(parameter)} */
+      />
+    );
   };
 
   return (
@@ -73,11 +98,8 @@ export function ParametersForm({ editing, currentTemplate, parameters, setValue 
                 <TextField
                   fullWidth
                   inputProps={{ readOnly: !editing }}
-                  value={
-                    parameters.find((p: any) => p.name === parameter.name)?.value ||
-                    parameter.defaultValue
-                  }
-                  onChange={onTemplateParameterChanged(parameter)}
+                  value={parameter.defaultValue}
+                  /*                  onChange={onTemplateParameterChanged(parameter)} */
                 />
               </>
             )}

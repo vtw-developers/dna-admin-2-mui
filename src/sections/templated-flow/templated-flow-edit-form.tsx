@@ -19,10 +19,10 @@ import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 import { SchemaEditor } from 'src/components/schema-editor/schema-editor';
 
-import { ParametersForm } from './parameters-form';
 import { useBoolean } from '../../hooks/use-boolean';
 import { ConfirmDialog } from '../../components/custom-dialog';
 import { ParametersEditGrid } from '../api-info/parameters-edit-grid';
+import { RHFParametersEditor } from '../../components/hook-form/rhf-parameters';
 import { DnaBottomButtons } from '../../components/dna-form/dna-bottom-buttons';
 import { getFlowTemplate, getFlowTemplates, exportFlowTemplate } from '../../actions/flow-template';
 import {
@@ -363,7 +363,15 @@ export function TemplatedFlowEditForm({ editMode, entity }: Props) {
             />
           )}
           {values.templated && values.templateSid && (
-            <ParametersForm
+            /*            <ParametersForm
+              editing={editing}
+              currentTemplate={currentTemplate}
+              parameters={values.parameters}
+              setValue={setValue}
+            /> */
+
+            <RHFParametersEditor
+              name="parameters"
               editing={editing}
               currentTemplate={currentTemplate}
               parameters={values.parameters}
