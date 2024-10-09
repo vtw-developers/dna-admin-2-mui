@@ -1,4 +1,5 @@
 import Editor from '@monaco-editor/react';
+import { useState, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import Box from '@mui/material/Box';
@@ -8,6 +9,8 @@ import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
+
+import { getDatasources } from '../../actions/datasource';
 
 import type { EditorProps } from '../editor';
 import type { FlowTemplate } from '../../types/flow-template';
@@ -28,6 +31,11 @@ export function RHFParametersEditor({ name, editing, currentTemplate, setValue }
     formState: { isSubmitSuccessful },
     getValues,
   } = useFormContext();
+
+  const [dataSources, setDataSources] = useState([]);
+  useEffect(() => {
+    getDatasources().then((data) => setDataSources(data));
+  }, []);
 
   const parameters = getValues(name);
 
@@ -137,9 +145,9 @@ export function RHFParametersEditor({ name, editing, currentTemplate, setValue }
                         onDataSourceChanged(parameter, event.target.value, field)
                       }
                     >
-                      {['REST', 'BATCH', 'POLL'].map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
+                      {dataSources.map((option) => (
+                        <MenuItem key={option.id} value={option.id}>
+                          {option.name}
                         </MenuItem>
                       ))}
                     </TextField>

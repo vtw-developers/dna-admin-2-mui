@@ -76,6 +76,8 @@ export const getDatasource = async (id: string | number) =>
     })
   ).data;
 
+export const getDatasources = async () => (await axiosInstance.get(`${PATH_PREFIX}/findAll`)).data;
+
 export const createDatasource = async (params: Datasource) =>
   (await axiosInstance.post(`${PATH_PREFIX}/create`, params)).data;
 
