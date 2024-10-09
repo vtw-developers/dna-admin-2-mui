@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
 
@@ -30,17 +31,17 @@ export function RHFParametersEditor({ name, editing, currentTemplate, setValue }
 
   const parameters = getValues(name);
 
-  const onTemplateParameterChanged = (e, value, field) => {
-    console.log(e);
+  const onTemplateParameterChanged = (param, value, field) => {
+    console.log(param);
     console.log(parameters);
 
-    if (!parameters.find((f: any) => f.name === e.name)) {
-      parameters.push({ name: e.name, value });
+    if (!parameters.find((f: any) => f.name === param.name)) {
+      parameters.push({ name: param.name, value });
     }
     const params = parameters.map((v: any) => {
       console.log(v);
-      console.log(e);
-      if (v.name === e.name) {
+      console.log(param);
+      if (v.name === param.name) {
         v.value = value;
       }
       return v;
@@ -50,6 +51,54 @@ export function RHFParametersEditor({ name, editing, currentTemplate, setValue }
     field.onChange([...params]);
     // @ts-ignore
     // setValue('parameters', [...params]);
+  };
+
+  const onDataSourceChanged = (param, value, field) => {
+    console.log(param);
+    console.log(parameters);
+    console.log(value);
+
+    if (!parameters.find((f: any) => f.name === param.name)) {
+      parameters.push({
+        name: param.name,
+        value: { dataSource: value, sql: 'SELECT * FROM TABLE' },
+      });
+    }
+    const params = parameters.map((v: any) => {
+      console.log(v);
+      console.log(param);
+      if (v.name === param.name) {
+        v.value = { ...v.value, dataSource: value };
+      }
+      return v;
+    });
+
+    console.log(params);
+    field.onChange([...params]);
+  };
+
+  const onSqlChanged = (param, value, field) => {
+    console.log(param);
+    console.log(parameters);
+    console.log(value);
+
+    if (!parameters.find((f: any) => f.name === param.name)) {
+      parameters.push({
+        name: param.name,
+        value: { dataSource: undefined, sql: value },
+      });
+    }
+    const params = parameters.map((v: any) => {
+      console.log(v);
+      console.log(param);
+      if (v.name === param.name) {
+        v.value = { ...v.value, sql: value };
+      }
+      return v;
+    });
+
+    console.log(params);
+    field.onChange([...params]);
   };
 
   return (
@@ -74,16 +123,37 @@ export function RHFParametersEditor({ name, editing, currentTemplate, setValue }
                     <Box sx={{ py: 1, color: 'var(--palette-text-secondary)' }}>
                       {parameter.description}
                     </Box>
-                    <Editor
-                      height="10vh"
-                      language="sql"
+
+                    <TextField
+                      label="데이터소스"
+                      {...field}
+                      select
+                      fullWidth
+                      error={!!error}
                       value={
-                        parameters.find((p: any) => p.name === parameter.name)?.value ||
-                        parameter.defaultValue
+                        parameters.find((p: any) => p.name === parameter.name)?.value?.dataSource
                       }
-                      onChange={(event) => onTemplateParameterChanged(parameter, event, field)}
-                      /*        onChange={onSqlChanged(parameter)} */
-                    />
+                      onChange={(event) =>
+                        onDataSourceChanged(parameter, event.target.value, field)
+                      }
+                    >
+                      {['REST', 'BATCH', 'POLL'].map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+
+                    <div>
+                      <div>SQL</div>
+                      <Editor
+                        height="10vh"
+                        language="sql"
+                        value={parameters.find((p: any) => p.name === parameter.name)?.value?.sql}
+                        onChange={(event) => onSqlChanged(parameter, event, field)}
+                        /*        onChange={onSqlChanged(parameter)} */
+                      />
+                    </div>
                   </>
                 )}
                 {parameter.type !== 'Sql' && (
