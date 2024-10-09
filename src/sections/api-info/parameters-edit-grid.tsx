@@ -25,7 +25,17 @@ import { Iconify } from '../../components/iconify';
 const yaml = require('js-yaml');
 
 // ----------------------------------------------------------------------
-const types = ['String', 'Integer', 'Number', 'Object', 'Array', 'Boolean', 'Sql', 'DataMapping'];
+const types = [
+  'String',
+  'Integer',
+  'Number',
+  'Object',
+  'Array',
+  'Boolean',
+  'DataSource',
+  'SQL',
+  'DataMapping',
+];
 
 export type SchemaType = zod.infer<typeof Schema>;
 

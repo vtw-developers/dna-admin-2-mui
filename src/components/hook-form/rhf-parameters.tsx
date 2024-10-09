@@ -126,12 +126,11 @@ export function RHFParametersEditor({ name, editing, currentTemplate, setValue }
                 </Box>
               </Grid>
               <Grid item xs={12} md={10}>
-                {parameter.type === 'Sql' && (
+                {parameter.type === 'DataSource' && (
                   <>
                     <Box sx={{ py: 1, color: 'var(--palette-text-secondary)' }}>
                       {parameter.description}
                     </Box>
-
                     <TextField
                       label="데이터소스"
                       {...field}
@@ -139,10 +138,11 @@ export function RHFParametersEditor({ name, editing, currentTemplate, setValue }
                       fullWidth
                       error={!!error}
                       value={
-                        parameters.find((p: any) => p.name === parameter.name)?.value?.dataSource
+                        parameters.find((p: any) => p.name === parameter.name)?.value ||
+                        parameter.defaultValue
                       }
                       onChange={(event) =>
-                        onDataSourceChanged(parameter, event.target.value, field)
+                        onTemplateParameterChanged(parameter, event.target.value, field)
                       }
                     >
                       {dataSources.map((option) => (
@@ -151,20 +151,26 @@ export function RHFParametersEditor({ name, editing, currentTemplate, setValue }
                         </MenuItem>
                       ))}
                     </TextField>
-
-                    <div>
-                      <div>SQL</div>
-                      <Editor
-                        height="10vh"
-                        language="sql"
-                        value={parameters.find((p: any) => p.name === parameter.name)?.value?.sql}
-                        onChange={(event) => onSqlChanged(parameter, event, field)}
-                        /*        onChange={onSqlChanged(parameter)} */
-                      />
-                    </div>
                   </>
                 )}
-                {parameter.type !== 'Sql' && (
+                {parameter.type === 'SQL' && (
+                  <>
+                    <Box sx={{ py: 1, color: 'var(--palette-text-secondary)' }}>
+                      {parameter.description}
+                    </Box>
+                    <Editor
+                      height="10vh"
+                      language="sql"
+                      value={
+                        parameters.find((p: any) => p.name === parameter.name)?.value ||
+                        parameter.defaultValue
+                      }
+                      onChange={(event) => onTemplateParameterChanged(parameter, event, field)}
+                      /*        onChange={onSqlChanged(parameter)} */
+                    />
+                  </>
+                )}
+                {parameter.type !== 'DataSource' && parameter.type !== 'SQL' && (
                   <>
                     <Box sx={{ py: 1, color: 'var(--palette-text-secondary)' }}>
                       {parameter.description} {parameter.defaultValue}
