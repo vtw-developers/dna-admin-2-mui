@@ -89,8 +89,8 @@ export function FlowListView() {
   return (
     <DashboardContent className="dna-common-list">
       <CustomBreadcrumbs
-        heading="템플릿 기반 플로우 관리"
-        links={[{ name: '템플릿 기반 플로우 관리' }]}
+        heading="플로우 관리"
+        links={[{ name: '플로우 관리' }]}
         action={
           <Button
             component={RouterLink}
@@ -99,7 +99,7 @@ export function FlowListView() {
             color="primary"
             startIcon={<Iconify icon="mingcute:add-line" />}
           >
-            템플릿 기반 플로우 등록
+            플로우 등록
           </Button>
         }
         sx={{ mb: { xs: 3, md: 5 } }}

@@ -5,7 +5,7 @@ import { FlowEditView } from '../../../../../../sections/flow/view/flow-edit-vie
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `템플릿 기반 플로우 관리 - ${CONFIG.site.name}` };
+export const metadata = { title: `플로우 관리 - ${CONFIG.site.name}` };
 
 type Props = {
   params: { id: string };

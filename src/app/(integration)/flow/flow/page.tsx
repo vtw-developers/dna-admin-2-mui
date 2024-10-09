@@ -4,7 +4,7 @@ import { FlowListView } from '../../../../sections/flow/view/flow-list-view';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `템플릿 기반 플로우 | ${CONFIG.site.name}` };
+export const metadata = { title: `플로우 | ${CONFIG.site.name}` };
 
 export default function Page() {
   return <FlowListView />;

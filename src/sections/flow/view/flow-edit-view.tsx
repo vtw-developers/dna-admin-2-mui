@@ -20,13 +20,13 @@ export function FlowEditView({ editMode, entity }: Props): JSX.Element {
   const title = () => {
     switch (editMode) {
       case 'create':
-        return '템플릿 기반 플로우 정보 등록';
+        return '플로우 정보 등록';
       case 'update':
-        return '템플릿 기반 플로우 정보 수정';
+        return '플로우 정보 수정';
       case 'details':
-        return '템플릿 기반 플로우 정보 상세';
+        return '플로우 정보 상세';
       default:
-        return '템플릿 기반 플로우 정보';
+        return '플로우 정보';
     }
   };
   return (
