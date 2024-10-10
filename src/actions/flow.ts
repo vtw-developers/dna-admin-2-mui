@@ -85,10 +85,10 @@ export const updateTemplatedFlow = async (params: Flow) =>
 export const deleteTemplatedFlow = async (params: Flow) =>
   (await axiosInstance.post(`${PATH_PREFIX}/delete`, params)).data;
 
-export const importTemplatedFlow = async (params: any) =>
+export const importFlow = async (params: any) =>
   (await axiosInstance.post(`${PATH_PREFIX}/import`, params)).data;
 
-export const exportTemplatedFlow = async (params: any) =>
+export const exportFlow = async (params: any) =>
   (await axiosInstance.post(`${PATH_PREFIX}/export`, params)).data;
 
 export const getScheduableFlows = async () =>

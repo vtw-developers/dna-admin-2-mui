@@ -27,11 +27,9 @@ type Props = {
 };
 
 export const SchemaEditor = ({ title, initialData, onChange, importedData }: Props) => {
-  console.log(initialData);
   const [data, setData] = useState(initialData);
 
   useEffect(() => {
-    console.log(data);
     onChange(data);
   }, [data]);
 
@@ -41,13 +39,11 @@ export const SchemaEditor = ({ title, initialData, onChange, importedData }: Pro
   }, [importedData]);
 
   const onChangeName = (event: ChangeEvent<HTMLInputElement>, row: DataSchema) => {
-    console.log(data);
     row.name = event.target.value;
     setData({ ...data });
   };
 
   const onChangeType = (event: SelectChangeEvent<HTMLInputElement>, row: DataSchema) => {
-    console.log(data);
     row.type = event.target.value as string;
     if (event.target.value !== 'Object') {
       row.children = [];
@@ -56,13 +52,11 @@ export const SchemaEditor = ({ title, initialData, onChange, importedData }: Pro
   };
 
   const onChangeDescription = (event: ChangeEvent<HTMLInputElement>, row: DataSchema) => {
-    console.log(data);
     row.description = event.target.value;
     setData({ ...data });
   };
 
   const onChangeArrayType = (event: SelectChangeEvent<HTMLInputElement>, row: DataSchema) => {
-    console.log(data);
     row.arrayType = event.target.value as string;
     if (event.target.value !== 'Object') {
       row.children = [];
@@ -183,11 +177,8 @@ export const SchemaEditor = ({ title, initialData, onChange, importedData }: Pro
     const file = files[0];
     const fileReader = new FileReader();
     fileReader.onload = async (f) => {
-      console.log(f);
       const schemaYaml = f.target?.result as string;
-      console.log(schemaYaml);
-      await importFlow({ yaml: schemaYaml }).then((result) => {
-        console.log(result);
+      await importFlow({ yaml: schemaYaml }).then((result: any) => {
         setData(result);
       });
     };
@@ -220,27 +211,14 @@ export const SchemaEditor = ({ title, initialData, onChange, importedData }: Pro
     <Card>
       <CardHeader title={title} subheader="" sx={{ mb: 3 }} />
       <Divider />
-      <div>
-        {/*        <div>
-          <Stack direction="row" spacing={2} sx={{ px: 3, pt: 1 }}>
-            <Button variant="outlined" component="label">
-              가져오기
-              <VisuallyHiddenInput type="file" onChange={importSchema} />
-            </Button>
-            <Button variant="outlined" onClick={exportSchema}>
-              내보내기
-            </Button>
-          </Stack>
-        </div> */}
-        <div>
-          <Stack direction="row" spacing={2} sx={{ px: 3, pt: 1 }}>
-            {nameInput(data)}
-            {typeInput(data)}
-            {data.type === 'Object' && addButton(data)}
-          </Stack>
-          {recursive(data)}
-        </div>
-      </div>
+      <Stack sx={{ p: 3 }}>
+        <Stack direction="row" spacing={2} sx={{ px: 3 }}>
+          {nameInput(data)}
+          {typeInput(data)}
+          {data.type === 'Object' && addButton(data)}
+        </Stack>
+        {recursive(data)}
+      </Stack>
     </Card>
   );
 };
