@@ -45,7 +45,6 @@ export function ScheduleListView() {
   const [tableData, setTableData] = useState<ApiInfo[]>([]);
 
   useEffect(() => {
-    console.log(data);
     setTableData(data);
   }, [data, sortModel, pagination, filters]);
 
@@ -104,7 +103,6 @@ export function ScheduleListView() {
       headerName: '상태',
       minWidth: 200,
       renderCell: (params) => {
-        console.log(params.row.status);
         if (!params.row?.status || params.row.status === 'UNREGISTERED') return <div>미등록</div>;
         if (params.row.status === 'PAUSED') return <div>정지</div>;
         if (params.row.status === 'NORMAL') return <div>실행중</div>;
@@ -172,13 +170,11 @@ export function ScheduleListView() {
   };
 
   const stop = async (id: any) => {
-    console.log(id);
     const result = await stopSchedule({ id });
     updateStatus(id, result.status);
   };
 
   const run = async (id: any) => {
-    console.log(id);
     const result = await runFlow({ id });
     updateStatus(id, result.status);
   };

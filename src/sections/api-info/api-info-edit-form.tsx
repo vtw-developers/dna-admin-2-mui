@@ -1,8 +1,8 @@
 import { z as zod } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import { useForm } from 'react-hook-form';
+import { useMemo, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMemo, useEffect, useCallback } from 'react';
 
 import { Grid } from '@mui/material';
 import Card from '@mui/material/Card';
@@ -120,9 +120,6 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     // data.requestParameters = rows;
-    console.log(data);
-    console.log(values);
-
     try {
       if (editMode === 'create') {
         await createApiInfo(data).then(() => toast.success('저장되었습니다.'));
@@ -276,11 +273,6 @@ export function ApiInfoEditForm({ editMode, entity }: Props) {
     // @ts-ignore
     setValue(key, [...rows]);
   };
-
-  const onChangeSchema = useCallback((schema: any) => {
-    console.log(schema);
-    setValue('responseBody', schema);
-  }, []);
 
   return (
     <>

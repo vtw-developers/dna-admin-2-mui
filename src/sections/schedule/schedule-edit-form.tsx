@@ -55,7 +55,6 @@ export function ScheduleEditForm({ editMode, entity }: Props) {
   const [schedulableFlows, setSchedulableFlows] = useState([]);
   useEffect(() => {
     getScheduableFlows().then((e) => {
-      console.log(e);
       setSchedulableFlows([...e]);
     });
   }, []);
