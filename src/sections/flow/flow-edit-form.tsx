@@ -50,8 +50,8 @@ export const Schema = zod.object({
     .string()
     .min(1, { message: '플로우명을 입력하세요.' })
     .max(100, { message: '100자 이내로 입력하세요.' }),
-  httpMethod: zod.string() /* .min(1, { message: 'HTTP Method 를 입력하세요.' }) */,
-  url: zod.string() /* .min(1, { message: 'URL을 입력하세요.' }) */,
+  httpMethod: zod.string().nullish(),
+  url: zod.string().nullish(),
   requestParameters: zod.any().array(),
   responseBody: zod.any(),
   templated: zod.boolean(),
@@ -295,10 +295,12 @@ export function FlowEditForm({ editMode, entity }: Props) {
     fileReader.onload = async (f) => {
       const schemaYaml = f.target?.result as string;
       const result = await importTemplatedFlow({ yaml: schemaYaml });
+      setValue('flowType', result.flowType);
       setValue('flowId', result.flowId);
       setValue('name', result.name);
       setValue('httpMethod', result.httpMethod);
       setValue('url', result.url);
+      setValue('templated', result.templated);
       setValue('templateSid', result.templateSid);
 
       setImportedRequsetParameters(result.requestParameters);

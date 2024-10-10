@@ -49,8 +49,8 @@ export function ScheduleEditForm({ editMode, entity }: Props) {
   const confirm = useBoolean();
 
   const listPath = paths.manage.schedule.root;
-  const editPath = paths.manage.schedule.edit(entity?.ctiInfoId);
-  const detailsPath = paths.manage.schedule.details(entity?.ctiInfoId);
+  const editPath = paths.manage.schedule.edit(entity?.id);
+  const detailsPath = paths.manage.schedule.details(entity?.id);
 
   const [schedulableFlows, setSchedulableFlows] = useState([]);
   useEffect(() => {
@@ -130,7 +130,7 @@ export function ScheduleEditForm({ editMode, entity }: Props) {
             variant="outlined"
             name="flowSid"
             label="플로우"
-            inputProps={{ readOnly: editMode === 'details' }}
+            inputProps={{ readOnly: editMode === 'details' || editMode === 'update' }}
           >
             {schedulableFlows.map((option) => (
               <MenuItem key={option.sid} value={option.sid} sx={{ textTransform: 'capitalize' }}>
