@@ -7,6 +7,7 @@ import type { GridPaginationModel } from '@mui/x-data-grid/models/gridPagination
 
 import { useState, useEffect, useCallback } from 'react';
 
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
@@ -123,26 +124,26 @@ export function ScheduleListView() {
           );
         if (params.row?.status === 'PAUSED') {
           return (
-            <>
+            <Box sx={{ display: 'flex', gap: '10px' }}>
               <Button variant="outlined" onClick={() => start(params.row.id)}>
                 실행
               </Button>
               <Button variant="outlined" onClick={() => run(params.row.id)}>
                 즉시 실행
               </Button>
-            </>
+            </Box>
           );
         }
         if (params.row?.status === 'NORMAL') {
           return (
-            <>
+            <Box sx={{ display: 'flex', gap: '10px' }}>
               <Button variant="outlined" onClick={() => stop(params.row.id)}>
                 정지
               </Button>
               <Button variant="outlined" onClick={() => run(params.row.id)}>
                 즉시 실행
               </Button>
-            </>
+            </Box>
           );
         }
       },
