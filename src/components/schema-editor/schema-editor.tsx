@@ -13,7 +13,7 @@ import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
 import { Select, styled, FormControl } from '@mui/material';
 
-import { exportFlow, importFlow } from 'src/actions/flow';
+import { exportTemplatedFlow, importTemplatedFlow } from 'src/actions/flow';
 
 import type { DataSchema } from '../../types/flow';
 
@@ -178,7 +178,7 @@ export const SchemaEditor = ({ title, initialData, onChange, importedData }: Pro
     const fileReader = new FileReader();
     fileReader.onload = async (f) => {
       const schemaYaml = f.target?.result as string;
-      await importFlow({ yaml: schemaYaml }).then((result: any) => {
+      await importTemplatedFlow({ yaml: schemaYaml }).then((result: any) => {
         setData(result);
       });
     };
@@ -186,7 +186,7 @@ export const SchemaEditor = ({ title, initialData, onChange, importedData }: Pro
   };
 
   const exportSchema = async () => {
-    const { yaml } = await exportFlow(data);
+    const { yaml } = await exportTemplatedFlow(data);
     const element = document.createElement('a');
     const file = new Blob([yaml], { type: 'text/plain' });
     element.href = URL.createObjectURL(file);
